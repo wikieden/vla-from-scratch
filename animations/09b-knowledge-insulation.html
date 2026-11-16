@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>知识隔离</title><link rel="stylesheet" href="anim.css"></head>
+<body><main>
+<h1>第 9 章 · 知识隔离：小脑只读不改，大脑另有老师</h1>
+<p class="sub">配套讲义：<a href="../lessons/09-knowledge-insulation.html">第 9 章 · 知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a> 第 2 步。依据 KI 论文 <code>knowledge-insulation-2505.23705.txt</code> 第 286–298 行（三项措施）、第 339–374 行（式 5–6，stop-gradient）、第 476–480 行（训练步数）。下方曲线是<strong>示意</strong>。</p>
+<div class="panel"><svg id="sv" viewBox="0 0 680 250"></svg></div>
+<div class="panel"><svg id="ch" viewBox="0 0 680 190"></svg></div>
+<div class="stats">
+<div class="stat"><div class="l">训练步数</div><div class="v" id="s0">0</div></div>
+<div class="stat"><div class="l">KI：听指令</div><div class="v" id="s1">—</div></div>
+<div class="stat"><div class="l">KI：动作本领</div><div class="v" id="s2">—</div></div>
+</div>
+<div class="row"><button id="play">▶ 播放</button><button id="step">→ 单步</button><button id="reset">↺ 重来</button></div>
+<p class="note">看点：① 蓝色虚线 = 前向：小脑照样每层读大脑的 K、V。② 红色 = 小脑的 flow matching 误差往回传，撞到 sg 墙（stop-gradient）停下，<strong>改不到大脑</strong>，只改小脑自己。③ 紫色 = 大脑自己念 FAST 动作词的误差，它教大脑学机器人；橙色 = 网络图文数据的误差，帮大脑保住常识。④ 下图：KI（绿）听指令不掉、动作本领涨得和 π0-FAST 一样快；π0（红）要多训练约 7.5 倍步数才追上（论文图 6）。</p>
+</main>
+<script src="anim.js"></script>
+<script>
+const sv=$('sv'),ch=$('ch');
+el('defs',{},sv).innerHTML=['purple','bad','amber','accent','teal'].map(c=>`<marker id="m-${c}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" style="fill:var(--${c})"/></marker>`).join('');
+const box=(x,y,w,h,c,t1,t2)=>{el('rect',{x,y,width:w,height:h,rx:8,fill:'var(--accent-bg)',stroke:`var(--${c})`,'stroke-width':1.5},sv);txt(t1,{x:x+w/2,y:y+h/2-2,'text-anchor':'middle'},sv);if(t2)txt(t2,{x:x+w/2,y:y+h/2+16,'text-anchor':'middle',class:'m'},sv)};
+box(150,70,190,70,'purple','大脑 VLM 3B','看图、读指令、念 FAST 词');
+box(470,70,170,70,'teal','小脑 动作专家','flow matching 出连续动作');
+box(10,175,130,50,'amber','网络图文数据','看图说话、问答');
+box(180,175,150,50,'purple','FAST 动作词','离散 token，下一个词');
+box(490,175,130,50,'teal','连续动作','真动作 chunk');
+const wall=el('g',{},sv);el('rect',{x:394,y:104,width:12,height:40,rx:2,style:'fill:var(--bad)',opacity:.85},wall);txt('sg 墙',{x:400,y:160,'text-anchor':'middle',style:'fill:var(--bad)'},wall);
+const fwd=el('path',{d:'M340 92 L466 92',fill:'none',style:'stroke:var(--accent)','stroke-width':2,'stroke-dasharray':'6 4','marker-end':'url(#m-accent)'},sv);
+txt('读 K、V（前向）',{x:403,y:84,'text-anchor':'middle',class:'m'},sv);
+const back=el('path',{d:'M470 122 L408 122',fill:'none',style:'stroke:var(--bad)','stroke-width':2.5,'marker-end':'url(#m-bad)'},sv);
+const xmark=txt('✕ 挡住',{x:372,y:134,'text-anchor':'middle',style:'fill:var(--bad)'},sv);
+const gFlow=el('path',{d:'M555 175 L555 144',fill:'none',style:'stroke:var(--teal)','stroke-width':2.5,'marker-end':'url(#m-teal)'},sv);
+const gFast=el('path',{d:'M255 175 L255 144',fill:'none',style:'stroke:var(--purple)','stroke-width':2.5,'marker-end':'url(#m-purple)'},sv);
+const gWeb=el('path',{d:'M90 175 C 90 150, 130 130, 148 118',fill:'none',style:'stroke:var(--amber)','stroke-width':2.5,'marker-end':'url(#m-amber)'},sv);
+const cap=txt('',{x:340,y:28,'text-anchor':'middle'},sv);
+const X0=50,W=440,H=130,T0=20,N=40;
+el('rect',{x:X0,y:T0,width:W,height:H,fill:'var(--bg)',stroke:'var(--line)'},ch);
+txt('动作本领（示意）',{x:X0,y:14,class:'m'},ch);txt('训练步数 →',{x:X0+W,y:T0+H+16,'text-anchor':'end',class:'m'},ch);
+const runs=[{n:'KI（本章）',c:'good',f:t=>0.88*(1-Math.exp(-t/6))},{n:'π0-FAST',c:'purple',f:t=>0.8*(1-Math.exp(-t/6))},{n:'π0',c:'bad',f:t=>0.85*(1-Math.exp(-t/45))},{n:'冻住大脑',c:'muted',f:t=>0.06*(1-Math.exp(-t/6))}];
+runs.forEach((r,i)=>{r.p=el('polyline',{fill:'none',style:`stroke:var(--${r.c})`,'stroke-width':2.2},ch);el('rect',{x:X0+W+20,y:T0+i*26,width:14,height:4,style:`fill:var(--${r.c})`},ch);txt(r.n,{x:X0+W+40,y:T0+i*26+6,class:'m'},ch)});
+txt('π0-FAST：训练快，推理慢',{x:X0+W+20,y:T0+118,class:'m',style:'font-size:11px'},ch);
+let t;const PX=i=>X0+i/N*W,PY=v=>T0+H-v*H;
+const phases=['前向：小脑读大脑的 K、V','小脑的误差往回传，撞墙停下','大脑另有老师：FAST 词 + 网络数据'];
+function draw(){const ph=t%3;
+  fwd.setAttribute('opacity',ph===0?1:.25);
+  [back,xmark].forEach(e=>e.setAttribute('opacity',ph===1?1:.15));gFlow.setAttribute('opacity',ph===1?1:.15);
+  [gFast,gWeb].forEach(e=>e.setAttribute('opacity',ph===2?1:.15));
+  cap.textContent=t?phases[ph]:'点播放：三种信号轮流亮';
+  runs.forEach(r=>{const pts=[];for(let i=0;i<=t;i++)pts.push(PX(i)+','+PY(r.f(i)));r.p.setAttribute('points',pts.join(' '))});
+  $('s0').textContent=t;$('s1').textContent=t?'≈ 不掉':'—';$('s2').textContent=Math.round(runs[0].f(t)*100)+'%'}
+function reset(){t=0;draw()}
+function next(){if(t>=N)return false;t++;draw();return true}
+setupPlayer({captureSeed:1,reset,next},450);
+</script></body></html>

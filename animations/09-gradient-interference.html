@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>大脑被冲掉常识</title><link rel="stylesheet" href="anim.css"></head>
+<body><main>
+<h1>第 9 章 · 两难：一起训练会冲掉常识，冻住又学不会</h1>
+<p class="sub">配套讲义：<a href="../lessons/09-knowledge-insulation.html">第 9 章 · 知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a> 第 1 步。依据知识隔离论文 <code>knowledge-insulation-2505.23705.txt</code> 第 161–162、262–284、488–507 行。曲线是<strong>示意</strong>，表达论文结论的方向，不是论文里的具体数字。</p>
+<div class="panel"><svg id="sv" viewBox="0 0 680 400"></svg></div>
+<div class="stats">
+<div class="stat"><div class="l">训练步数</div><div class="v" id="s0">0</div></div>
+<div class="stat"><div class="l">一起训练：听指令能力</div><div class="v" id="s1">—</div></div>
+<div class="stat"><div class="l">冻住大脑：动作本领</div><div class="v" id="s2">—</div></div>
+</div>
+<div class="row"><button id="play">▶ 播放</button><button id="step">→ 单步</button><button id="reset">↺ 重来</button></div>
+<p class="note">看点：① 上面（π0 的做法，一起训练）：刚开始小脑是随机的，它的误差梯度穿过 attention 流进大脑（红色箭头），大脑"听指令"的能力先掉下去；动作本领要很久才涨上来。最后让它"把勺子放进垃圾桶"，它去抓了垃圾（论文图 2）。② 下面（冻住大脑）：常识一点没丢，但大脑从没见过机器人数据，读出的东西不够用，动作本领几乎为 0（论文"freezing doesn't work"）。③ 第 2 步会讲怎么两头都要。</p>
+</main>
+<script src="anim.js"></script>
+<script>
+const sv=$('sv');const X0=60,W=420,H=110,N=40;
+const lanes=[{name:'① 一起训练（π0）：小脑的梯度流进大脑',top:30,grad:true},{name:'② 冻住大脑：只训练小脑',top:220,grad:false}];
+const know=(L,t)=>L.grad?(0.9-0.45*Math.min(t/8,1)+0.15*Math.max(0,(t-8)/32)):0.9;
+const skill=(L,t)=>L.grad?0.85*(1-Math.exp(-t/16)):0.06*(1-Math.exp(-t/6));
+const PX=t=>X0+t/N*W,PY=(L,v)=>L.top+H-v*H;
+lanes.forEach(L=>{
+  txt(L.name,{x:X0-40,y:L.top-10},sv);
+  el('rect',{x:X0,y:L.top,width:W,height:H,fill:'var(--bg)',stroke:'var(--line)'},sv);
+  txt('训练步数 →',{x:X0+W,y:L.top+H+16,'text-anchor':'end',class:'m'},sv);
+  L.k=el('polyline',{fill:'none',stroke:'var(--purple)','stroke-width':2.4},sv);
+  L.s=el('polyline',{fill:'none',stroke:'var(--teal)','stroke-width':2.4},sv);
+  const bx=X0+W+30;
+  el('rect',{x:bx,y:L.top+5,width:70,height:40,rx:6,fill:'var(--accent-bg)',stroke:'var(--purple)'},sv);txt('大脑',{x:bx+35,y:L.top+30,'text-anchor':'middle'},sv);
+  el('rect',{x:bx,y:L.top+70,width:70,height:34,rx:6,fill:'var(--accent-bg)',stroke:'var(--teal)'},sv);txt('小脑',{x:bx+35,y:L.top+92,'text-anchor':'middle'},sv);
+  el('line',{x1:bx+35,y1:L.top+46,x2:bx+35,y2:L.top+68,stroke:'var(--muted)','stroke-width':1.5},sv);
+  L.arr=el('path',{d:`M${bx+60} ${L.top+70} C ${bx+95} ${L.top+60}, ${bx+95} ${L.top+40}, ${bx+71} ${L.top+30}`,fill:'none',stroke:'var(--bad)','stroke-width':2,opacity:0,'marker-end':'url(#ah2)'},sv);
+  L.lock=txt(L.grad?'':'🔒 冻住',{x:bx+80,y:L.top+22,class:'m'},sv);
+  L.res=txt('',{x:bx-6,y:L.top+H+36},sv);
+});
+el('defs',{},sv).innerHTML='<marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="#a32d2d"/></marker>';
+txt('紫 = 听指令 / 常识　青 = 动作本领',{x:X0,y:392,class:'m'},sv);
+let t;
+function draw(){lanes.forEach(L=>{const kp=[],sp=[];for(let i=0;i<=t;i++){kp.push(PX(i)+','+PY(L,know(L,i)));sp.push(PX(i)+','+PY(L,skill(L,i)))}
+  L.k.setAttribute('points',kp.join(' '));L.s.setAttribute('points',sp.join(' '));
+  L.arr.setAttribute('opacity',L.grad&&t>0&&t<N?(t%2?1:.5):0);
+  L.res.textContent=t>=N?(L.grad?'"勺子放进垃圾桶" → 抓了垃圾':'动作几乎做不出来'):'';L.res.setAttribute('style',t>=N?'fill:var(--bad)':'')});
+  $('s0').textContent=t;$('s1').textContent=Math.round(know(lanes[0],t)*100)+'%';$('s2').textContent=Math.round(skill(lanes[1],t)*100)+'%'}
+function reset(){t=0;draw()}
+function next(){if(t>=N)return false;t++;draw();return true}
+setupPlayer({captureSeed:1,reset,next},180);
+</script></body></html>

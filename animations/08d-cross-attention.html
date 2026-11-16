@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>动作专家读大脑</title><link rel="stylesheet" href="anim.css"></head>
+<body><main>
+<h1>第 8 章 · 动作专家怎么读懂大脑的 K/V</h1>
+<p class="sub">配套讲义：<a href="../lessons/08-pi0.html">第 8 章 · π0：大脑 + 小脑，动作专家（action expert）</a> 插问 2。原文 <code>pi0-2410.24164.txt</code> 第 875–891 行。为了画得出来，把 256 维的 head 压成 2 维：每个箭头就是一个向量，两箭头越同向，点积越大。</p>
+<div class="panel"><svg id="sv" viewBox="0 0 680 330"></svg></div>
+<div class="stats">
+<div class="stat"><div class="l">阶段</div><div class="v" id="s1">大脑写好 K</div></div>
+<div class="stat"><div class="l">训练步数</div><div class="v" id="s2">0</div></div>
+<div class="stat"><div class="l">分给"杯子"的注意力</div><div class="v" id="s3">—</div></div>
+<div class="stat"><div class="l">动作误差</div><div class="v" id="s4">—</div></div>
+</div>
+<div class="row"><button id="play">▶ 播放</button><button id="step">→ 单步</button><button id="reset">↺ 重来</button></div>
+<p class="note">看点：① 灰色箭头是大脑（PaliGemma）给 4 个 token 写的 K，训练里它们基本不动。② 青色箭头是动作专家的 Q（"我想找什么"）。一开始它是随机的，指向桌面，读到的是没用的信息，动作误差很大。③ 训练时，动作误差的梯度只会把 Q 往"能让误差变小"的方向推，Q 慢慢转向"杯子"的 K：点积变大 → softmax 权重变大 → 取到的主要是杯子的 V（位置）。没有人规定"要看杯子"，是动作误差逼出来的。</p>
+</main>
+<script src="anim.js"></script>
+<script>
+const sv=$('sv');const CX=185,CY=165,R=88;
+const toks=[{n:'杯子（图块）',a:25,v:'杯子在左前方 30 cm'},{n:'碗（图块）',a:115,v:'碗在右边'},{n:'桌面（图块）',a:205,v:'木纹桌面'},{n:'"放进"（字）',a:295,v:'任务：放进去'}];
+el('circle',{cx:CX,cy:CY,r:R+8,fill:'none',stroke:'var(--line)','stroke-dasharray':'3 4'},sv);
+txt('2 维示意的 head 空间',{x:CX,y:20,'text-anchor':'middle',class:'m'},sv);
+const rad=d=>d*Math.PI/180;
+el('defs',{},sv).innerHTML='<marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="context-stroke"/></marker>';
+toks.forEach(t=>{const x=CX+R*Math.cos(rad(t.a)),y=CY-R*Math.sin(rad(t.a));
+  t.ar=el('line',{x1:CX,y1:CY,x2:x,y2:y,stroke:'var(--muted)','stroke-width':2,'marker-end':'url(#ah)'},sv);
+  t.lb=txt('K '+t.n,{x:CX+(R+14)*Math.cos(rad(t.a)),y:CY-(R+14)*Math.sin(rad(t.a))+4,'text-anchor':Math.cos(rad(t.a))>0.2?'start':Math.cos(rad(t.a))<-0.2?'end':'middle',class:'m'},sv)});
+const q=el('line',{x1:CX,y1:CY,x2:CX,y2:CY,stroke:'var(--teal)','stroke-width':3.5,'marker-end':'url(#ah)',opacity:0},sv);
+const ql=txt('',{x:0,y:0,style:'fill:var(--teal)'},sv);
+const BX=380,BW=115;
+txt('Q·K（点积）　→　softmax 权重',{x:BX,y:40},sv);
+toks.forEach((t,i)=>{const y=60+i*44;txt(t.n,{x:BX,y:y+14,class:'m'},sv);
+  el('rect',{x:BX+95,y:y,width:BW,height:20,rx:3,fill:'var(--bg)',stroke:'var(--line)'},sv);
+  t.bar=el('rect',{x:BX+95,y:y,width:0,height:20,rx:3,fill:'var(--teal)',opacity:.8},sv);
+  t.sc=txt('',{x:BX+BW+101,y:y+15,class:'m'},sv)});
+txt('动作专家这一层读到的（V 按权重混合）：',{x:BX,y:250},sv);
+const out=txt('',{x:BX,y:274},sv),out2=txt('',{x:BX,y:296,class:'m'},sv);
+let t,qa,trainStep,showQ;
+function scores(){const s=toks.map(k=>3*Math.cos(rad(qa-k.a)));const m=Math.max(...s);const e=s.map(x=>Math.exp(x-m));const z=e.reduce((a,b)=>a+b,0);return {s,w:e.map(x=>x/z)}}
+function draw(){
+  if(showQ){const L=R*0.85;q.setAttribute('x2',CX+L*Math.cos(rad(qa)));q.setAttribute('y2',CY-L*Math.sin(rad(qa)));q.setAttribute('opacity',1);
+    ql.setAttribute('x',CX+(L*0.55)*Math.cos(rad(qa))+8);ql.setAttribute('y',CY-(L*0.55)*Math.sin(rad(qa))-8);ql.textContent='Q 动作';
+    const {s,w}=scores();toks.forEach((k,i)=>{k.bar.setAttribute('width',BW*w[i]);k.sc.textContent=s[i].toFixed(1)+' → '+Math.round(w[i]*100)+'%'});
+    const i=w.indexOf(Math.max(...w));out.textContent='主要读到：'+toks[i].v;out2.textContent=w[0]>0.8?'拿到杯子的位置，动作就能对准':'读到的不是杯子，动作对不准';
+    $('s3').textContent=Math.round(w[0]*100)+'%';$('s4').textContent=(1-w[0]).toFixed(2)}
+  else{q.setAttribute('opacity',0);ql.textContent='';toks.forEach(k=>{k.bar.setAttribute('width',0);k.sc.textContent=''});out.textContent='';out2.textContent='';$('s3').textContent='—';$('s4').textContent='—'}
+  $('s1').textContent=t===0?'大脑写好 K':trainStep===0?'未训练的 Q':trainStep<12?'训练中':'训练好了';$('s2').textContent=trainStep}
+function reset(){t=0;qa=205;trainStep=0;showQ=false;draw()}
+function next(){if(t>=14)return false;
+  if(t===0){showQ=true}else{const d=25-qa;qa+=Math.sign(d)*Math.min(Math.abs(d),15);trainStep++}
+  t++;draw();return true}
+setupPlayer({captureSeed:1,reset,next},500);
+</script></body></html>
