@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>π0 三块注意力</title><link rel="stylesheet" href="anim.css"></head>
+<body><main>
+<h1>第 8 章 · π0 的三块注意力：谁能看见谁</h1>
+<p class="sub">配套讲义：<a href="../lessons/08-pi0.html">第 8 章 · π0：大脑 + 小脑，动作专家（action expert）</a> 第 3 步。原文 <code>pi0-2410.24164.txt</code> 第 862–874 行（附录 B · Attention mask）。为了画得下，这里用 2 张图 + 1 句指令 + 1 个状态 + 3 个动作代表真实的几百个 token。</p>
+<div class="panel"><svg id="mk" viewBox="0 0 680 330"></svg></div>
+<div class="stats">
+<div class="stat"><div class="l">阶段</div><div class="v" id="s1">一行行看规则</div></div>
+<div class="stat"><div class="l">flow matching 第几步</div><div class="v" id="s2">0 / 10</div></div>
+<div class="stat"><div class="l">前两块被算了几次</div><div class="v" id="s3">0</div></div>
+<div class="stat"><div class="l">动作块被算了几次</div><div class="v" id="s4">0</div></div>
+</div>
+<div class="row"><button id="play">▶ 播放</button><button id="step">→ 单步</button><button id="reset">↺ 重来</button></div>
+<p class="note">看点：① 先一行一行亮出规则：蓝色 = 能看见。同一块里互相都能看（块内双向）；后面的块能看前面的块，前面的块看不到后面（块间因果）。② 第一块（图 + 指令）只看自己，和 PaliGemma 预训练时一模一样；状态单独一块，也看不到动作。③ 进入 flow matching 的 10 步：动作每步都在变（青色闪），但前两块根本看不到动作，算出来的结果不会变，所以只算 1 次存进 K/V 缓存（橙框），动作块每步来读。</p>
+</main>
+<script src="anim.js"></script>
+<script>
+const mk=$('mk');
+const L=['图1','图2','指令','状态','动1','动2','动3'],B=[0,0,0,1,2,2,2],n=L.length,C=34,MX=90,MY=46;
+const BC=['var(--purple)','var(--amber)','var(--teal)'];
+const BN=['第 1 块：图像 + 指令 → 大脑 PaliGemma','第 2 块：机器人状态 q → 动作专家','第 3 块：带噪动作 → 动作专家'];
+L.forEach((s,i)=>{txt(s,{x:MX-8,y:MY+i*C+21,'text-anchor':'end',style:'fill:'+BC[B[i]]},mk);txt(s,{x:MX+i*C+C/2,y:MY-8,'text-anchor':'middle',class:'m'},mk)});
+txt('行 = 谁在看　列 = 被看的',{x:MX,y:18,class:'m'},mk);
+const cells=[];for(let i=0;i<n;i++)for(let j=0;j<n;j++)cells.push({i,j,r:el('rect',{x:MX+j*C,y:MY+i*C,width:C-3,height:C-3,rx:3,fill:'var(--line)'},mk)});
+[[0,3],[3,4],[4,7]].forEach(([a,b],k)=>el('rect',{x:MX+a*C-2,y:MY+a*C-2,width:(b-a)*C+1,height:(b-a)*C+1,rx:4,fill:'none',stroke:BC[k],'stroke-width':2},mk));
+const LX=MX+n*C+24;
+BN.forEach((s,k)=>{el('rect',{x:LX,y:MY+k*30,width:14,height:14,rx:3,fill:BC[k]},mk);txt(s,{x:LX+22,y:MY+k*30+12,class:'m'},mk)});
+const cache=el('g',{opacity:.2},mk);el('rect',{x:LX,y:MY+110,width:250,height:40,rx:6,fill:'none',stroke:'var(--amber)','stroke-width':1.5},cache);
+const ctxt=txt('前两块的 K/V 缓存：还没算',{x:LX+125,y:MY+135,'text-anchor':'middle'},cache);
+const msg=txt('',{x:LX,y:MY+185},mk),msg2=txt('',{x:LX,y:MY+207,class:'m'},mk);
+let t,rows,k,pre,act;
+const can=(i,j)=>B[j]<=B[i];
+function draw(){cells.forEach(c=>{const shown=c.i<rows,on=shown&&can(c.i,c.j);let f=shown?(on?'var(--accent)':'var(--line)'):'var(--bg)';let o=on?.85:1;
+  if(k>0&&on&&B[c.i]===2){f='var(--teal)';o=k%2?1:.6}
+  c.r.setAttribute('fill',f);c.r.setAttribute('opacity',o)});
+  cache.setAttribute('opacity',pre?1:.2);ctxt.textContent=pre?'前两块的 K/V 缓存：算 1 次，存好了':'前两块的 K/V 缓存：还没算';
+  $('s1').textContent=k>0?'推理 10 步':'一行行看规则';$('s2').textContent=k+' / 10';$('s3').textContent=pre;$('s4').textContent=act}
+function reset(){t=0;rows=0;k=0;pre=0;act=0;msg.textContent='';msg2.textContent='';draw()}
+function next(){
+  if(t<n){rows=t+1;const b=B[t];msg.textContent=['第 1 块只看自己那一块','状态能看第 1 块和自己','动作能看所有 token'][b];msg2.textContent=['不看状态和动作：和 PaliGemma 预训练时一样','不看动作：动作变了它也不变','块内动作之间也互相看（双向）'][b]}
+  else if(t===n){pre=1;msg.textContent='开始推理：前两块先算 1 次';msg2.textContent='它们看不到动作，结果存进 K/V 缓存'}
+  else if(k<10){k++;act++;msg.textContent='第 '+k+' 步：只重算动作块';msg2.textContent='动作块读缓存，前两块不动'}
+  else return false;
+  t++;draw();return true}
+setupPlayer({captureSeed:1,reset,next},450);
+</script></body></html>

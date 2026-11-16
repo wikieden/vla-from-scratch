@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>策略循环动画</title><link rel="stylesheet" href="anim.css"></head>
+<body><main>
+<h1>第 1 章 · 策略：看一眼 → 吐一串数 → 动一下</h1>
+<p class="sub">配套讲义：<a href="../lessons/01-what-is-a-policy.html">第 1 章 · 机器人策略是什么</a>。每个时刻：看画面 o<sub>t</sub> + 指令 ℓ，策略 π 输出 7 维动作 a<sub>t</sub>，手臂只走一小步，再看。</p>
+<div class="panel"><svg id="sv" viewBox="0 0 680 330"></svg></div>
+<div class="stats">
+<div class="stat"><div class="l">时刻 t</div><div class="v" id="st">0</div></div>
+<div class="stat"><div class="l">现在在做</div><div class="v" id="sp">—</div></div>
+<div class="stat"><div class="l">夹爪离杯口</div><div class="v" id="sh">3 cm</div></div>
+</div>
+<div class="row"><button id="play">▶ 播放</button><button id="step">→ 单步</button><button id="reset">↺ 重来</button></div>
+<p class="note">看点：每一步只动 1 厘米；第 4 步才合夹爪（第 7 位从 0 变 1）；第 5 步带着杯子往上。动作向量里大部分位置是 0。</p>
+</main>
+<script src="anim.js"></script>
+<script>
+const sv=$('sv');
+const S=25,TABLE=290,CUPX=150,CUPW=60,CUPH=70;
+el('line',{x1:40,y1:TABLE,x2:340,y2:TABLE,stroke:'var(--muted)','stroke-width':1},sv);
+txt('桌面',{x:44,y:TABLE+18,class:'m'},sv);
+const cup=el('rect',{x:CUPX,y:TABLE-CUPH,width:CUPW,height:CUPH,rx:6,fill:'var(--teal)',opacity:.75},sv);
+const grip=el('g',{},sv);
+const arm=el('rect',{x:CUPX+CUPW/2-6,y:0,width:12,height:60,fill:'var(--muted)'},grip);
+const palm=el('rect',{x:CUPX-14,y:60,width:CUPW+28,height:10,rx:3,fill:'var(--purple)'},grip);
+const fl=el('rect',{x:CUPX-14,y:70,width:8,height:40,fill:'var(--purple)'},grip);
+const fr=el('rect',{x:CUPX+CUPW+6,y:70,width:8,height:40,fill:'var(--purple)'},grip);
+const eye=el('g',{},sv);
+el('rect',{x:20,y:16,width:56,height:26,rx:6,fill:'var(--accent-bg)'},eye);
+txt('相机',{x:34,y:34},eye);
+const boxes=[['看 o_t + 指令',370,40],['策略 π',370,110],['输出 a_t',370,180]];
+const bx=boxes.map(([s,x,y])=>{const g=el('g',{},sv);const r=el('rect',{x,y,width:140,height:44,rx:8,fill:'var(--bg)',stroke:'var(--line)'},g);txt(s,{x:x+70,y:y+27,'text-anchor':'middle'},g);return r});
+el('path',{d:'M440 84 L440 108 M440 154 L440 178',stroke:'var(--muted)',fill:'none'},sv);
+el('path',{d:'M510 202 L560 202 L560 62 L512 62',stroke:'var(--muted)',fill:'none','stroke-dasharray':'4 3'},sv);
+txt('再看一眼',{x:566,y:136,class:'m'},sv);
+const names=['Δx','Δy','Δz','roll','pitch','yaw','夹爪'];
+const cells=names.map((n,i)=>{const x=370+i*42;const r=el('rect',{x,y:262,width:38,height:30,rx:4,fill:'var(--bg)',stroke:'var(--line)'},sv);const v=txt('0',{x:x+19,y:282,'text-anchor':'middle'},sv);txt(n,{x:x+19,y:308,'text-anchor':'middle',class:'m'},sv);return{r,v}});
+txt('7 维动作向量',{x:370,y:254,class:'m'},sv);
+const PLAN=[[0,0,-0.01,0,0,0,0],[0,0,-0.01,0,0,0,0],[0,0,-0.01,0,0,0,0],[0,0,0,0,0,0,1],[0,0,0.01,0,0,0,1]];
+let t,ph,h,closed,lift;
+function draw(){
+  const gy=TABLE-CUPH+40-110-h*S;
+  grip.setAttribute('transform',`translate(0,${gy})`);
+  const open=closed?0:14;
+  fl.setAttribute('x',CUPX-8-open);fr.setAttribute('x',CUPX+CUPW+open);
+  cup.setAttribute('y',TABLE-CUPH-lift*S);
+  bx.forEach((r,i)=>{r.setAttribute('stroke',ph===i?'var(--accent)':'var(--line)');r.setAttribute('stroke-width',ph===i?2:1)});
+  eye.setAttribute('opacity',ph===0?1:.35);
+  const a=(ph===2)?PLAN[t]:[0,0,0,0,0,0,0];
+  cells.forEach((c,i)=>{c.v.textContent=String(a[i]);const nz=a[i]!==0;c.r.setAttribute('fill',nz?'var(--accent-bg)':'var(--bg)');c.r.setAttribute('stroke',nz?'var(--accent)':'var(--line)')});
+  $('st').textContent=t;$('sp').textContent=ph<0?'—':['看','想','做'][ph];
+  $('sh').textContent=lift?'已夹起':Math.max(0,h).toFixed(0)+' cm';
+}
+const A={captureSeed:1,
+  reset(){t=0;ph=-1;h=3;closed=false;lift=0;draw()},
+  next(){
+    if(t>=PLAN.length)return false;
+    ph=(ph+1)%3;
+    if(ph===2){const a=PLAN[t];if(a[6]===1)closed=true;if(closed&&a[2]>0){lift+=1;h+=1}else h+=a[2]*100;draw();t++;return true}
+    draw();return true}
+};
+setupPlayer(A,700);
+</script></body></html>

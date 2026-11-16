@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>分箱与逐词动画</title><link rel="stylesheet" href="anim.css"></head>
+<body><main>
+<h1>第 6 章 · 动作当词：切 256 格，一个字一个字地念</h1>
+<p class="sub">配套讲义：<a href="../lessons/06-action-tokens.html">第 6 章 · 动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a>。上半部分：一个小数落进第几格。下半部分：OpenVLA 约每秒 42 个动作词，念完一个 50 步 × 7 维的 chunk 要多久。</p>
+<div class="panel"><svg id="rul" viewBox="0 0 680 150"></svg>
+<div class="row ctl"><label>Δx</label><input type="range" id="dx" min="-128" max="128" step="1" value="20"><span id="dxv">+0.020 m</span><button id="out">加入一个 +1.0 m 的异常值</button></div></div>
+<div class="panel"><svg id="ar" viewBox="0 0 680 230"></svg></div>
+<div class="stats">
+<div class="stat"><div class="l">已念的动作词</div><div class="v" id="s1">0 / 350</div></div>
+<div class="stat"><div class="l">耗时（按 42 词/秒）</div><div class="v" id="s2">0.0 s</div></div>
+<div class="stat"><div class="l">这段动作只管</div><div class="v">1.0 s</div></div>
+</div>
+<div class="row"><button id="play">▶ 播放</button><button id="step">→ 单步</button><button id="reset">↺ 重来</button></div>
+<p class="note">看点：① 格号 = (Δx − 下限) ÷ 格宽。负数在 128 左边。② 加入异常值后，按"最小值到最大值"定范围，格宽从 1 mm 变成约 4.4 mm，正常动作只用得上约 58 格（浅色那段）。所以 OpenVLA 改用 1%–99% 分位数。③ 下面每个小方块是一个词，必须念完一个才能念下一个，350 个要约 8.3 秒，但这段动作只管 1 秒。</p>
+</main>
+<script src="anim.js"></script>
+<script>
+const rul=$('rul'),ar=$('ar');const RX=40,RW=600;
+const ticks=el('g',{},rul),used=el('rect',{y:40,height:40,fill:'var(--teal)',opacity:.18},rul);
+const mark=el('line',{y1:30,y2:90,stroke:'var(--warm)','stroke-width':2.5},rul);
+const mlab=txt('',{y:24,'text-anchor':'middle'},rul);
+const lo=txt('',{x:RX,y:106,class:'m'},rul),hi=txt('',{x:RX+RW,y:106,class:'m','text-anchor':'end'},rul),wid=txt('',{x:RX,y:132},rul);
+let outlier=false;
+function drawRuler(v){
+  const mn=-0.128,mx=outlier?1.0:0.128,w=(mx-mn)/256;clear(ticks);
+  for(let i=0;i<=256;i++){const x=RX+i*RW/256;el('line',{x1:x,y1:i%32===0?40:58,x2:x,y2:80,stroke:'var(--muted)','stroke-width':i%32===0?1:.4},ticks)}
+  const bin=clamp(Math.floor((v-mn)/w),0,255),x=RX+(bin+.5)*RW/256;
+  mark.setAttribute('x1',x);mark.setAttribute('x2',x);mlab.setAttribute('x',x);mlab.textContent='第 '+bin+' 格';
+  const u=Math.round(0.256/w);used.setAttribute('x',RX);used.setAttribute('width',u*RW/256);
+  lo.textContent=mn.toFixed(3)+' m（第 0 格）';hi.textContent='+'+mx.toFixed(3)+' m（第 255 格）';
+  wid.textContent='格宽 '+(w*1000).toFixed(1)+' mm　正常动作（±0.128 m）用得上 '+Math.min(256,u)+' 格';
+  $('dxv').textContent=(v>=0?'+':'')+v.toFixed(3)+' m';
+}
+$('dx').oninput=e=>drawRuler(e.target.value/1000);
+$('out').onclick=()=>{outlier=!outlier;$('out').textContent=outlier?'去掉异常值（回到 1%–99% 分位数）':'加入一个 +1.0 m 的异常值';drawRuler($('dx').value/1000)};
+const names=['Δx','Δy','Δz','roll','pitch','yaw','夹爪'];
+names.forEach((n,i)=>txt(n,{x:RX+44,y:30+i*24+12,'text-anchor':'end',class:'m'},ar));
+const sq=[];for(let k=0;k<50;k++)for(let d=0;d<7;d++)sq.push(el('rect',{x:RX+52+k*11.2,y:30+d*24,width:9,height:18,rx:2,fill:'var(--line)'},ar));
+txt('第 1 步 → 第 50 步（每列一个时刻，每格一个词）',{x:RX+52,y:20,class:'m'},ar);
+const cursor=el('rect',{width:9,height:18,rx:2,fill:'none',stroke:'var(--warm)','stroke-width':2},ar);
+let n;
+function reset(){n=0;sq.forEach(r=>r.setAttribute('fill','var(--line)'));drawAR()}
+function drawAR(){for(let i=0;i<n;i++)sq[i].setAttribute('fill','var(--purple)');const c=sq[Math.min(n,349)];cursor.setAttribute('x',c.getAttribute('x'));cursor.setAttribute('y',c.getAttribute('y'));
+  $('s1').textContent=n+' / 350';const s=n/42;$('s2').textContent=s.toFixed(1)+' s';$('s2').className='v'+(s>1?' bad':'');}
+let sweep=0;
+function next(){if(n>=350)return false;n=Math.min(350,n+7);drawAR();
+  if(CAPTURE){sweep++;const v=Math.round(-100+sweep*4);$('dx').value=clamp(v,-128,128);if(sweep===30){outlier=true}drawRuler($('dx').value/1000)}
+  return true}
+drawRuler(0.02);
+setupPlayer({captureSeed:1,reset,next},120);
+</script></body></html>

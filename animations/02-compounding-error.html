@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>复合误差动画</title><link rel="stylesheet" href="anim.css"></head>
+<body><main>
+<h1>第 2 章 · 行为克隆：一走偏就越错越远</h1>
+<p class="sub">配套讲义：<a href="../lessons/02-behavior-cloning.html">第 2 章 · 行为克隆：照着人类示范抄作业</a>。绿色带子是示范数据覆盖过的状态。第 12 步机器人被碰歪了一下。</p>
+<div class="panel"><svg id="sv" viewBox="0 0 680 400"></svg></div>
+<div class="stats">
+<div class="stat"><div class="l">步数</div><div class="v" id="st">0</div></div>
+<div class="stat"><div class="l">纯 BC 偏离</div><div class="v" id="s1">0</div></div>
+<div class="stat"><div class="l">加了纠偏数据</div><div class="v" id="s2">0</div></div>
+</div>
+<div class="row"><button id="play">▶ 播放</button><button id="step">→ 单步</button><button id="reset">↺ 换一组随机数</button></div>
+<p class="note">看点：上面那条路，被碰出绿色带子后，模型来到"没见过的画面"，输出的动作也不靠谱，偏差越滚越大。下面那条路的数据里本来就有"偏了再拉回来"的示范（DAgger / 更杂的数据），所以带子更宽，碰歪了也能回到中间。</p>
+</main>
+<script src="anim.js"></script>
+<script>
+const sv=$('sv');const N=60,X0=40,DX=600/N,U=34;
+const lanes=[{cy:115,band:0.35,name:'纯 BC：只见过"车道正中间"',col:'var(--bad)'},{cy:295,band:1.6,name:'加了纠偏数据：见过"偏了怎么回"',col:'var(--good)'}];
+lanes.forEach(L=>{
+  el('rect',{x:X0,y:L.cy-2.4*U,width:600,height:4.8*U,fill:'var(--bg)',stroke:'var(--line)'},sv);
+  el('rect',{x:X0,y:L.cy-L.band*U,width:600,height:2*L.band*U,fill:'var(--good)',opacity:.16},sv);
+  el('line',{x1:X0,y1:L.cy,x2:X0+600,y2:L.cy,stroke:'var(--muted)','stroke-dasharray':'5 4'},sv);
+  txt(L.name,{x:X0+6,y:L.cy-2.4*U-8},sv);
+  L.path=el('polyline',{fill:'none',stroke:L.col,'stroke-width':2.2},sv);
+  L.dot=el('circle',{r:6,fill:L.col},sv);
+  L.crash=txt('',{x:X0+600,y:L.cy+2.4*U-10,'text-anchor':'end'},sv);
+});
+txt('虚线 = 人的示范轨迹',{x:X0,y:392,class:'m'},sv);
+let t,noise;
+function reset(sd){seed(sd);t=0;noise=Array.from({length:N},()=>gauss());lanes.forEach(L=>{L.y=0;L.pts=[[X0,L.cy]];L.dead=false;L.crash.textContent=''});draw()}
+function act(L,y,i){
+  if(Math.abs(y)<=L.band)return -0.35*y+0.06*noise[i];
+  return 0.25*Math.sign(y)*Math.abs(y)+0.12*noise[i];
+}
+function next(){
+  if(t>=N)return false;
+  lanes.forEach(L=>{if(L.dead)return;let y=L.y+act(L,L.y,t);if(t===12)y+=0.6;L.y=y;if(Math.abs(y)>2.4){L.y=2.4*Math.sign(y);L.dead=true;L.crash.textContent='冲出路面，任务失败'}L.pts.push([X0+(t+1)*DX,L.cy-L.y*U])});
+  t++;draw();return true}
+function draw(){lanes.forEach(L=>{L.path.setAttribute('points',L.pts.map(p=>p.join(',')).join(' '));const p=L.pts[L.pts.length-1];L.dot.setAttribute('cx',p[0]);L.dot.setAttribute('cy',p[1])});
+  $('st').textContent=t;$('s1').textContent=Math.abs(lanes[0].y).toFixed(2);$('s2').textContent=Math.abs(lanes[1].y).toFixed(2)}
+setupPlayer({captureSeed:3,reset,next},150);
+</script></body></html>

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FAST DCT 动画</title><link rel="stylesheet" href="anim.css"></head>
+<body><main>
+<h1>第 7 章 · FAST：先说形状，再补细节</h1>
+<p class="sub">配套讲义：<a href="../lessons/07-fast.html">第 7 章 · FAST：先压缩，再变词</a>。一维动作 50 步 → DCT 变成 50 个频率系数（左边是低频 = 整体形状）→ 缩放取整，小的变 0 → 只用非零的数重建。</p>
+<div class="panel"><svg id="sig" viewBox="0 0 680 190"></svg></div>
+<div class="panel"><svg id="co" viewBox="0 0 680 170"></svg></div>
+<div class="row ctl"><button class="pre on" data-k="0">匀速</button><button class="pre" data-k="1">加速 → 匀速 → 减速</button><button class="pre" data-k="2">来回抖</button>
+<label>只保留前</label><input type="range" id="K" min="1" max="50" step="1" value="50"><span id="Kv">50</span><label>个低频</label></div>
+<div class="stats">
+<div class="stat"><div class="l">逐维分箱要的数</div><div class="v">50</div></div>
+<div class="stat"><div class="l">取整后非零的系数</div><div class="v" id="nz">—</div></div>
+<div class="stat"><div class="l">重建误差（最大）</div><div class="v" id="er">—</div></div>
+</div>
+<div class="row"><button id="play">▶ 播放</button><button id="step">→ 单步</button><button id="reset">↺ 重来</button></div>
+<p class="note">看点：① 匀速时只有第 1 个系数（直流分量 = 平均速度）非零，其余 49 个都是 0。② 加减速要多几个低频系数来描述两头的弯。③ 来回抖的信号能量在高频，压不下来，所以 FAST 适合平滑的机器人动作。播放时会从"只留 1 个低频"开始逐个加，看虚线（重建）怎么一点点贴近实线（原信号）。</p>
+</main>
+<script src="anim.js"></script>
+<script>
+const N=50,X0=40,W=600,sig=$('sig'),co=$('co');
+const PRE=[i=>0.5,i=>{const t=i/49;return t<0.25?2*t*2:t>0.75?(1-t)*4:1}, i=>0.5+0.4*Math.sin(i*1.9)];
+const PRN=['匀速','加速 → 匀速 → 减速','来回抖'];
+function dct(x){return Array.from({length:N},(_,k)=>{let s=0;for(let n=0;n<N;n++)s+=x[n]*Math.cos(Math.PI/N*(n+.5)*k);return s*Math.sqrt((k?2:1)/N)})}
+function idct(c){return Array.from({length:N},(_,n)=>{let s=0;for(let k=0;k<N;k++)s+=c[k]*Math.sqrt((k?2:1)/N)*Math.cos(Math.PI/N*(n+.5)*k);return s})}
+const SCALE=10;
+el('line',{x1:X0,y1:170,x2:X0+W,y2:170,stroke:'var(--line)'},sig);
+const orig=el('polyline',{fill:'none',stroke:'var(--accent)','stroke-width':2.4},sig),rec=el('polyline',{fill:'none',stroke:'var(--warm)','stroke-width':2,'stroke-dasharray':'6 4'},sig);
+const title=txt('',{x:X0,y:18},sig);txt('实线 = 原动作（50 步）　虚线 = 用保留的系数重建',{x:X0+W,y:18,'text-anchor':'end',class:'m'},sig);
+const SY=v=>170-v*140;
+const zero=el('line',{x1:X0,y1:95,x2:X0+W,y2:95,stroke:'var(--line)'},co);
+const bars=Array.from({length:N},(_,k)=>el('rect',{x:X0+k*12,width:9,fill:'var(--purple)'},co));
+const cut=el('line',{y1:20,y2:160,stroke:'var(--warm)','stroke-dasharray':'4 3'},co);
+txt('DCT 系数（缩放 ×10 后取整）：低频 ← → 高频',{x:X0,y:14,class:'m'},co);
+let pre=0,K=50;
+function draw(){const x=Array.from({length:N},(_,i)=>PRE[pre](i));const c=dct(x).map(v=>Math.round(v*SCALE)/SCALE);
+  const kept=c.map((v,k)=>k<K?v:0);const r=idct(kept);
+  orig.setAttribute('points',x.map((v,i)=>[X0+i*W/49,SY(v)].join(',')).join(' '));
+  rec.setAttribute('points',r.map((v,i)=>[X0+i*W/49,SY(v)].join(',')).join(' '));
+  const mx=Math.max(...c.map(Math.abs),1e-6);
+  bars.forEach((b,k)=>{const h=Math.abs(c[k])/mx*70;b.setAttribute('y',c[k]>=0?95-h:95);b.setAttribute('height',Math.max(h,c[k]!==0?1.5:0));b.setAttribute('opacity',k<K?1:.2)});
+  cut.setAttribute('x1',X0+K*12-1.5);cut.setAttribute('x2',X0+K*12-1.5);
+  $('nz').textContent=kept.filter(v=>v!==0).length;$('er').textContent=Math.max(...x.map((v,i)=>Math.abs(v-r[i]))).toFixed(3);
+  title.textContent=PRN[pre]+'　保留前 '+K+' 个';$('K').value=K;$('Kv').textContent=K;
+  document.querySelectorAll('.pre').forEach(b=>b.classList.toggle('on',+b.dataset.k===pre))}
+document.querySelectorAll('.pre').forEach(b=>b.onclick=()=>{pre=+b.dataset.k;draw()});
+$('K').oninput=e=>{K=+e.target.value;draw()};
+const SEQ=[];[[0,[1,2,3,50]],[1,[1,2,3,4,5,6,8,10,14,50]],[2,[1,5,10,20,30,40,50]]].forEach(([p,ks])=>ks.forEach(k=>{SEQ.push([p,k]);SEQ.push([p,k])}));
+let t;
+function reset(){t=0;pre=0;K=1;draw()}
+function next(){if(t>=SEQ.length)return false;[pre,K]=SEQ[t];t++;draw();return true}
+setupPlayer({captureSeed:1,reset,next},600);
+</script></body></html>

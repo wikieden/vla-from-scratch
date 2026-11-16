@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>多峰动画</title><link rel="stylesheet" href="anim.css"></head>
+<body><main>
+<h1>第 4 章 · 多峰：求平均会撞上，抽签要抽定</h1>
+<p class="sub">配套讲义：<a href="../lessons/04-multimodality.html">第 4 章 · 多峰（multimodality）：同一个情况，两种都对的做法</a>。灰色细线是 20 条人的示范：一半从左绕，一半从右绕。三个机器人用三种不同的出动作方式。</p>
+<div class="panel"><svg id="sv" viewBox="0 0 680 470"></svg></div>
+<div class="row"><button id="play">▶ 播放</button><button id="step">→ 单步</button><button id="reset">↺ 重新抽签</button></div>
+<p class="note">看点：① L2 求平均得到 Δy = 0，直直撞上石头。② 每 5 步独立掷硬币，一会儿左一会儿右（换峰抖动），常常卡在石头前。③ 第一次抽签后，画面里"已经偏左"，模型学到的分布就只剩左边那座峰，于是一路坚持（mode commitment）。多点几次"重新抽签"，③ 有时左有时右，但不会走中间。</p>
+</main>
+<script src="anim.js"></script>
+<script>
+const sv=$('sv');const N=50,X0=40,W=600,HH=130,AMP=0.42;
+const bump=x=>Math.exp(-Math.pow((x-0.5)/0.17,2));
+const lanes=[{name:'① L2 求平均',top:20,col:'var(--bad)'},{name:'② 每 5 步独立抽签',top:170,col:'var(--amber)'},{name:'③ 抽定一边 + 画面提醒',top:320,col:'var(--good)'}];
+const PX=x=>X0+x*W,PY=(L,y)=>L.top+HH/2-y*HH*0.9;
+lanes.forEach(L=>{
+  el('rect',{x:X0,y:L.top,width:W,height:HH,fill:'var(--bg)',stroke:'var(--line)'},sv);
+  for(let d=0;d<20;d++){const s=d<10?1:-1,a=AMP*(0.85+0.03*(d%10));const pts=[];for(let i=0;i<=40;i++){const x=i/40;pts.push([PX(x),PY(L,s*a*bump(x))])}el('polyline',{points:pts.map(p=>p.join(',')).join(' '),fill:'none',stroke:'var(--muted)','stroke-width':.6,opacity:.45},sv)}
+  el('circle',{cx:PX(0.5),cy:PY(L,0),r:0.13*HH*0.9,fill:'var(--muted)',opacity:.8},sv);
+  txt('石头',{x:PX(0.5),y:PY(L,0)+4,'text-anchor':'middle',style:'fill:var(--bg)'},sv);
+  txt(L.name,{x:X0+6,y:L.top+16},sv);
+  L.path=el('polyline',{fill:'none',stroke:L.col,'stroke-width':2.6},sv);
+  L.dot=el('circle',{r:6,fill:L.col},sv);
+  L.msg=txt('',{x:X0+W-6,y:L.top+HH-8,'text-anchor':'end'},sv);
+});
+let t;
+function reset(sd){seed(sd);t=0;lanes.forEach(L=>{L.y=0;L.s=0;L.pts=[[PX(0),PY(L,0)]];L.dead=false;L.msg.textContent=''});draw()}
+function pick(L,i){
+  if(L===lanes[0])return 0;
+  if(L===lanes[1])return (i%5===0||!L.s)?(rnd()<.5?1:-1):L.s;
+  if(!L.s)return rnd()<.5?1:-1;
+  const pl=1/(1+Math.exp(-40*L.y));return rnd()<pl?1:-1;
+}
+function next(){if(t>=N)return false;const x=(t+1)/N;
+  lanes.forEach(L=>{if(L.dead)return;L.s=pick(L,t);const goal=L.s*AMP*bump(x);L.y+=clamp(goal-L.y,-0.07,0.07);
+    if(Math.abs(x-0.5)<0.09&&Math.abs(L.y)<0.13){L.dead=true;L.msg.textContent='撞上石头';L.msg.setAttribute('class','bad')}
+    L.pts.push([PX(x),PY(L,L.y)])});
+  t++;if(t===N)lanes.forEach(L=>{if(!L.dead){L.msg.textContent=L.y>=0||L.pts.some(p=>0)?'绕过去了':'绕过去了';L.msg.setAttribute('class','good')}});
+  draw();return true}
+function draw(){lanes.forEach(L=>{L.path.setAttribute('points',L.pts.map(p=>p.join(',')).join(' '));const p=L.pts[L.pts.length-1];L.dot.setAttribute('cx',p[0]);L.dot.setAttribute('cy',p[1])})}
+setupPlayer({captureSeed:3,reset,next},120);
+</script></body></html>

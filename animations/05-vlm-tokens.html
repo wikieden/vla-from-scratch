@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>图像变 token 动画</title><link rel="stylesheet" href="anim.css"></head>
+<body><main>
+<h1>第 5 章 · VLM：图片切块，和文字排成一队</h1>
+<p class="sub">配套讲义：<a href="../lessons/05-vlm.html">第 5 章 · VLM：图片切块和文字一起排队进 Transformer</a>。224×224 的图切成 14×14 的块，得到 16×16 = 256 个图像 token；接着是指令文字。最后看 prefix-LM 遮挡：谁能看见谁。</p>
+<div class="panel"><svg id="sv" viewBox="0 0 680 300"></svg></div>
+<div class="panel"><svg id="mk" viewBox="0 0 680 300"></svg></div>
+<div class="stats">
+<div class="stat"><div class="l">图像 token</div><div class="v" id="s1">0</div></div>
+<div class="stat"><div class="l">文字 token</div><div class="v" id="s2">0</div></div>
+<div class="stat"><div class="l">阶段</div><div class="v" id="s3">切块</div></div>
+</div>
+<div class="row"><button id="play">▶ 播放</button><button id="step">→ 单步</button><button id="reset">↺ 重来</button><button id="mode">切换：纯因果遮挡</button></div>
+<p class="note">看点：① 一行一行切块，每块拉直、乘一个矩阵，变成一个和词向量一样长的 token。② 3 个相机就是 768 个图像 token，远多于指令的十几个字。③ 遮挡图里蓝色 = 能看见。prefix-LM 下图像块能"偷看"后面的指令（右上角那片蓝色），所以看图时已经知道要找杯子；切到纯因果，那片就没了。</p>
+</main>
+<script src="anim.js"></script>
+<script>
+const sv=$('sv'),mk=$('mk');const IX=40,IY=20,S=224,P=S/16;
+el('rect',{x:IX,y:IY,width:S,height:S,fill:'#e8e3d4'},sv);
+el('rect',{x:IX,y:IY+150,width:S,height:74,fill:'#b49a74'},sv);
+el('rect',{x:IX+50,y:IY+105,width:36,height:52,rx:5,fill:'#1d9e75'},sv);
+el('ellipse',{cx:IX+160,cy:IY+152,rx:42,ry:15,fill:'#d85a30'},sv);
+txt('杯子',{x:IX+52,y:IY+98,class:'m'},sv);txt('碗',{x:IX+152,y:IY+128,class:'m'},sv);
+for(let i=1;i<16;i++){el('line',{x1:IX+i*P,y1:IY,x2:IX+i*P,y2:IY+S,stroke:'#fff','stroke-width':.6,opacity:.8},sv);el('line',{x1:IX,y1:IY+i*P,x2:IX+S,y2:IY+i*P,stroke:'#fff','stroke-width':.6,opacity:.8},sv)}
+const hl=el('rect',{x:IX,y:IY,width:S,height:P,fill:'none',stroke:'var(--accent)','stroke-width':2.5,opacity:0},sv);
+txt('一张相机图 224×224',{x:IX,y:IY+S+20,class:'m'},sv);
+txt('送进 Transformer 的一排 token',{x:300,y:40},sv);
+const strip=el('g',{},sv);const toks=[];
+for(let i=0;i<256;i++){const r=el('rect',{x:300+(i%32)*10.5,y:56+Math.floor(i/32)*14,width:9,height:11,rx:1.5,fill:'var(--purple)',opacity:0},strip);toks.push(r)}
+const words=['把','杯子','放进','碗里'];const wt=words.map((w,i)=>{const g=el('g',{opacity:0},sv);el('rect',{x:300+i*80,y:182,width:72,height:28,rx:5,fill:'var(--amber)',opacity:.3},g);txt(w,{x:336+i*80,y:201,'text-anchor':'middle'},g);return g});
+txt('紫色 = 图像 token（每块一个）　橙色 = 指令文字 token',{x:300,y:240,class:'m'},sv);
+const L=['图1','图2','图3','图4','把','杯子','碗里','答1','答2','答3'],n=L.length,C=25,MX=110,MY=40;
+const cells=[];
+L.forEach((s,i)=>{txt(s,{x:MX-8,y:MY+i*C+14,'text-anchor':'end',class:'m'},mk);txt(s,{x:MX+i*C+C/2,y:MY-6,'text-anchor':'middle',class:'m',style:'font-size:11px'},mk)});
+for(let i=0;i<n;i++)for(let j=0;j<n;j++)cells.push({i,j,r:el('rect',{x:MX+j*C,y:MY+i*C,width:C-2,height:C-2,rx:2,fill:'var(--line)'},mk)});
+txt('行 = 谁在看　列 = 被看的',{x:MX+n*C+20,y:MY+20},mk);
+const mlab=txt('',{x:MX+n*C+20,y:MY+44,class:'m'},mk);
+txt('前 7 个是前缀（图 + 指令）',{x:MX+n*C+20,y:MY+80,class:'m'},mk);
+txt('后 3 个是要输出的回答',{x:MX+n*C+20,y:MY+100,class:'m'},mk);
+let t,rowsShown,prefix=true;
+function can(i,j){if(prefix&&i<7&&j<7)return true;return j<=i}
+function drawMask(){cells.forEach(c=>{const on=c.i<rowsShown&&can(c.i,c.j);c.r.setAttribute('fill',c.i<rowsShown?(on?'var(--accent)':'var(--line)'):'var(--bg)');c.r.setAttribute('opacity',on?.85:1)});mlab.textContent=prefix?'当前：prefix-LM（PaliGemma / π0）':'当前：纯因果（写作文式）'}
+function reset(){t=0;rowsShown=0;toks.forEach(r=>r.setAttribute('opacity',0));wt.forEach(g=>g.setAttribute('opacity',0));hl.setAttribute('opacity',0);drawMask();stats()}
+function stats(){$('s1').textContent=Math.min(t,16)*16;$('s2').textContent=Math.max(0,Math.min(t-16,4));$('s3').textContent=t<16?'切块':t<20?'接上指令':'遮挡规则'}
+function next(){if(t>=30)return false;
+  if(t<16){hl.setAttribute('opacity',1);hl.setAttribute('y',IY+t*P);for(let k=0;k<16;k++)toks[t*16+k].setAttribute('opacity',.85)}
+  else if(t<20){hl.setAttribute('opacity',0);wt[t-16].setAttribute('opacity',1)}
+  else{rowsShown=t-19;drawMask()}
+  t++;stats();return true}
+$('mode').onclick=()=>{prefix=!prefix;$('mode').textContent=prefix?'切换：纯因果遮挡':'切换：prefix-LM';if(rowsShown<n)rowsShown=n;drawMask()};
+setupPlayer({captureSeed:1,reset,next},260);
+</script></body></html>

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>τ 抽样动画</title><link rel="stylesheet" href="anim.css"></head>
+<body><main>
+<h1>第 8 章 · 训练时 τ 怎么抽：多练雾大的地方</h1>
+<p class="sub">配套讲义：<a href="../lessons/08-pi0.html">第 8 章 · π0：大脑 + 小脑，动作专家（action expert）</a> 第 4 步。原文 <code>pi0-2410.24164.txt</code> 第 284–285 行、附录 B "Sampling the flow matching timestep"（第 892–935 行，图 14）。每次训练随机抽一个 τ，看两种抽法各把练习次数花在哪。</p>
+<div class="panel"><svg id="sv" viewBox="0 0 680 380"></svg></div>
+<div class="stats">
+<div class="stat"><div class="l">已抽次数</div><div class="v" id="s0">0</div></div>
+<div class="stat"><div class="l">均匀：τ &lt; 0.5（雾大的一半）</div><div class="v" id="s1">—</div></div>
+<div class="stat"><div class="l">π0：τ &lt; 0.5（雾大的一半）</div><div class="v" id="s2">—</div></div>
+</div>
+<div class="row"><button id="play">▶ 播放</button><button id="step">→ 单步</button><button id="reset">↺ 换一组随机数</button></div>
+<p class="note">看点：① 上面是原始 flow matching 的均匀抽法 τ ∼ U(0, 1)，十个格子差不多一样高。② 下面是 π0 的抽法：左边（τ 小 = 噪声大 = 雾大）的格子明显更高，最右边几乎抽不到。③ 抽多了以后，π0 约 65% 的练习落在雾大的一半，均匀抽法是 50%。橙色虚线是理论形状 p(τ) = Beta((s − τ)/s; 1.5, 1)，s = 0.999。</p>
+</main>
+<script src="anim.js"></script>
+<script>
+const sv=$('sv');const X0=60,W=580,H=120,NB=10,BW=W/NB;
+const lanes=[{name:'原始 flow matching：均匀抽 τ ∼ U(0, 1)',top:30,col:'var(--muted)'},{name:'π0：偏向雾大的一端（Beta 分布）',top:215,col:'var(--teal)'}];
+const s=0.999;
+const pdf=t=>{const x=(s-t)/s;return x<=0?0:1.5*Math.sqrt(x)/s};
+lanes.forEach((L,k)=>{
+  txt(L.name,{x:X0,y:L.top-10},sv);
+  el('line',{x1:X0,y1:L.top+H,x2:X0+W,y2:L.top+H,stroke:'var(--line)'},sv);
+  for(let b=0;b<=NB;b+=5)txt((b/NB).toFixed(1),{x:X0+b*BW,y:L.top+H+16,'text-anchor':'middle',class:'m'},sv);
+  txt('τ →',{x:X0+W,y:L.top+H+16,'text-anchor':'end',class:'m'},sv);
+  txt('雾大（纯噪声）',{x:X0,y:L.top+H+32,class:'m'},sv);txt('雾散（真动作）',{x:X0+W,y:L.top+H+32,'text-anchor':'end',class:'m'},sv);
+  L.bars=[];for(let b=0;b<NB;b++)L.bars.push(el('rect',{x:X0+b*BW+3,y:L.top+H,width:BW-6,height:0,rx:2,fill:L.col,opacity:.8},sv));
+  const pts=[];for(let i=0;i<=100;i++){const t=i/100;const d=k?pdf(t):1;pts.push((X0+t*W).toFixed(1)+','+(L.top+H-d*H/1.6).toFixed(1))}
+  el('polyline',{points:pts.join(' '),fill:'none',stroke:'var(--amber)','stroke-width':1.5,'stroke-dasharray':'5 4'},sv);
+  L.dot=el('circle',{r:5,fill:'var(--warm)',opacity:0},sv);
+});
+let N,cnt;
+function samp(k){if(!k)return rnd();const x=Math.pow(rnd(),1/1.5);return s-s*x}
+function reset(sd){seed(sd);N=0;cnt=[Array(NB).fill(0),Array(NB).fill(0)];draw()}
+function draw(){lanes.forEach((L,k)=>{L.bars.forEach((r,b)=>{const h=N?cnt[k][b]/N*NB*H/1.6:0;r.setAttribute('height',h);r.setAttribute('y',L.top+H-h)})});
+  $('s0').textContent=N;const f=k=>N?Math.round(cnt[k].slice(0,5).reduce((a,c)=>a+c,0)/N*100)+'%':'—';$('s1').textContent=f(0);$('s2').textContent=f(1)}
+function next(){if(N>=2000)return false;const m=N<40?1:N<200?10:100;
+  for(let i=0;i<m;i++){lanes.forEach((L,k)=>{const t=samp(k);cnt[k][Math.min(NB-1,Math.floor(t*NB))]++;if(i===m-1){L.dot.setAttribute('cx',X0+t*W);L.dot.setAttribute('cy',L.top+H-6);L.dot.setAttribute('opacity',1)}});N++}
+  draw();return true}
+setupPlayer({captureSeed:4,reset,next},200);
+</script></body></html>

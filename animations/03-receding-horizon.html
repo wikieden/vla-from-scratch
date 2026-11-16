@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>滚动重规划动画</title><link rel="stylesheet" href="anim.css"></head>
+<body><main>
+<h1>第 3 章 · 动作分块：想 50 步，走几步再重想</h1>
+<p class="sub">配套讲义：<a href="../lessons/03-action-chunking.html">第 3 章 · 动作分块（action chunking）：看一眼，规划一整段</a>。50 Hz 控制，每次都想 T<sub>p</sub> = 50 步（1 秒）。第 0.44 秒杯子被碰到了别处。</p>
+<div class="panel"><svg id="sv" viewBox="0 0 680 380"></svg></div>
+<div class="stats">
+<div class="stat"><div class="l">时间</div><div class="v" id="st">0.00 s</div></div>
+<div class="stat"><div class="l">T<sub>a</sub>=50 发现杯子挪了</div><div class="v" id="s1">—</div></div>
+<div class="stat"><div class="l">T<sub>a</sub>=5 发现杯子挪了</div><div class="v" id="s2">—</div></div>
+</div>
+<div class="row"><button id="play">▶ 播放</button><button id="step">→ 单步</button><button id="reset">↺ 重来</button></div>
+<p class="note">看点：浅色虚线是"想好的 50 步"，实线是"真正走了的"。T<sub>a</sub>=50 要把整段盲走完才重新看，0.56 秒后才转向；T<sub>a</sub>=5 每 0.1 秒重看一次，很快就转向。每次想的 50 步里只用了前 5 步，剩下的被下一次计划替换掉。</p>
+</main>
+<script src="anim.js"></script>
+<script>
+const sv=$('sv');const N=100,X0=50,DX=590/N;
+const lanes=[{Ta:50,top:30,col:'var(--bad)',id:'s1'},{Ta:5,top:210,col:'var(--good)',id:'s2'}];
+const H=140,Y=(L,v)=>L.top+H-v*H;
+lanes.forEach(L=>{
+  el('rect',{x:X0,y:L.top,width:590,height:H,fill:'var(--bg)',stroke:'var(--line)'},sv);
+  txt(`T_a = ${L.Ta} 步（每 ${L.Ta/50} 秒重看一次）`,{x:X0+6,y:L.top+16},sv);
+  L.tgt=el('polyline',{fill:'none',stroke:'var(--teal)','stroke-width':6,opacity:.35},sv);
+  L.plan=el('polyline',{fill:'none',stroke:'var(--muted)','stroke-width':1.2,'stroke-dasharray':'4 3'},sv);
+  L.path=el('polyline',{fill:'none',stroke:L.col,'stroke-width':2.4},sv);
+  L.marks=el('g',{},sv);
+});
+txt('粗青线 = 杯子位置　虚线 = 当前计划　实线 = 实际走过',{x:X0,y:372,class:'m'},sv);
+const target=i=>i<22?0.3:0.8;
+let t;
+function plan(L){const p0=L.p,g=target(t);L.cur=Array.from({length:50},(_,k)=>p0+(g-p0)*Math.min(1,(k+1)/12));L.k=0;L.planAt=t;
+  el('line',{x1:X0+t*DX,y1:L.top+H-6,x2:X0+t*DX,y2:L.top+H,stroke:L.col},L.marks);
+  if(t>=22&&L.found==null){L.found=t;$(L.id).textContent=((t-22)/50).toFixed(2)+' s 后'}}
+function reset(){t=0;lanes.forEach(L=>{L.p=0;L.pts=[[X0,Y(L,0)]];L.found=null;clear(L.marks);$(L.id).textContent='—';plan(L)});draw()}
+function next(){if(t>=N)return false;
+  lanes.forEach(L=>{L.p=L.cur[L.k];L.k++;});t++;
+  lanes.forEach(L=>{L.pts.push([X0+t*DX,Y(L,L.p)]);if(L.k>=L.Ta&&t<N)plan(L)});draw();return true}
+function draw(){lanes.forEach(L=>{
+  const tp=[];for(let i=0;i<=Math.max(t,1);i++)tp.push([X0+i*DX,Y(L,target(Math.min(i,N-1)))]);
+  L.tgt.setAttribute('points',tp.map(p=>p.join(',')).join(' '));
+  L.path.setAttribute('points',L.pts.map(p=>p.join(',')).join(' '));
+  L.plan.setAttribute('points',L.cur.map((v,k)=>[X0+(L.planAt+k+1)*DX,Y(L,v)]).filter(p=>p[0]<=X0+590).map(p=>p.join(',')).join(' '));
+});$('st').textContent=(t/50).toFixed(2)+' s'}
+setupPlayer({captureSeed:1,reset,next},60);
+</script></body></html>
