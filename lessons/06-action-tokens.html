@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第 6 章 · 动作当词：把每个数切成 256 格（RT-2 / OpenVLA） · VLA 从零到 π0</title>
+<style>
+:root{--bg:#fbfbfa;--fg:#1f2328;--mute:#5d6470;--line:#e3e5e8;--card:#fff;--acc:#2f6fdf;--code:#f2f3f5;--quote:#f4f6fa}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}}
+:root[data-theme="dark"]{--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 -apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",sans-serif}
+a{color:var(--acc)}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+header.top .in{max-width:860px;margin:0 auto;padding:10px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:14px}
+header.top .brand{font-weight:600;color:var(--fg);text-decoration:none;margin-right:auto}
+header.top a{text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:24px 16px 72px;overflow-wrap:anywhere}
+h1{font-size:28px;line-height:1.35;margin:8px 0 16px} h2{font-size:22px;margin:40px 0 12px;padding-top:8px;border-top:1px solid var(--line)} h3{font-size:18px;margin:28px 0 8px}
+img{max-width:100%;height:auto;border-radius:8px;border:1px solid var(--line);background:#fff}
+blockquote{margin:16px 0;padding:10px 16px;background:var(--quote);border-left:3px solid var(--acc);border-radius:4px;color:var(--mute)}
+blockquote p{margin:4px 0}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font-size:.9em}
+pre{background:var(--code);padding:12px 14px;border-radius:8px;overflow-x:auto} pre code{padding:0;background:none}
+table{border-collapse:collapse;display:block;overflow-x:auto;max-width:100%;margin:12px 0;font-size:15px}
+th,td{border:1px solid var(--line);padding:6px 10px;vertical-align:top} th{background:var(--code)}
+details{border:1px solid var(--line);border-radius:8px;padding:6px 12px;margin:8px 0;background:var(--card)}
+details[open]{padding-bottom:10px} summary{cursor:pointer;color:var(--acc);font-weight:500}
+mjx-container{overflow-x:auto;overflow-y:hidden;max-width:100%}
+.btn{display:inline-block;margin:4px 8px 4px 0;padding:6px 14px;border:1px solid var(--acc);border-radius:999px;text-decoration:none;font-size:14px}
+.pager{display:flex;justify-content:space-between;gap:12px;margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0}
+.card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;color:inherit;text-decoration:none}
+.card:hover{border-color:var(--acc)} .card img{border:0;border-bottom:1px solid var(--line);border-radius:0;aspect-ratio:16/10;object-fit:contain;width:100%}
+.card .no{color:var(--mute);font-size:13px;padding:8px 12px 0} .card .t{padding:0 12px 12px;font-weight:500;line-height:1.5}
+.lead{font-size:17px;color:var(--mute)}
+footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-size:13px}
+</style>
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"],["$$","$$"]],processEscapes:true,processEnvironments:true}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+</head><body>
+<header class="top"><div class="in">
+<a class="brand" href="../index.html">VLA 从零到 π0</a>
+<a href="../lessons/index.html">讲义目录</a>
+<a href="../animations/index.html">动画</a>
+<a href="../review.html">复习卡片</a>
+<a href="../lessons/appendix-glossary.html">缩写表</a>
+</div></header>
+<main>
+<h1 id="6-256-rt-2-openvla">第 6 章 · 动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</h1><p><a class="btn" href="../animations/06-binning-autoregressive.html">▶ 打开本章可交互动画</a></p>
+<blockquote>
+<p>本章回答：VLM 只会输出文字 token，怎么让它输出动作？<br />
+讲解日期：2026-11-04 · 上一章：<a href="../lessons/05-vlm.html">第 5 章 VLM</a> · 下一章：<a href="../lessons/07-fast.html">第 7 章 FAST</a><br />
+本章缩写：RT-2 = Robotics Transformer 2；OpenVLA = 开源 VLA；OFT = Optimized Fine-Tuning（优化 / 微调）；FAST = Frequency-space Action Sequence Tokenization（频率空间 / 动作序列 / 分词）；GPU = Graphics Processing Unit（图形 / 处理 / 单元）。全表见 <a href="../lessons/appendix-glossary.html">appendix-glossary.md</a></p>
+</blockquote>
+<h2 id="_1">讲解</h2>
+<h3 id="1">第 1 步：连续的数 → 格子编号 → 词</h3>
+<p><strong>问题</strong>：VLM 每一步输出的是"词表里的某个词"（一个 token）。动作是 0.02、−0.013 这样的连续小数，词表里没有。</p>
+<p><strong>办法：分箱（binning）</strong></p>
+<p><strong>白话类比：尺子上的刻度</strong></p>
+<p>把一把尺子分成 256 个刻度。不管你量到 2.03 厘米还是 2.07 厘米，都记成"最接近的那个刻度号"。小数变成了 0–255 的整数编号。</p>
+<p>RT-2 的做法（<code>materials/text/papers/rt2-2307.15818.txt</code> 第 268–292 行）：</p>
+<ol>
+<li>动作的每一维<strong>各自</strong>切成 256 个等宽的格子（bin）；</li>
+<li>每一维记成它落进的格子编号（0–255 的整数）；</li>
+<li>把这几个整数用空格连成一句"话"，例如 <em>"1 128 91 241 5 101 127"</em>，让 VLM 像回答问题一样把它"说"出来；</li>
+<li>训练方法就是普通的"猜下一个词"。</li>
+</ol>
+<p>OpenVLA 同样切 256 格，有两处小改进（<code>openvla-2406.09246.txt</code> 第 248–256 行）：</p>
+<ul>
+<li>格子的范围取训练数据里第 1% 到第 99% 的动作值，而不是最小值到最大值，<strong>避免几个异常大的动作把格子撑得太粗</strong>；</li>
+<li>Llama 的词表里没有现成的 256 个数字词，于是把<strong>最少用的 256 个词</strong>改成动作词（原文 <em>"overwriting the 256 least used tokens"</em>，第 259 行）。</li>
+</ul>
+<p><strong>顺带解决了第 4 章的多峰问题</strong>：模型输出的是"256 个格子各自的概率"，左边格子和右边格子可以同时概率高，抽一个就行，不会被平均到中间。</p>
+<h3 id="2">第 2 步：代价是"一个字一个字地念"，太慢</h3>
+<p>VLM 输出词的方式是<strong>自回归</strong>：说完一个词，才能说下一个（每个词都要把整个大模型跑一遍）。一个 7 维动作 = 7 个动作词，就要跑 7 遍。</p>
+<p><strong>白话类比：报电话号码</strong>。你要把 7 位号码一位一位念出来，念完一位才能念下一位。如果一次要报 50 个号码（一个 chunk），就要念 350 位。</p>
+<p><strong>实测</strong>：OpenVLA（7B）在一张 RTX 4090 上只能跑到约 <strong>6 Hz</strong>（<code>openvla-2406.09246.txt</code> 第 338 行：<em>"6Hz on one NVIDIA RTX 4090 GPU"</em>），而且这还是一次只出 1 个动作（不分块）。π0 这类模型要的是 50 Hz。</p>
+<p>解决思路有两条，就是接下来两章：</p>
+<table>
+<thead>
+<tr>
+<th>思路</th>
+<th>做法</th>
+<th>在哪讲</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>少念几个字</td>
+<td>先把一整段动作压缩，再变成更少的词</td>
+<td>第 7 章 FAST</td>
+</tr>
+<tr>
+<td>不一个字一个字念</td>
+<td>一次并行吐出所有动作（OpenVLA-OFT），或者干脆不用词、接一个连续动作头（π0）</td>
+<td>第 8 章</td>
+</tr>
+</tbody>
+</table>
+<h3 id="256-350">动画演示：分箱与逐词念：256 格、350 个词</h3>
+<p><img alt="分箱与逐词念：256 格、350 个词" src="../animations/06-binning-autoregressive.gif" /></p>
+<p>可交互版：<a href="../animations/06-binning-autoregressive.html">animations/06-binning-autoregressive.html</a>（用浏览器打开，可播放、单步、换随机数重来）。</p>
+<p><strong>怎么看</strong>：</p>
+<ol>
+<li>上面是一把切成 256 格的尺子，橙线是当前 Δx 落在第几格。播放时 Δx 从负到正扫过：负数在 128 左边，正数在右边（第 1 题重做部分）。</li>
+<li>中途加入一个 +1.0 m 的异常值：格宽从 1 mm 变成约 4.4 mm，正常动作只用得上浅绿那 58 格（第 1 题第 3 问）。</li>
+<li>下面 350 个小方块 = 一个 50 步 × 7 维 chunk 的动作词，一个念完才能念下一个。按每秒 42 个词，计时变红停在 <strong>8.3 秒</strong>，而这段动作只管 1 秒（第 2 题）。</li>
+</ol>
+<h2 id="_2">练习与作答记录</h2>
+<p><strong>题 1</strong>：假设 Δx 的范围是 −0.128 米到 +0.128 米，切成 256 格。
+1. 每一格多宽？（换算成毫米）
+2. 第 0 格从 −0.128 开始。Δx = 0（不动）落在第几格？Δx = +0.02 米（往前 2 厘米）落在第几格？
+3. 如果某条示范里有一个异常动作 Δx = +1.0 米，用"最小值到最大值"来定范围，格子会变成多宽？这对精细动作有什么坏处？</p>
+<p><strong>作答</strong>（2026-11-04，原话）：1=1毫米，2=128，130，3=8-9mm，精度回变低 ◐</p>
+<p><strong>点评</strong>：
+1. ✅ 1 毫米：总宽 0.256 米 ÷ 256 = 0.001 米 = 1 毫米。
+2. ✅ Δx = 0 → 第 128 格（离 −0.128 有 128 毫米，每格 1 毫米）。
+   ❌ Δx = +0.02 → 应该是<strong>第 148 格</strong>，不是 130。0.02 米 = <strong>20 毫米</strong>（不是 2 毫米），离 −0.128 的距离是 128 + 20 = 148 毫米 → 第 148 格。错在米和毫米的换算：0.02 米 = 2 厘米 = 20 毫米。
+3. ❌ 范围从 −0.128 到 +1.0，总宽 1.128 米 ÷ 256 ≈ <strong>4.4 毫米</strong>一格。8–9 毫米像是按 −1.0 到 +1.0（总宽 2 米）算的，但最小值仍是 −0.128，只有最大值被撑到 1.0。
+   ✅ 结论"精度变低"对。更直观的说法：正常动作只在 −0.128 到 +0.128 之间，只用得上 0.256 ÷ 0.0044 ≈ <strong>58 格</strong>，其余 198 格几乎全浪费在那一个异常值上。所以 OpenVLA 改用第 1%–99% 分位数定范围。</p>
+<p><strong>重做</strong>（题 2 后半）：Δx = −0.05 米（往后 5 厘米）在 1 毫米一格的设置下落在第几格？</p>
+<p><strong>重做作答</strong>（2026-11-04，原话）：178 ✗</p>
+<p><strong>点评</strong>：毫米换算这次对了（0.05 米 = 50 毫米），但<strong>方向反了</strong>。−0.05 是往后，比"不动"（第 128 格）<strong>少</strong> 50 格：128 − 50 = <strong>78</strong>。用公式验算：(−0.05 − (−0.128)) ÷ 0.001 = 0.078 ÷ 0.001 = 78。减去一个负数等于加上它的绝对值，所以是 0.128 − 0.05，不是 0.128 + 0.05。</p>
+<p>画成数轴就不会错：</p>
+<pre><code>−0.128        −0.05          0           +0.02        +0.128
+  格 0          格 78       格 128        格 148       格 256
+  |─────────────|─────────────|─────────────|─────────────|
+                ← 往后                      往前 →
+</code></pre>
+<p><strong>再做一道</strong>：Δx = −0.1 米落在第几格？先说它在 128 的左边还是右边，再算。</p>
+<p><strong>作答</strong>（2026-11-04，原话）：28，在左边 ✓</p>
+<p><strong>点评</strong>：对。负数在左边，128 − 100 = 28。正负方向这次掌握了。</p>
+<p><strong>题 2</strong>：OpenVLA 约 6 Hz，每个动作 7 个词，所以大约每秒能念 6 × 7 = 42 个动作词。
+1. 如果要像 π0 一样一次出 50 步、每步 7 维的 chunk，要念多少个词？大约要多少秒？
+2. 这样能支撑 50 Hz 控制吗？</p>
+<p><strong>作答</strong>（2026-11-04，原话）：要350个词，这需要8.x秒，这样无法支撑50hz的控制 ✓</p>
+<p><strong>点评</strong>：对。50 × 7 = 350 个词，350 ÷ 42 ≈ 8.3 秒。而这一段只管 1 秒的动作：想 8 秒、走 1 秒，机器人大部分时间在发呆，完全撑不住 50 Hz。这就是"够不够快"这个贯穿问题在离散 token 路线上的样子。</p>
+<h2 id="_3">口诀</h2>
+<blockquote>
+<p>尺子切 256 格，小数变编号，编号当词说出来；<br />
+一个字一个字地念，念得太慢。</p>
+</blockquote>
+<h2 id="_4">本章复习卡片</h2>
+<p>V12 分箱的格宽与格号怎么算、为什么用分位数、V13 逐词输出为什么慢（见 <a href="../review.html">review.md</a>）</p><nav class="pager"><a href="05-vlm.html">← 第 5 章 · VLM：图片切块和文字一起排队进 Transformer</a><a href="07-fast.html">第 7 章 · FAST：先压缩，再变词 →</a></nav>
+</main>
+<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a></footer>
+</body></html>

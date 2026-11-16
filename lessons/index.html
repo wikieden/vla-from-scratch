@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>讲义：VLA 从零到 π0 / π0.6 · VLA 从零到 π0</title>
+<style>
+:root{--bg:#fbfbfa;--fg:#1f2328;--mute:#5d6470;--line:#e3e5e8;--card:#fff;--acc:#2f6fdf;--code:#f2f3f5;--quote:#f4f6fa}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}}
+:root[data-theme="dark"]{--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 -apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",sans-serif}
+a{color:var(--acc)}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+header.top .in{max-width:860px;margin:0 auto;padding:10px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:14px}
+header.top .brand{font-weight:600;color:var(--fg);text-decoration:none;margin-right:auto}
+header.top a{text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:24px 16px 72px;overflow-wrap:anywhere}
+h1{font-size:28px;line-height:1.35;margin:8px 0 16px} h2{font-size:22px;margin:40px 0 12px;padding-top:8px;border-top:1px solid var(--line)} h3{font-size:18px;margin:28px 0 8px}
+img{max-width:100%;height:auto;border-radius:8px;border:1px solid var(--line);background:#fff}
+blockquote{margin:16px 0;padding:10px 16px;background:var(--quote);border-left:3px solid var(--acc);border-radius:4px;color:var(--mute)}
+blockquote p{margin:4px 0}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font-size:.9em}
+pre{background:var(--code);padding:12px 14px;border-radius:8px;overflow-x:auto} pre code{padding:0;background:none}
+table{border-collapse:collapse;display:block;overflow-x:auto;max-width:100%;margin:12px 0;font-size:15px}
+th,td{border:1px solid var(--line);padding:6px 10px;vertical-align:top} th{background:var(--code)}
+details{border:1px solid var(--line);border-radius:8px;padding:6px 12px;margin:8px 0;background:var(--card)}
+details[open]{padding-bottom:10px} summary{cursor:pointer;color:var(--acc);font-weight:500}
+mjx-container{overflow-x:auto;overflow-y:hidden;max-width:100%}
+.btn{display:inline-block;margin:4px 8px 4px 0;padding:6px 14px;border:1px solid var(--acc);border-radius:999px;text-decoration:none;font-size:14px}
+.pager{display:flex;justify-content:space-between;gap:12px;margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0}
+.card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;color:inherit;text-decoration:none}
+.card:hover{border-color:var(--acc)} .card img{border:0;border-bottom:1px solid var(--line);border-radius:0;aspect-ratio:16/10;object-fit:contain;width:100%}
+.card .no{color:var(--mute);font-size:13px;padding:8px 12px 0} .card .t{padding:0 12px 12px;font-weight:500;line-height:1.5}
+.lead{font-size:17px;color:var(--mute)}
+footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-size:13px}
+</style>
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"],["$$","$$"]],processEscapes:true,processEnvironments:true}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+</head><body>
+<header class="top"><div class="in">
+<a class="brand" href="../index.html">VLA 从零到 π0</a>
+<a href="../lessons/index.html">讲义目录</a>
+<a href="../animations/index.html">动画</a>
+<a href="../review.html">复习卡片</a>
+<a href="../lessons/appendix-glossary.html">缩写表</a>
+</div></header>
+<main>
+<h1 id="vla-0-06">讲义：VLA 从零到 π0 / π*0.6</h1>
+<p>对话讲解的完整留档，按章节整理。每章结构相同：<strong>本章回答的问题 → 讲解（白话类比 → 公式 → 例子）→ 练习与作答记录 → 口诀 → 本章复习卡片</strong>。</p>
+<ul>
+<li>前置知识：向量、点积、softmax、attention、多头、位置编码，见 transformer-deep-dive 讲义；</li>
+<li>隐动作 / 世界模型部分接 nvidia-cosmos3 讲义；</li>
+<li>复习卡片集中在 <a href="../review.html">../review.md</a>，编号以 V 开头；</li>
+<li>缩写与术语表见 <a href="../lessons/appendix-glossary.html">appendix-glossary.md</a>，每章开头也有"本章缩写"；公式符号怎么读（希腊字母、上下标、∼、∈、∇……）见 <a href="../lessons/appendix-symbols.html">appendix-symbols.md</a>；</li>
+<li>每章关键原理的动画见 <a href="../animations/index.html">../animations/</a>（讲义里嵌 GIF，html 可交互）；</li>
+<li>路线和对应论文见 ../study-plan.md 末节。</li>
+</ul>
+<h2 id="_1">目录</h2>
+<table>
+<thead>
+<tr>
+<th>章</th>
+<th>主题</th>
+<th>卡片</th>
+<th>动画</th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../lessons/01-what-is-a-policy.html">1</a></td>
+<td>机器人策略是什么：看一眼、听一句、吐一串数</td>
+<td>V01–V02</td>
+<td><a href="../animations/01-policy-loop.html">▶</a></td>
+<td>完成</td>
+</tr>
+<tr>
+<td><a href="../lessons/02-behavior-cloning.html">2</a></td>
+<td>行为克隆：照着人类示范抄作业</td>
+<td>V03–V04、V17</td>
+<td><a href="../animations/02-compounding-error.html">▶</a></td>
+<td>完成</td>
+</tr>
+<tr>
+<td><a href="../lessons/03-action-chunking.html">3</a></td>
+<td>动作分块：看一眼，规划一整段</td>
+<td>V05–V07</td>
+<td><a href="../animations/03-receding-horizon.html">▶</a></td>
+<td>完成</td>
+</tr>
+<tr>
+<td><a href="../lessons/04-multimodality.html">4</a></td>
+<td>多峰：两种都对的做法，平均起来是错的</td>
+<td>V08–V09</td>
+<td><a href="../animations/04-multimodality.html">▶</a></td>
+<td>完成</td>
+</tr>
+<tr>
+<td><a href="../lessons/05-vlm.html">5</a></td>
+<td>VLM：图片切块和文字一起排队</td>
+<td>V10–V11</td>
+<td><a href="../animations/05-vlm-tokens.html">▶</a></td>
+<td>完成</td>
+</tr>
+<tr>
+<td><a href="../lessons/06-action-tokens.html">6</a></td>
+<td>动作当词：每个数切成 256 格</td>
+<td>V12–V13</td>
+<td><a href="../animations/06-binning-autoregressive.html">▶</a></td>
+<td>完成</td>
+</tr>
+<tr>
+<td><a href="../lessons/07-fast.html">7</a></td>
+<td>FAST：先压缩再变词</td>
+<td>V14–V15</td>
+<td><a href="../animations/07-fast-dct.html">▶</a></td>
+<td>完成</td>
+</tr>
+<tr>
+<td><a href="../lessons/08-pi0.html">8</a></td>
+<td>π0：大脑 + 小脑，动作专家</td>
+<td>V16、V18、V20–V24</td>
+<td><a href="../animations/08-pi0-inference.html">▶</a> <a href="../animations/08b-pi0-block-mask.html">▶</a> <a href="../animations/08c-tau-sampling.html">▶</a> <a href="../animations/08d-cross-attention.html">▶</a></td>
+<td>完成</td>
+</tr>
+<tr>
+<td><a href="../lessons/09-knowledge-insulation.html">9</a></td>
+<td>知识隔离与 π0.5：别让小脑冲掉大脑的常识</td>
+<td>V25</td>
+<td><a href="../animations/09-gradient-interference.html">▶</a> <a href="../animations/09b-knowledge-insulation.html">▶</a></td>
+<td>进行中</td>
+</tr>
+</tbody>
+</table>
+</main>
+<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a></footer>
+</body></html>

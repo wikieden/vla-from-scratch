@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第 1 章 · 机器人策略是什么 · VLA 从零到 π0</title>
+<style>
+:root{--bg:#fbfbfa;--fg:#1f2328;--mute:#5d6470;--line:#e3e5e8;--card:#fff;--acc:#2f6fdf;--code:#f2f3f5;--quote:#f4f6fa}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}}
+:root[data-theme="dark"]{--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 -apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",sans-serif}
+a{color:var(--acc)}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+header.top .in{max-width:860px;margin:0 auto;padding:10px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:14px}
+header.top .brand{font-weight:600;color:var(--fg);text-decoration:none;margin-right:auto}
+header.top a{text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:24px 16px 72px;overflow-wrap:anywhere}
+h1{font-size:28px;line-height:1.35;margin:8px 0 16px} h2{font-size:22px;margin:40px 0 12px;padding-top:8px;border-top:1px solid var(--line)} h3{font-size:18px;margin:28px 0 8px}
+img{max-width:100%;height:auto;border-radius:8px;border:1px solid var(--line);background:#fff}
+blockquote{margin:16px 0;padding:10px 16px;background:var(--quote);border-left:3px solid var(--acc);border-radius:4px;color:var(--mute)}
+blockquote p{margin:4px 0}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font-size:.9em}
+pre{background:var(--code);padding:12px 14px;border-radius:8px;overflow-x:auto} pre code{padding:0;background:none}
+table{border-collapse:collapse;display:block;overflow-x:auto;max-width:100%;margin:12px 0;font-size:15px}
+th,td{border:1px solid var(--line);padding:6px 10px;vertical-align:top} th{background:var(--code)}
+details{border:1px solid var(--line);border-radius:8px;padding:6px 12px;margin:8px 0;background:var(--card)}
+details[open]{padding-bottom:10px} summary{cursor:pointer;color:var(--acc);font-weight:500}
+mjx-container{overflow-x:auto;overflow-y:hidden;max-width:100%}
+.btn{display:inline-block;margin:4px 8px 4px 0;padding:6px 14px;border:1px solid var(--acc);border-radius:999px;text-decoration:none;font-size:14px}
+.pager{display:flex;justify-content:space-between;gap:12px;margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0}
+.card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;color:inherit;text-decoration:none}
+.card:hover{border-color:var(--acc)} .card img{border:0;border-bottom:1px solid var(--line);border-radius:0;aspect-ratio:16/10;object-fit:contain;width:100%}
+.card .no{color:var(--mute);font-size:13px;padding:8px 12px 0} .card .t{padding:0 12px 12px;font-weight:500;line-height:1.5}
+.lead{font-size:17px;color:var(--mute)}
+footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-size:13px}
+</style>
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"],["$$","$$"]],processEscapes:true,processEnvironments:true}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+</head><body>
+<header class="top"><div class="in">
+<a class="brand" href="../index.html">VLA 从零到 π0</a>
+<a href="../lessons/index.html">讲义目录</a>
+<a href="../animations/index.html">动画</a>
+<a href="../review.html">复习卡片</a>
+<a href="../lessons/appendix-glossary.html">缩写表</a>
+</div></header>
+<main>
+<h1 id="1">第 1 章 · 机器人策略是什么</h1><p><a class="btn" href="../animations/01-policy-loop.html">▶ 打开本章可交互动画</a></p>
+<blockquote>
+<p>本章回答：VLA 到底输入什么、输出什么？"动作"在模型眼里长什么样？<br />
+讲解日期：2026-10-27 · 上一章：— · 下一章：<a href="../lessons/02-behavior-cloning.html">第 2 章 行为克隆</a><br />
+本章缩写：VLA = Vision-Language-Action（视觉 / 语言 / 动作）；RT = Robotics Transformer（机器人 / Transformer）；OpenVLA = 开源 VLA；ACT = Action Chunking with Transformers（动作分块 + Transformer）；Hz = hertz（每秒几次）。全表见 <a href="../lessons/appendix-glossary.html">appendix-glossary.md</a></p>
+</blockquote>
+<h2 id="_1">讲解</h2>
+<h3 id="_2">白话类比：开车的你</h3>
+<p>你开车时每一瞬间都在做同一件事：</p>
+<ul>
+<li><strong>看</strong>：眼睛看到前方路况（图像）；</li>
+<li><strong>听</strong>：导航说"前方 200 米右转"（指令）；</li>
+<li><strong>做</strong>：手把方向盘转多少度、脚踩油门多深（几个数字）。</li>
+</ul>
+<p>然后下一瞬间又看、又听、又做，一秒钟重复很多次。</p>
+<p>机器人也是这样。把"看 + 听 → 做"这个规则叫作<strong>策略（policy）</strong>。VLA 就是用一个大模型来当这个策略：</p>
+<table>
+<thead>
+<tr>
+<th>字母</th>
+<th>英文</th>
+<th>机器人里是什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>V</td>
+<td>Vision</td>
+<td>一到三个相机拍的图</td>
+</tr>
+<tr>
+<td>L</td>
+<td>Language</td>
+<td>一句指令，比如"把毛巾叠好"</td>
+</tr>
+<tr>
+<td>A</td>
+<td>Action</td>
+<td>一串数字，告诉手臂怎么动</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_3">动作就是一个向量</h3>
+<p>回忆 transformer-deep-dive 第 1 章：向量就是"一串数字描述一个东西，每个位置含义固定"。动作也是向量。OpenVLA 用的单臂机器人，每个动作是 <strong>7 个数</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>位置</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1–3</td>
+<td>手往 前后 / 左右 / 上下 挪多少（Δx, Δy, Δz）</td>
+</tr>
+<tr>
+<td>4–6</td>
+<td>手腕绕三个轴转多少（Δroll, Δpitch, Δyaw）</td>
+</tr>
+<tr>
+<td>7</td>
+<td>夹爪：张开还是合上</td>
+</tr>
+</tbody>
+</table>
+<p>例：<code>[0.02, 0, -0.01, 0, 0, 0, 1]</code> = 往前挪 2 厘米、往下挪 1 厘米、不转、夹爪合上。</p>
+<h3 id="_4">和普通聊天模型的区别</h3>
+<p>聊天模型输入图和字，输出<strong>字</strong>。VLA 输入图和字，输出<strong>动作数字</strong>，而且：</p>
+<ol>
+<li>要<strong>反复</strong>输出：一秒钟 3 次（RT-1）到 50 次（π0）；</li>
+<li>输出会<strong>改变世界</strong>：手动了，下一张图就不一样了。这一点后面讲"复合误差"时很重要。</li>
+</ol>
+<h2 id="_5">公式</h2>
+<div class="arithmatex">\[a_t = \pi(o_t,\ \ell)\]</div>
+<ul>
+<li><span class="arithmatex">\(t\)</span>：第几个时刻（下标，和 <span class="arithmatex">\(a_i\)</span> 一样的写法）</li>
+<li><span class="arithmatex">\(o_t\)</span>：时刻 <span class="arithmatex">\(t\)</span> 的观测（observation），即相机图像，通常还加上机器人自己的关节读数</li>
+<li><span class="arithmatex">\(\ell\)</span>：语言指令（整个任务不变，所以没有下标 <span class="arithmatex">\(t\)</span>）</li>
+<li><span class="arithmatex">\(\pi\)</span>：策略（policy），就是模型本身</li>
+<li><span class="arithmatex">\(a_t\)</span>：时刻 <span class="arithmatex">\(t\)</span> 输出的动作向量</li>
+</ul>
+<h3 id="_6">动画演示：策略循环：看 → 想 → 做</h3>
+<p><img alt="策略循环：看 → 想 → 做" src="../animations/01-policy-loop.gif" /></p>
+<p>可交互版：<a href="../animations/01-policy-loop.html">animations/01-policy-loop.html</a>（用浏览器打开，可播放、单步、换随机数重来）。</p>
+<p><strong>怎么看</strong>：</p>
+<ol>
+<li>右边三个框依次亮起：<strong>看</strong>（相机画面 + 指令）→ <strong>想</strong>（策略 π）→ <strong>做</strong>（输出 7 维动作），然后虚线回到"再看一眼"，这就是一个时刻。</li>
+<li>下面 7 个格子是动作向量：前 3 步只有 Δz = −0.01 亮（往下 1 厘米），第 4 步只有夹爪 = 1 亮（合上），第 5 步 Δz = +0.01 和夹爪 = 1 同时亮（夹着杯子往上）。大部分位置是 0。</li>
+<li>手臂每次只走一小步，走完马上重新看。这就是第 1 题"4 个时刻"的过程。</li>
+</ol>
+<h2 id="_7">练习与作答记录</h2>
+<p><strong>题</strong>：机器人收到指令"把杯子放进碗里"。夹爪正在杯子正上方 3 厘米、张开着。下一步它应该输出什么样的 7 维动作？用上面的表写出来（数字大概就行），并说一下每个非零的数是什么意思。</p>
+<p><strong>作答</strong>（2026-10-27，原话）：手向下移动3cm，张开夹爪，合上夹爪</p>
+<p><strong>点评</strong>：半对。
+- ✅ 方向对：要往下（Δz 为负），距离 3 厘米也对；先下去、再合上的顺序也对。
+- ❌ 一个动作向量只描述<strong>一个时刻</strong>。答案里其实是三步，塞进了一次输出。正确写法是分成两个时刻：
+  - 这一步：<code>[0, 0, -0.03, 0, 0, 0, 0]</code>：只往下 3 厘米，夹爪保持张开（0 = 张开，1 = 合上）
+  - 下一步：<code>[0, 0, 0, 0, 0, 0, 1]</code>：不动，合上夹爪
+- ⚠️ "张开夹爪"多余：夹爪本来就开着，第 7 位保持 0 即可。
+- 💡 一口气规划好"先下再合"这几步，正是第 3 章"动作分块（action chunk）"的思路：ACT、π0 都是一次输出一整段动作。</p>
+<p><strong>追问</strong>（检查是否理解）：真实机器人一秒要输出 10–50 次动作，每次只走一小段。如果一次只能往下 1 厘米，夹到杯子总共需要几个时刻？把每个时刻的 7 维向量写出来。</p>
+<p><strong>追问作答</strong>（2026-10-27）："懂了"，跳过书面作答。参考答案：4 个时刻，前 3 个各往下 1 厘米 <code>[0, 0, -0.01, 0, 0, 0, 0]</code>，第 4 个原地合上夹爪 <code>[0, 0, 0, 0, 0, 0, 1]</code>。</p>
+<p><strong>重做</strong>（2026-11-04，原话）：3，-0.03，4，0，5，0，6，0，7，0，7，1 ✓</p>
+<p><strong>点评</strong>：全对。用"位置，数值"的写法，等于写出了两个时刻：
+- 时刻 1：<code>[0, 0, -0.03, 0, 0, 0, 0]</code>：第 3 位 -0.03（往下 3 厘米），第 4–6 位不转，第 7 位 0（夹爪保持张开）
+- 时刻 2：第 7 位变成 1，合上夹爪</p>
+<p>上次的两个问题都改过来了：没有多余的"张开夹爪"，"下去"和"合上"也分到了两个时刻。</p>
+<h2 id="_8">口诀</h2>
+<blockquote>
+<p>看一眼，听一句，吐一串数；一秒吐很多次，吐完世界就变了。</p>
+</blockquote>
+<h2 id="_9">本章复习卡片</h2>
+<p>V01 VLA 的输入与输出、V02 一个动作向量 = 一个时刻（见 <a href="../review.html">review.md</a>）</p><nav class="pager"><span></span><a href="02-behavior-cloning.html">第 2 章 · 行为克隆：照着人类示范抄作业 →</a></nav>
+</main>
+<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a></footer>
+</body></html>

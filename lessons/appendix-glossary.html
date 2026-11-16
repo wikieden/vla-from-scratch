@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>附录 · 缩写与术语表 · VLA 从零到 π0</title>
+<style>
+:root{--bg:#fbfbfa;--fg:#1f2328;--mute:#5d6470;--line:#e3e5e8;--card:#fff;--acc:#2f6fdf;--code:#f2f3f5;--quote:#f4f6fa}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}}
+:root[data-theme="dark"]{--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 -apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",sans-serif}
+a{color:var(--acc)}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+header.top .in{max-width:860px;margin:0 auto;padding:10px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:14px}
+header.top .brand{font-weight:600;color:var(--fg);text-decoration:none;margin-right:auto}
+header.top a{text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:24px 16px 72px;overflow-wrap:anywhere}
+h1{font-size:28px;line-height:1.35;margin:8px 0 16px} h2{font-size:22px;margin:40px 0 12px;padding-top:8px;border-top:1px solid var(--line)} h3{font-size:18px;margin:28px 0 8px}
+img{max-width:100%;height:auto;border-radius:8px;border:1px solid var(--line);background:#fff}
+blockquote{margin:16px 0;padding:10px 16px;background:var(--quote);border-left:3px solid var(--acc);border-radius:4px;color:var(--mute)}
+blockquote p{margin:4px 0}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font-size:.9em}
+pre{background:var(--code);padding:12px 14px;border-radius:8px;overflow-x:auto} pre code{padding:0;background:none}
+table{border-collapse:collapse;display:block;overflow-x:auto;max-width:100%;margin:12px 0;font-size:15px}
+th,td{border:1px solid var(--line);padding:6px 10px;vertical-align:top} th{background:var(--code)}
+details{border:1px solid var(--line);border-radius:8px;padding:6px 12px;margin:8px 0;background:var(--card)}
+details[open]{padding-bottom:10px} summary{cursor:pointer;color:var(--acc);font-weight:500}
+mjx-container{overflow-x:auto;overflow-y:hidden;max-width:100%}
+.btn{display:inline-block;margin:4px 8px 4px 0;padding:6px 14px;border:1px solid var(--acc);border-radius:999px;text-decoration:none;font-size:14px}
+.pager{display:flex;justify-content:space-between;gap:12px;margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0}
+.card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;color:inherit;text-decoration:none}
+.card:hover{border-color:var(--acc)} .card img{border:0;border-bottom:1px solid var(--line);border-radius:0;aspect-ratio:16/10;object-fit:contain;width:100%}
+.card .no{color:var(--mute);font-size:13px;padding:8px 12px 0} .card .t{padding:0 12px 12px;font-weight:500;line-height:1.5}
+.lead{font-size:17px;color:var(--mute)}
+footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-size:13px}
+</style>
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"],["$$","$$"]],processEscapes:true,processEnvironments:true}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+</head><body>
+<header class="top"><div class="in">
+<a class="brand" href="../index.html">VLA 从零到 π0</a>
+<a href="../lessons/index.html">讲义目录</a>
+<a href="../animations/index.html">动画</a>
+<a href="../review.html">复习卡片</a>
+<a href="../lessons/appendix-glossary.html">缩写表</a>
+</div></header>
+<main>
+<h1 id="_1">附录 · 缩写与术语表</h1>
+<blockquote>
+<p>用途：讲义里遇到缩写，先查这一页。每章开头的"本章缩写"只列这一章用到的。整理日期：2026-11-07（复习时问"DCT 是什么缩写"，按规则补齐）。公式符号的读法见 <a href="../lessons/appendix-symbols.html">appendix-symbols.md</a>。</p>
+</blockquote>
+<h2 id="_2">模型与方法</h2>
+<table>
+<thead>
+<tr>
+<th>缩写</th>
+<th>全称</th>
+<th>意思</th>
+<th>第一次出现</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VLA</td>
+<td>Vision-Language-Action</td>
+<td>视觉 / 语言 / 动作：看一眼、听一句、吐一串动作数字的模型</td>
+<td><a href="../lessons/01-what-is-a-policy.html">第 1 章</a></td>
+</tr>
+<tr>
+<td>VLM</td>
+<td>Vision-Language Model</td>
+<td>视觉 / 语言 / 模型：能看图、能说话的大模型，VLA 的"大脑"</td>
+<td><a href="../lessons/04-multimodality.html">第 4 章</a></td>
+</tr>
+<tr>
+<td>LM / prefix-LM</td>
+<td>Language Model / prefix Language Model</td>
+<td>语言模型 / 前缀语言模型：前缀（图 + 指令）里互相都能看，回答只能往前看</td>
+<td><a href="../lessons/05-vlm.html">第 5 章</a></td>
+</tr>
+<tr>
+<td>ViT</td>
+<td>Vision Transformer</td>
+<td>视觉 Transformer：把图切成小块当词来处理</td>
+<td><a href="../lessons/05-vlm.html">第 5 章</a></td>
+</tr>
+<tr>
+<td>SigLIP</td>
+<td>Sigmoid Loss for Language-Image Pre-training</td>
+<td>用 sigmoid 损失做图文预训练的看图模型，PaliGemma 的"眼睛"</td>
+<td><a href="../lessons/05-vlm.html">第 5 章</a></td>
+</tr>
+<tr>
+<td>So400m</td>
+<td>Shape-optimized 400M</td>
+<td>形状优化过的约 4 亿参数版本（SigLIP-So400m）</td>
+<td><a href="../lessons/05-vlm.html">第 5 章</a></td>
+</tr>
+<tr>
+<td>PaliGemma</td>
+<td>Pathways Language and Image model + Gemma</td>
+<td>Google 的 3B 视觉语言模型，π0 的骨干</td>
+<td><a href="../lessons/05-vlm.html">第 5 章</a></td>
+</tr>
+<tr>
+<td>BC</td>
+<td>Behavior Cloning</td>
+<td>行为 / 克隆：照着人类示范离线抄作业</td>
+<td><a href="../lessons/02-behavior-cloning.html">第 2 章</a></td>
+</tr>
+<tr>
+<td>DAgger</td>
+<td>Dataset Aggregation</td>
+<td>数据集 / 聚合：机器人自己走，走偏时请人标注"该怎么做"，加回数据</td>
+<td><a href="../lessons/02-behavior-cloning.html">第 2 章</a></td>
+</tr>
+<tr>
+<td>ACT</td>
+<td>Action Chunking with Transformers</td>
+<td>用 Transformer 做动作分块：一次出一整段动作</td>
+<td><a href="../lessons/01-what-is-a-policy.html">第 1 章</a></td>
+</tr>
+<tr>
+<td>RT-1 / RT-2</td>
+<td>Robotics Transformer 1 / 2</td>
+<td>机器人 / Transformer：Google 的机器人模型，RT-2 把动作当词</td>
+<td><a href="../lessons/01-what-is-a-policy.html">第 1 章</a></td>
+</tr>
+<tr>
+<td>OpenVLA</td>
+<td>Open Vision-Language-Action model</td>
+<td>开源 VLA：7B，动作切 256 格逐词输出</td>
+<td><a href="../lessons/01-what-is-a-policy.html">第 1 章</a></td>
+</tr>
+<tr>
+<td>OFT</td>
+<td>Optimized Fine-Tuning</td>
+<td>优化 / 微调：OpenVLA-OFT 改成并行出动作，不逐字念</td>
+<td><a href="../lessons/06-action-tokens.html">第 6 章</a></td>
+</tr>
+<tr>
+<td>FAST</td>
+<td>Frequency-space Action Sequence Tokenization</td>
+<td>频率空间 / 动作序列 / 分词：先压缩再变词</td>
+<td><a href="../lessons/06-action-tokens.html">第 6 章</a></td>
+</tr>
+<tr>
+<td>DCT</td>
+<td>Discrete Cosine Transform</td>
+<td>离散 / 余弦 / 变换：把"每个时刻的值"换成"整体形状 + 细节"的系数</td>
+<td><a href="../lessons/07-fast.html">第 7 章</a></td>
+</tr>
+<tr>
+<td>BPE</td>
+<td>Byte Pair Encoding</td>
+<td>字节 / 对 / 编码：把经常挨着出现的片段合并成一个词</td>
+<td><a href="../lessons/07-fast.html">第 7 章</a></td>
+</tr>
+<tr>
+<td>CVAE</td>
+<td>Conditional Variational AutoEncoder</td>
+<td>条件 / 变分 / 自编码器：ACT 用来表示多峰动作的生成模型</td>
+<td><a href="../lessons/04-multimodality.html">第 4 章</a></td>
+</tr>
+<tr>
+<td>BeT</td>
+<td>Behavior Transformer</td>
+<td>行为 Transformer：把动作先分簇再细调，处理多峰</td>
+<td><a href="../lessons/04-multimodality.html">第 4 章</a></td>
+</tr>
+<tr>
+<td>MoE</td>
+<td>Mixture of Experts</td>
+<td>专家 / 混合：不同参数负责不同输入；π0 的大脑和动作专家像两位专家</td>
+<td><a href="../lessons/08-pi0.html">第 8 章</a></td>
+</tr>
+<tr>
+<td>RTC</td>
+<td>Real-Time Chunking</td>
+<td>实时 / 分块：边想下一段边走完上一段，衔接不抖（第 13 章）</td>
+<td><a href="../lessons/03-action-chunking.html">第 3 章</a></td>
+</tr>
+<tr>
+<td>SmolVLA</td>
+<td>Small VLA</td>
+<td>小号 VLA：Hugging Face 的约 450M 开源 VLA，支持异步推理</td>
+<td><a href="../lessons/03-action-chunking.html">第 3 章</a></td>
+</tr>
+<tr>
+<td>KI</td>
+<td>Knowledge Insulation</td>
+<td>知识 / 隔离：大脑用离散动作 token 学机器人，小脑的梯度不倒流进大脑（第 9 章）</td>
+<td><a href="../lessons/09-knowledge-insulation.html">第 9 章</a></td>
+</tr>
+<tr>
+<td>sg</td>
+<td>stop-gradient</td>
+<td>停止 / 梯度：前向照常算，反向时误差到这里就停，不再往前传（第 9 章）</td>
+<td><a href="../lessons/09-knowledge-insulation.html">第 9 章</a></td>
+</tr>
+<tr>
+<td>co-training / joint-training</td>
+<td>共同训练 / 联合训练</td>
+<td>训练时混入图文数据 / 让大脑同时学离散动作词、小脑学连续动作（第 9 章）</td>
+<td><a href="../lessons/09-knowledge-insulation.html">第 9 章</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="_3">数据与硬件</h2>
+<table>
+<thead>
+<tr>
+<th>缩写</th>
+<th>全称</th>
+<th>意思</th>
+<th>第一次出现</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OXE</td>
+<td>Open X-Embodiment</td>
+<td>开放 / 跨 / 本体：几十种机器人的数据合集</td>
+<td><a href="../lessons/02-behavior-cloning.html">第 2 章</a></td>
+</tr>
+<tr>
+<td>DROID</td>
+<td>Distributed Robot Interaction Dataset</td>
+<td>分布式 / 机器人 / 交互 / 数据集：真实场景大规模采集</td>
+<td><a href="../lessons/02-behavior-cloning.html">第 2 章</a></td>
+</tr>
+<tr>
+<td>ALOHA</td>
+<td>A Low-cost Open-source Hardware system for bimanual teleoperation</td>
+<td>低成本开源双臂遥操作硬件，ACT 的配套平台</td>
+<td><a href="../lessons/02-behavior-cloning.html">第 2 章</a></td>
+</tr>
+<tr>
+<td>GPU</td>
+<td>Graphics Processing Unit</td>
+<td>图形 / 处理 / 单元：显卡，跑模型用</td>
+<td><a href="../lessons/06-action-tokens.html">第 6 章</a></td>
+</tr>
+<tr>
+<td>RTX 4090</td>
+<td>（NVIDIA 显卡型号，RTX 是产品线名）</td>
+<td>π0 论文测推理时间用的显卡</td>
+<td><a href="../lessons/06-action-tokens.html">第 6 章</a></td>
+</tr>
+<tr>
+<td>JPEG</td>
+<td>Joint Photographic Experts Group</td>
+<td>联合 / 图像 / 专家 / 组：制定这种图片压缩格式的组织，也用 DCT</td>
+<td><a href="../lessons/07-fast.html">第 7 章</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="_4">符号</h2>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>全称</th>
+<th>意思</th>
+<th>第一次出现</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hz</td>
+<td>hertz</td>
+<td>赫兹：每秒多少次。50 Hz = 每秒 50 个动作，每个管 20 毫秒</td>
+<td><a href="../lessons/01-what-is-a-policy.html">第 1 章</a></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(T_p\)</span> / <span class="arithmatex">\(T_a\)</span></td>
+<td>prediction horizon / action execution horizon</td>
+<td>预测长度 / 执行长度：每次想几步、走几步再重想</td>
+<td><a href="../lessons/03-action-chunking.html">第 3 章</a></td>
+</tr>
+<tr>
+<td>L1 / L2</td>
+<td>L1 / L2 norm（loss）</td>
+<td>绝对值误差 / 平方误差：都会把多峰动作拉成平均</td>
+<td><a href="../lessons/04-multimodality.html">第 4 章</a></td>
+</tr>
+<tr>
+<td>K/V 缓存</td>
+<td>Key / Value cache</td>
+<td>键 / 值缓存：大脑算一次存起来，小脑每步来读</td>
+<td><a href="../lessons/08-pi0.html">第 8 章</a></td>
+</tr>
+<tr>
+<td>DC 分量</td>
+<td>Direct Current component</td>
+<td>直流分量：DCT 第 0 个系数 = 平均值，匀速动作只有它非零</td>
+<td><a href="../lessons/07-fast.html">第 7 章</a></td>
+</tr>
+<tr>
+<td>γ</td>
+<td>scale</td>
+<td>FAST 取整前乘的倍数：大 → 细节多、词多；小 → 词少、精度低</td>
+<td><a href="../lessons/07-fast.html">第 7 章</a></td>
+</tr>
+</tbody>
+</table>
+</main>
+<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a></footer>
+</body></html>

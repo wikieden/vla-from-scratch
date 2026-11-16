@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第 5 章 · VLM：图片切块和文字一起排队进 Transformer · VLA 从零到 π0</title>
+<style>
+:root{--bg:#fbfbfa;--fg:#1f2328;--mute:#5d6470;--line:#e3e5e8;--card:#fff;--acc:#2f6fdf;--code:#f2f3f5;--quote:#f4f6fa}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}}
+:root[data-theme="dark"]{--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 -apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",sans-serif}
+a{color:var(--acc)}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+header.top .in{max-width:860px;margin:0 auto;padding:10px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:14px}
+header.top .brand{font-weight:600;color:var(--fg);text-decoration:none;margin-right:auto}
+header.top a{text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:24px 16px 72px;overflow-wrap:anywhere}
+h1{font-size:28px;line-height:1.35;margin:8px 0 16px} h2{font-size:22px;margin:40px 0 12px;padding-top:8px;border-top:1px solid var(--line)} h3{font-size:18px;margin:28px 0 8px}
+img{max-width:100%;height:auto;border-radius:8px;border:1px solid var(--line);background:#fff}
+blockquote{margin:16px 0;padding:10px 16px;background:var(--quote);border-left:3px solid var(--acc);border-radius:4px;color:var(--mute)}
+blockquote p{margin:4px 0}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font-size:.9em}
+pre{background:var(--code);padding:12px 14px;border-radius:8px;overflow-x:auto} pre code{padding:0;background:none}
+table{border-collapse:collapse;display:block;overflow-x:auto;max-width:100%;margin:12px 0;font-size:15px}
+th,td{border:1px solid var(--line);padding:6px 10px;vertical-align:top} th{background:var(--code)}
+details{border:1px solid var(--line);border-radius:8px;padding:6px 12px;margin:8px 0;background:var(--card)}
+details[open]{padding-bottom:10px} summary{cursor:pointer;color:var(--acc);font-weight:500}
+mjx-container{overflow-x:auto;overflow-y:hidden;max-width:100%}
+.btn{display:inline-block;margin:4px 8px 4px 0;padding:6px 14px;border:1px solid var(--acc);border-radius:999px;text-decoration:none;font-size:14px}
+.pager{display:flex;justify-content:space-between;gap:12px;margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0}
+.card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;color:inherit;text-decoration:none}
+.card:hover{border-color:var(--acc)} .card img{border:0;border-bottom:1px solid var(--line);border-radius:0;aspect-ratio:16/10;object-fit:contain;width:100%}
+.card .no{color:var(--mute);font-size:13px;padding:8px 12px 0} .card .t{padding:0 12px 12px;font-weight:500;line-height:1.5}
+.lead{font-size:17px;color:var(--mute)}
+footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-size:13px}
+</style>
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"],["$$","$$"]],processEscapes:true,processEnvironments:true}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+</head><body>
+<header class="top"><div class="in">
+<a class="brand" href="../index.html">VLA 从零到 π0</a>
+<a href="../lessons/index.html">讲义目录</a>
+<a href="../animations/index.html">动画</a>
+<a href="../review.html">复习卡片</a>
+<a href="../lessons/appendix-glossary.html">缩写表</a>
+</div></header>
+<main>
+<h1 id="5-vlm-transformer">第 5 章 · VLM：图片切块和文字一起排队进 Transformer</h1><p><a class="btn" href="../animations/05-vlm-tokens.html">▶ 打开本章可交互动画</a></p>
+<blockquote>
+<p>本章回答：VLA 里的"VL"（看 + 听）是怎么实现的？一张图怎么变成 Transformer 能吃的东西？<br />
+讲解日期：2026-11-04 · 上一章：<a href="../lessons/04-multimodality.html">第 4 章 多峰</a> · 下一章：<a href="../lessons/06-action-tokens.html">第 6 章 动作当词</a><br />
+本章缩写：VLM = Vision-Language Model（视觉 / 语言 / 模型）；ViT = Vision Transformer（视觉 Transformer）；SigLIP = Sigmoid Loss for Language-Image Pre-training（sigmoid 损失 / 图文 / 预训练）；So400m = Shape-optimized 400M（形状优化 / 4 亿参数）；LM = Language Model（语言模型），prefix-LM = 前缀语言模型。全表见 <a href="../lessons/appendix-glossary.html">appendix-glossary.md</a></p>
+</blockquote>
+<h2 id="_1">讲解</h2>
+<h3 id="1">第 1 步：图片切成小块，每块变一个"词"</h3>
+<p><strong>白话类比：拼图</strong></p>
+<p>Transformer 只会处理"一排向量"（transformer-deep-dive 讲义里每个词是一个向量）。图片不是一排词，怎么办？把它<strong>切成拼图块</strong>：</p>
+<ol>
+<li>把一张 224 × 224 像素的图，切成很多个 14 × 14 像素的小方块（patch）；</li>
+<li>每个小方块里的像素数字拉成一长串，乘一个矩阵，变成一个和词向量一样长的向量；</li>
+<li>于是一张图就变成了"一排向量"，每个向量叫一个<strong>图像 token</strong>，和文字 token 地位一样。</li>
+</ol>
+<p>这一步就是 ViT（Vision Transformer）的做法，transformer-deep-dive 的 <code>07-vision</code> 有原论文；nvidia-cosmos3 讲义第 4 步"图片和视频也能当 token"讲的也是它。</p>
+<p><strong>VLM = 图像 token + 文字 token 排成一队</strong></p>
+<pre><code>[图块1] [图块2] … [图块N]  [把] [杯子] [放进] [碗里]
+ └────── 图像 token ──────┘  └────── 文字 token ──────┘
+                 一起送进同一个 Transformer
+</code></pre>
+<p>能同时看图和读字的模型叫 <strong>VLM（Vision-Language Model）</strong>。它在网上几十亿张图文配对数据上训练过，所以知道"杯子长什么样""碗在哪""左边是哪边"。VLA 就是在 VLM 的基础上，再教它输出动作。</p>
+<p><strong>真实的例子：π0 的骨干 PaliGemma</strong></p>
+<ul>
+<li>看图部分用 SigLIP（一个 ViT），读字和思考部分用 Gemma 2B；</li>
+<li>224 px 分辨率下，一张图变成 <span class="arithmatex">\(N_\text{img}\)</span> = 256 个图像 token（<code>materials/text/papers/paligemma-2407.07726.txt</code> 第 231–233 行：<em>"resolution 224px (hence, N_img = 256 image tokens)"</em>）。</li>
+</ul>
+<h3 id="2-paligemma">第 2 步：PaliGemma 长什么样</h3>
+<p>PaliGemma 是 Google 开源的一个 <strong>3B（30 亿参数）VLM</strong>，π0、π0.5 都用它当骨干。它只有三个零件（<code>paligemma-2407.07726.txt</code> 第 18、87–95、189 行）：</p>
+<pre><code>相机图 224×224
+   │
+   ▼
+① SigLIP-So400m（看图的 ViT，约 4 亿参数）：切 256 块 → 256 个图像向量
+   │
+   ▼
+② 一层线性投影（linear projection）：把图像向量&quot;翻译&quot;成 Gemma 认识的长度
+   │
+   ▼
+③ Gemma-2B（读字 + 思考的语言模型，decoder-only Transformer）
+   输入：[256 个图像 token] [指令文字 token] → 输出：回答文字
+</code></pre>
+<p><strong>白话类比</strong>：① 是眼睛，② 是视神经（把眼睛的信号转成大脑能读的格式），③ 是大脑。</p>
+<p><strong>为什么 π0 选它</strong>：够小（3B，机器人上跑得动），权重公开，而且论文专门测过"拿来微调做别的任务"效果好（PaliGemma 的定位就是 <em>"a versatile 3B VLM for transfer"</em>，即论文标题）。</p>
+<p><strong>遮挡规则：prefix-LM</strong></p>
+<p>还记得 nvidia-cosmos3 讲义里的"遮挡（mask）：谁能看见谁"吗？PaliGemma 把输入分成两段，规则不同（第 166–172 行）：</p>
+<table>
+<thead>
+<tr>
+<th>段</th>
+<th>包含</th>
+<th>能看见谁</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>前缀（prefix）</td>
+<td>图像 token + 指令文字</td>
+<td><strong>前后都能看</strong>（full attention）：图像 token 也能"偷看"后面的指令</td>
+</tr>
+<tr>
+<td>后缀（suffix）</td>
+<td>模型要输出的回答</td>
+<td><strong>只能看前面</strong>（自回归，写作文式）</td>
+</tr>
+</tbody>
+</table>
+<p>原文：<em>"we have full (unmasked) attention on the whole input, i.e. the image and prefix tokens. In this way, image tokens can also "lookahead" at the task at hand"</em>。</p>
+<p>π0 沿用了这个思路，并把动作也加成一段：动作段内部前后都能看，但前面的段看不到后面的段（<code>pi0-2410.24164.txt</code> 第 864–871 行，附录的 block-wise 掩码）。第 8 章细讲。</p>
+<h3 id="tokenprefix-lm">动画演示：图片切块成 token，prefix-LM 遮挡</h3>
+<p><img alt="图片切块成 token，prefix-LM 遮挡" src="../animations/05-vlm-tokens.gif" /></p>
+<p>可交互版：<a href="../animations/05-vlm-tokens.html">animations/05-vlm-tokens.html</a>（用浏览器打开，可播放、单步、换随机数重来）。</p>
+<p><strong>怎么看</strong>：</p>
+<ol>
+<li>左边的图一行一行被切开：每行 16 块，每块变成右边的一个紫色 token，16 行切完正好 256 个。</li>
+<li>接着接上 4 个橙色的指令文字 token，它们和图像 token 排成一队送进同一个 Transformer。</li>
+<li>下半部分是遮挡矩阵（行 = 谁在看，列 = 被看的，蓝色 = 能看见），逐行亮起。前 7 个（图 + 指令）是前缀，彼此全能看，所以右上角那片蓝色表示<strong>图像 token 能看到后面的指令</strong>；后 3 个回答只能看前面。交互版可切到"纯因果"对比，那片蓝色会消失（第 2 题）。</li>
+</ol>
+<h2 id="_2">练习与作答记录</h2>
+<p><strong>题 1</strong>：一张 224 × 224 的图，切成 14 × 14 的小方块。
+1. 横着能切几块？竖着能切几块？
+2. 一共多少个图像 token？和上面 PaliGemma 的 256 对得上吗？
+3. 如果机器人有 3 个相机，每个相机一张图，光图像就有多少个 token？</p>
+<p><strong>作答</strong>（2026-11-04，原话）：16*16，一共256个图像token能对上，另外PaliGemma解释下，机器人有3个相机，那就是768个 ✓</p>
+<p><strong>点评</strong>：全对。224 / 14 = 16，16 × 16 = 256，和 PaliGemma 对上；3 个相机 × 256 = 768 个图像 token，而一句指令通常只有十几到几十个 token，<strong>图像占了输入的绝大部分</strong>。这一点后面讲"为什么 VLA 推理慢"时会用到。追问的"PaliGemma 是什么"见第 2 步。</p>
+<p><strong>题 2</strong>：在 PaliGemma 的 prefix-LM 遮挡规则下，图像 token 能看到指令"把杯子放进碗里"吗？如果能看到，对"从图里找到杯子"有什么好处？</p>
+<p><strong>作答</strong>（2026-11-04，原话）：能，对于后续按照目的预测有好处 ✓</p>
+<p><strong>点评</strong>：对。说得再具体一点：图像 token 在"看图"的时候<strong>已经知道要找什么</strong>，所以杯子和碗所在的那些图块会被重点加工，背景里的书、墙不太重要。</p>
+<p>类比：同一个房间，"随便看一眼"和"找钥匙时看一眼"，看到的重点完全不同。如果图像 token 看不到指令（纯因果，图在前、字在后），它只能"随便看"，要等到后面的文字 token 再回头从图里挑信息。</p>
+<h2 id="_3">口诀</h2>
+<blockquote>
+<p>图片切成拼图块，一块一个 token，和文字排一队；<br />
+眼睛 SigLIP，视神经一层线性，大脑 Gemma；前缀互相看，回答往前看。</p>
+</blockquote>
+<h2 id="_4">本章复习卡片</h2>
+<p>V10 图片怎么变 token、V11 PaliGemma 的三个零件和 prefix-LM（见 <a href="../review.html">review.md</a>）</p><nav class="pager"><a href="04-multimodality.html">← 第 4 章 · 多峰（multimodality）：同一个情况，两种都对的做法</a><a href="06-action-tokens.html">第 6 章 · 动作当词：把每个数切成 256 格（RT-2 / OpenVLA） →</a></nav>
+</main>
+<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a></footer>
+</body></html>

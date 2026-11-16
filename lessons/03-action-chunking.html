@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第 3 章 · 动作分块（action chunking）：看一眼，规划一整段 · VLA 从零到 π0</title>
+<style>
+:root{--bg:#fbfbfa;--fg:#1f2328;--mute:#5d6470;--line:#e3e5e8;--card:#fff;--acc:#2f6fdf;--code:#f2f3f5;--quote:#f4f6fa}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}}
+:root[data-theme="dark"]{--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 -apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",sans-serif}
+a{color:var(--acc)}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+header.top .in{max-width:860px;margin:0 auto;padding:10px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:14px}
+header.top .brand{font-weight:600;color:var(--fg);text-decoration:none;margin-right:auto}
+header.top a{text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:24px 16px 72px;overflow-wrap:anywhere}
+h1{font-size:28px;line-height:1.35;margin:8px 0 16px} h2{font-size:22px;margin:40px 0 12px;padding-top:8px;border-top:1px solid var(--line)} h3{font-size:18px;margin:28px 0 8px}
+img{max-width:100%;height:auto;border-radius:8px;border:1px solid var(--line);background:#fff}
+blockquote{margin:16px 0;padding:10px 16px;background:var(--quote);border-left:3px solid var(--acc);border-radius:4px;color:var(--mute)}
+blockquote p{margin:4px 0}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font-size:.9em}
+pre{background:var(--code);padding:12px 14px;border-radius:8px;overflow-x:auto} pre code{padding:0;background:none}
+table{border-collapse:collapse;display:block;overflow-x:auto;max-width:100%;margin:12px 0;font-size:15px}
+th,td{border:1px solid var(--line);padding:6px 10px;vertical-align:top} th{background:var(--code)}
+details{border:1px solid var(--line);border-radius:8px;padding:6px 12px;margin:8px 0;background:var(--card)}
+details[open]{padding-bottom:10px} summary{cursor:pointer;color:var(--acc);font-weight:500}
+mjx-container{overflow-x:auto;overflow-y:hidden;max-width:100%}
+.btn{display:inline-block;margin:4px 8px 4px 0;padding:6px 14px;border:1px solid var(--acc);border-radius:999px;text-decoration:none;font-size:14px}
+.pager{display:flex;justify-content:space-between;gap:12px;margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0}
+.card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;color:inherit;text-decoration:none}
+.card:hover{border-color:var(--acc)} .card img{border:0;border-bottom:1px solid var(--line);border-radius:0;aspect-ratio:16/10;object-fit:contain;width:100%}
+.card .no{color:var(--mute);font-size:13px;padding:8px 12px 0} .card .t{padding:0 12px 12px;font-weight:500;line-height:1.5}
+.lead{font-size:17px;color:var(--mute)}
+footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-size:13px}
+</style>
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"],["$$","$$"]],processEscapes:true,processEnvironments:true}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+</head><body>
+<header class="top"><div class="in">
+<a class="brand" href="../index.html">VLA 从零到 π0</a>
+<a href="../lessons/index.html">讲义目录</a>
+<a href="../animations/index.html">动画</a>
+<a href="../review.html">复习卡片</a>
+<a href="../lessons/appendix-glossary.html">缩写表</a>
+</div></header>
+<main>
+<h1 id="3-action-chunking">第 3 章 · 动作分块（action chunking）：看一眼，规划一整段</h1><p><a class="btn" href="../animations/03-receding-horizon.html">▶ 打开本章可交互动画</a></p>
+<blockquote>
+<p>本章回答：为什么现代 VLA 一次输出一整段动作，而不是一步一个？<br />
+讲解日期：2026-11-04 · 上一章：<a href="../lessons/02-behavior-cloning.html">第 2 章 行为克隆</a> · 下一章：<a href="../lessons/04-multimodality.html">第 4 章 多峰</a><br />
+本章缩写：ACT = Action Chunking with Transformers；<span class="arithmatex">\(T_p\)</span> / <span class="arithmatex">\(T_a\)</span> = prediction / action execution horizon（预测长度 / 执行长度）；RTC = Real-Time Chunking（实时 / 分块）；SmolVLA = Small VLA（小号 VLA）。全表见 <a href="../lessons/appendix-glossary.html">appendix-glossary.md</a></p>
+</blockquote>
+<h2 id="_1">讲解</h2>
+<h3 id="1">第 1 步：一次出一段，做决定的次数变少</h3>
+<p><strong>白话类比：写字</strong></p>
+<p>写"永"字时，你不会每一笔之前都抬头重新看一眼、想一下再落笔，而是看一眼就把整个字的笔画规划好，一口气写完。写完一个字再看一眼，规划下一个字。</p>
+<p>机器人也可以这样：</p>
+<table>
+<thead>
+<tr>
+<th>做法</th>
+<th>每次输出</th>
+<th>一个时刻做什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>一步一想（第 1–2 章）</td>
+<td>1 个动作向量</td>
+<td>看 → 想 → 走一步 → 再看 → 再想 …</td>
+</tr>
+<tr>
+<td><strong>动作分块</strong></td>
+<td><strong>k 个动作向量</strong>（一个 chunk）</td>
+<td>看一眼 → 想出接下来 k 步 → 把 k 步走完 → 再看一眼</td>
+</tr>
+</tbody>
+</table>
+<p><strong>为什么能减少复合误差</strong></p>
+<p>第 2 章说过，每做一次决定都可能出一点错，错误会一环一环滚大。分块后，同样长的任务里做决定的次数<strong>变成原来的 1/k</strong>。ACT 论文的说法是把任务的"有效步数"（effective horizon）缩小 k 倍：</p>
+<blockquote>
+<p><em>"This implies a k-fold reduction in the effective horizon of the task"</em>（<code>materials/text/papers/act-aloha-2304.13705.txt</code> 第 250–251 行）</p>
+</blockquote>
+<p>另一个好处：人示范时动作本来就是连贯的一整段（比如一次停顿、一次犹豫），一次预测一整段更容易学到这种连贯性。</p>
+<p><strong>现在的 VLA 都这么做</strong></p>
+<p>π0 每次输出 H = 50 个动作向量，控制频率最高 50 Hz（<code>pi0-2410.24164.txt</code> 中 "H = 50 for our tasks" 和 "up to 50 Hz"）。</p>
+<h3 id="2">第 2 步：代价是"闭着眼走一段"</h3>
+<p>分块有个副作用：走 chunk 的这 k 步里，机器人<strong>不再看</strong>新画面，等于闭着眼照计划走完。</p>
+<p><strong>白话类比</strong>：你看一眼纸，闭上眼写完整个"永"字。写到一半有人把纸挪了 1 厘米，你不会察觉，后半个字就写歪了。</p>
+<p><strong>机器人的例子</strong>：π0 一个 chunk 管 1 秒。如果第 0.1 秒杯子被碰得滑开了，机器人还会照原计划再"盲走" 0.9 秒，夹个空。</p>
+<p>还有一个小毛病：每走完一段就换一个新计划，新旧两段接缝处动作可能突然一跳，机器人看起来一顿一顿的。ACT 原文：<em>"a new environment observation is incorporated abruptly every k steps and can result in jerky robot motion"</em>（<code>act-aloha-2304.13705.txt</code> 第 290–293 行）。</p>
+<p>所以 k 不是越大越好：</p>
+<table>
+<thead>
+<tr>
+<th>k</th>
+<th>好处</th>
+<th>坏处</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>小（一步一想）</td>
+<td>反应快，随时看新画面</td>
+<td>决定多，复合误差大</td>
+</tr>
+<tr>
+<td>大（一次想很久）</td>
+<td>决定少，动作连贯</td>
+<td>盲走时间长，接缝处容易跳</td>
+</tr>
+</tbody>
+</table>
+<h3 id="3">第 3 步：想一大段，只走一小段（滚动重规划）</h3>
+<p><strong>做法</strong>：每次照样想 50 步，但只走前面一小段（比如 5 步），然后马上重新看一眼、重新想 50 步，再走前 5 步……想得远，走得短。</p>
+<p><strong>白话类比</strong>：开车导航。导航每次都规划到终点的整条路线，但你只开到下一个路口，它就根据新的路况重新规划一次。</p>
+<p>Diffusion Policy 把这两个长度分开取名（<code>diffusion-policy-2303.04137.txt</code> 第 230–232 行）：</p>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>名字</th>
+<th>含义</th>
+<th>你的例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(T_p\)</span></td>
+<td>prediction horizon</td>
+<td>每次想多少步</td>
+<td>50</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(T_a\)</span></td>
+<td>action execution horizon</td>
+<td>想完之后真正走多少步</td>
+<td>5</td>
+</tr>
+</tbody>
+</table>
+<p>论文把它叫 <em>receding-horizon control</em>，说这样 <em>"allows the policy to continuously re-plan its action in a closed-loop manner"</em>（第 115–120 行）。</p>
+<p><span class="arithmatex">\(T_a\)</span> 决定了<strong>最慢多久能发现变化</strong>：50 Hz 下走 5 步 = 0.1 秒，也就是每秒重看 10 次（10 Hz）。盲走时间从 1 秒缩到 0.1 秒。</p>
+<p><strong>两个细节</strong></p>
+<ol>
+<li>实际系统<strong>不比较</strong>新旧计划，每到 <span class="arithmatex">\(T_a\)</span> 步就直接换成新计划。重新想一次本来就要花算力，再比较一遍没有好处。</li>
+<li>每秒重看 10 次，意味着模型<strong>每次推理必须在 0.1 秒内算完</strong>，否则来不及。大模型（π0 有 30 多亿参数）算得慢怎么办，是第 13 章 RTC 要解决的问题。</li>
+</ol>
+<p>ACT 走得更极端：<strong>每一步都重新想</strong>，于是同一个时刻会有好几个旧计划和新计划都给出了动作，再把它们加权平均（temporal ensembling，<code>act-aloha-2304.13705.txt</code> 第 293–303 行），动作更平滑。</p>
+<h2 id="_2">公式</h2>
+<div class="arithmatex">\[[a_t,\ a_{t+1},\ \dots,\ a_{t+k-1}] = \pi(o_t,\ \ell)\]</div>
+<p>和第 1 章的 <span class="arithmatex">\(a_t = \pi(o_t, \ell)\)</span> 比，输入没变，输出从 1 个向量变成 k 个。</p>
+<h3 id="50">动画演示：滚动重规划：想 50 步，走几步再重想</h3>
+<p><img alt="滚动重规划：想 50 步，走几步再重想" src="../animations/03-receding-horizon.gif" /></p>
+<p>可交互版：<a href="../animations/03-receding-horizon.html">animations/03-receding-horizon.html</a>（用浏览器打开，可播放、单步、换随机数重来）。</p>
+<p><strong>怎么看</strong>：</p>
+<ol>
+<li>粗青线是杯子的位置，第 0.44 秒杯子被碰到了别处。两条路每次都想 50 步（1 秒）。</li>
+<li>上面 T_a = 50：整段盲走完才重看，<strong>0.56 秒</strong>后才发现杯子挪了；下面 T_a = 5：每 0.1 秒重看，<strong>0.06 秒</strong>后就转向。</li>
+<li>底边的小竖线是每次"重新想"的时刻。T_a = 5 那条竖线很密，每次想的 50 步只用了前 5 步，其余被下一次计划替换。对应第 2、3 题。</li>
+</ol>
+<h2 id="_3">练习与作答记录</h2>
+<p><strong>题 1</strong>：一个任务要 10 秒，机器人控制频率是 50 Hz（一秒输出 50 个动作向量）。
+1. 一共要走多少步？
+2. 一步一想的话，模型要做多少次决定？
+3. 用 π0 的 chunk（k = 50），只要做多少次决定？每个 chunk 管多长时间？</p>
+<p><strong>作答</strong>（2026-11-04，原话）：1=500，2=500，3=10次，每个chunk1秒 ✓</p>
+<p><strong>点评</strong>：全对。10 秒 × 50 Hz = 500 步；一步一想要做 500 次决定；k = 50 时只要 500 / 50 = 10 次，每段 50 / 50 Hz = 1 秒。决定次数从 500 降到 10，这就是"有效步数缩小 k 倍"。</p>
+<p><strong>题 2</strong>：分块的坏处是盲走。有没有办法既保留"一次想一整段"的好处，又能更快发现杯子被碰走了？大胆猜一个做法（提示：想好的 50 步一定要全部走完吗？）。</p>
+<p><strong>作答</strong>（2026-11-04，原话）：不用可以做个最低响应时间指标，比如10hz，每次执行5步看一下，如果推理结果变化了，就换 ✓</p>
+<p><strong>点评</strong>：对，而且这正是 Diffusion Policy 的做法：每次想 <span class="arithmatex">\(T_p\)</span> 步、只走 <span class="arithmatex">\(T_a\)</span> 步就重新规划（receding horizon）。"最低响应时间"这个角度也很好：<span class="arithmatex">\(T_a\)</span> = 5 步 @ 50 Hz = 0.1 秒，盲走时间从 1 秒降到 0.1 秒。
+- 小修正：实际不判断"推理结果变没变"，到点就直接换成新计划。
+- 你提的 10 Hz 带出了一个新约束：每次推理必须在 0.1 秒内完成（第 13 章 RTC）。</p>
+<p><strong>题 3</strong>：每秒重看 10 次，每次都想 50 步、只走 5 步。那每次想出来的 50 步里，有多少步是"想了但没用上"的？这样浪费吗？说说你的看法。</p>
+<p><strong>作答</strong>（2026-11-04，原话）：有45步没用上，不算浪费，因为滚动规划中是需要不断监督执行情况根据变化做调整，另外如果万一推理慢了点也不容易卡帧，导致机器人暂停 ✓</p>
+<p><strong>点评</strong>：对，两个理由都成立，第二个尤其到位。
+1. <strong>随时调整</strong>：没用上的 45 步是"备用计划"，换成新计划正是为了跟上变化。
+2. <strong>防卡帧</strong>：这就是 SmolVLA 的异步推理（asynchronous inference）。机器人一边走手上这段，一边让模型在后台算下一段；新计划还没算好时，就接着走旧计划剩下的步数，不会停下来干等。原文：<em>"decouples action execution from perception and prediction"</em>（<code>smolvla-2506.01844.txt</code> 第 118 行），以及同步做法会让 <em>"the robot being idle while computing"</em>（第 319 行）。第 13 章 RTC 也建立在这一点上。
+3. <strong>补一个理由</strong>：想得远，让走的这 5 步更好。模型规划 50 步时考虑了后面的整体走向，所以前 5 步和长远意图是连贯的；只想 5 步的话，动作容易短视、来回抖。Diffusion Policy 说预测长序列是为了 <em>"encouraging temporal action consistency"</em>（<code>diffusion-policy-2303.04137.txt</code> 第 95 行）。</p>
+<h2 id="_4">口诀</h2>
+<blockquote>
+<p>写字看一眼写一整字，机器人看一眼走一整段；决定少了，错得也少。<br />
+想得远，走得短：想 50 步、走 5 步，再看一眼。</p>
+</blockquote>
+<h2 id="_5">本章复习卡片</h2>
+<p>V05 动作分块的好处与代价、V06 滚动重规划 <span class="arithmatex">\(T_p\)</span> / <span class="arithmatex">\(T_a\)</span>、V07 没用上的 45 步有什么用（见 <a href="../review.html">review.md</a>）</p><nav class="pager"><a href="02-behavior-cloning.html">← 第 2 章 · 行为克隆：照着人类示范抄作业</a><a href="04-multimodality.html">第 4 章 · 多峰（multimodality）：同一个情况，两种都对的做法 →</a></nav>
+</main>
+<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a></footer>
+</body></html>

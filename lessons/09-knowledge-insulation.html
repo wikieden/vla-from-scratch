@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第 9 章 · 知识隔离与 π0.5：别让小脑把大脑的常识冲掉 · VLA 从零到 π0</title>
+<style>
+:root{--bg:#fbfbfa;--fg:#1f2328;--mute:#5d6470;--line:#e3e5e8;--card:#fff;--acc:#2f6fdf;--code:#f2f3f5;--quote:#f4f6fa}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}}
+:root[data-theme="dark"]{--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 -apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",sans-serif}
+a{color:var(--acc)}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+header.top .in{max-width:860px;margin:0 auto;padding:10px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:14px}
+header.top .brand{font-weight:600;color:var(--fg);text-decoration:none;margin-right:auto}
+header.top a{text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:24px 16px 72px;overflow-wrap:anywhere}
+h1{font-size:28px;line-height:1.35;margin:8px 0 16px} h2{font-size:22px;margin:40px 0 12px;padding-top:8px;border-top:1px solid var(--line)} h3{font-size:18px;margin:28px 0 8px}
+img{max-width:100%;height:auto;border-radius:8px;border:1px solid var(--line);background:#fff}
+blockquote{margin:16px 0;padding:10px 16px;background:var(--quote);border-left:3px solid var(--acc);border-radius:4px;color:var(--mute)}
+blockquote p{margin:4px 0}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font-size:.9em}
+pre{background:var(--code);padding:12px 14px;border-radius:8px;overflow-x:auto} pre code{padding:0;background:none}
+table{border-collapse:collapse;display:block;overflow-x:auto;max-width:100%;margin:12px 0;font-size:15px}
+th,td{border:1px solid var(--line);padding:6px 10px;vertical-align:top} th{background:var(--code)}
+details{border:1px solid var(--line);border-radius:8px;padding:6px 12px;margin:8px 0;background:var(--card)}
+details[open]{padding-bottom:10px} summary{cursor:pointer;color:var(--acc);font-weight:500}
+mjx-container{overflow-x:auto;overflow-y:hidden;max-width:100%}
+.btn{display:inline-block;margin:4px 8px 4px 0;padding:6px 14px;border:1px solid var(--acc);border-radius:999px;text-decoration:none;font-size:14px}
+.pager{display:flex;justify-content:space-between;gap:12px;margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0}
+.card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;color:inherit;text-decoration:none}
+.card:hover{border-color:var(--acc)} .card img{border:0;border-bottom:1px solid var(--line);border-radius:0;aspect-ratio:16/10;object-fit:contain;width:100%}
+.card .no{color:var(--mute);font-size:13px;padding:8px 12px 0} .card .t{padding:0 12px 12px;font-weight:500;line-height:1.5}
+.lead{font-size:17px;color:var(--mute)}
+footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-size:13px}
+</style>
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"],["$$","$$"]],processEscapes:true,processEnvironments:true}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+</head><body>
+<header class="top"><div class="in">
+<a class="brand" href="../index.html">VLA 从零到 π0</a>
+<a href="../lessons/index.html">讲义目录</a>
+<a href="../animations/index.html">动画</a>
+<a href="../review.html">复习卡片</a>
+<a href="../lessons/appendix-glossary.html">缩写表</a>
+</div></header>
+<main>
+<h1 id="9-05">第 9 章 · 知识隔离与 π0.5：别让小脑把大脑的常识冲掉</h1><p><a class="btn" href="../animations/09-gradient-interference.html">▶ 打开本章可交互动画</a></p>
+<blockquote>
+<p>本章回答：π0 一起训练大脑和小脑，会出什么问题？知识隔离（knowledge insulation）怎么解决？π0.5 的训练配方是什么？<br />
+讲解日期：2026-11-09 起 · 上一章：<a href="../lessons/08-pi0.html">第 8 章 π0</a> · 下一章：第 10 章 慢想快做：分层系统（待讲）<br />
+本章缩写：KI = Knowledge Insulation（知识 / 隔离）；π0.5 = π0 的下一代；FAST = Frequency-space Action Sequence Tokenization（频率空间 / 动作序列 / 分词，第 7 章）；VLM = Vision-Language Model（视觉 / 语言 / 模型）；梯度（gradient）= 告诉每个参数"往哪边改、改多少"的信号。全表见 <a href="../lessons/appendix-glossary.html">appendix-glossary.md</a><br />
+对应原文：<code>materials/text/papers/knowledge-insulation-2505.23705.txt</code>（下称 KI 论文）、<code>materials/text/papers/pi05-2504.16054.txt</code></p>
+</blockquote>
+<h2 id="_1">讲解</h2>
+<h3 id="1">第 1 步：两难，一起训练会冲掉常识，冻住又学不会</h3>
+<blockquote>
+<p>对应原文：KI 论文第 98–103 行（引言）、第 161–162 行（π0 的问题）、第 262–284 行（图 2 勺子例子、冻住不行）、第 488–507 行（听指令实验）。</p>
+</blockquote>
+<p><strong>先补一个词：梯度</strong></p>
+<p>训练就是"做错了就改"。每做一次，算出误差有多大，再算出<strong>每个参数该往哪边改、改多少</strong>，这个信号就叫梯度。梯度沿着计算的路线<strong>倒着往回传</strong>：误差从输出出发，经过哪些参数算出来的，就会改到哪些参数。</p>
+<p><strong>回顾第 8 章插问 2</strong>：小脑（动作专家）每一层都通过 attention 读大脑的 K、V。这条路是双向的：前向时小脑读大脑；训练时，小脑的动作误差也会<strong>顺着这条路倒流进大脑</strong>，改动大脑的 <span class="arithmatex">\(W_K\)</span>、<span class="arithmatex">\(W_V\)</span> 和更深处的参数。</p>
+<p><strong>问题出在哪：小脑一开始是随机的</strong></p>
+<ul>
+<li>大脑从 PaliGemma 来，已经学好了看图、读指令的常识；</li>
+<li>小脑是<strong>新加的、随机初始化的</strong>（KI 论文第 98–100 行："initialized from scratch"，要"嫁接"到大脑上）；</li>
+<li>训练刚开始，小脑乱出动作，误差很大，而且误差的"方向"没什么道理。这些乱七八糟的梯度倒流进大脑，<strong>把大脑原来学好的东西改坏了</strong>。</li>
+</ul>
+<p>KI 论文的原话大意：π0 的做法会让<strong>听指令能力和训练速度都变差</strong>，因为动作专家的梯度损坏了预训练好的 VLM（第 161–162 行）；作者推测原因是"梯度干扰"（gradient interference，第 269–270 行）。</p>
+<p><strong>论文里的例子</strong>（图 2，第 274–281 行）：让机器人"把勺子放进垃圾桶"，π0 <strong>不管指令，去抓了一块垃圾</strong>。它看图知道"桌上有东西可以收拾"，却不再认真听指令说的是哪个。论文还发现，π0 要比别的做法多训练很多步才收敛（第 488–490 行）。</p>
+<p><strong>白话类比：老员工和新实习生</strong></p>
+<p>老员工（大脑）经验丰富，实习生（小脑）什么都不会。两人一起干活，干砸了，老板把两人一起批。实习生干砸本来是因为他不会，可老员工也挨了批，就开始怀疑自己、改掉原来正确的习惯，比如不再仔细看工单（指令）了。</p>
+<p><strong>那把大脑冻住，不让它改，行不行？</strong></p>
+<p>不行。KI 论文第 270–284 行："freezing doesn't work"。PaliGemma 预训练时<strong>从没见过机器人数据</strong>，它的理解里没有"关节该怎么动""夹爪离杯子还有多远"这类信息。冻住它，小脑读到的东西不够用，论文实验里成功率是 <strong>0%</strong>（第 283–284 行）。</p>
+<p><strong>两难</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>做法</th>
+<th>常识（听指令）</th>
+<th>机器人本领</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>一起训练（π0）</td>
+<td>被冲掉一部分</td>
+<td>能学会，但慢</td>
+</tr>
+<tr>
+<td>冻住大脑</td>
+<td>完全保住</td>
+<td>学不会（0%）</td>
+</tr>
+</tbody>
+</table>
+<p>大脑<strong>必须</strong>学一点机器人的东西，但<strong>不能</strong>被随机小脑的梯度乱改。第 2 步讲 KI 怎么两头都要。</p>
+<h3 id="_2">动画演示：两难</h3>
+<p><img alt="两难：一起训练冲掉常识，冻住又学不会" src="../animations/09-gradient-interference.gif" /></p>
+<p>可交互版：<a href="../animations/09-gradient-interference.html">animations/09-gradient-interference.html</a>（可播放、单步、重来）。曲线是示意，表达论文结论的方向，不是论文里的数字。</p>
+<p><strong>怎么看</strong>：</p>
+<ol>
+<li>上面（一起训练）：红色箭头是小脑的梯度倒流进大脑。紫线（听指令）一开始就掉下去；青线（动作本领）慢慢涨。最后它把"勺子放进垃圾桶"做成了抓垃圾。</li>
+<li>下面（冻住大脑）：紫线一直平稳，青线几乎贴着底，动作做不出来。</li>
+</ol>
+<h3 id="2">第 2 步：知识隔离怎么做，小脑只读不改，大脑另有老师</h3>
+<blockquote>
+<p>对应原文：KI 论文第 286–298 行（三项措施）、第 300–337 行（§5.1 同时学离散和连续动作）、第 339–374 行（§5.2 stop-gradient，式 5–6）、第 476–480 行（图 6：π0 要多 7.5 倍训练步数）。</p>
+</blockquote>
+<p><strong>回到第 1 步的两难</strong>：大脑必须学机器人的东西（不能冻住），又不能被随机小脑的梯度乱改。KI 的办法是<strong>换一个老师</strong>：大脑不再听小脑的，改听一个靠谱的老师。</p>
+<p><strong>三项措施</strong>（第 286–298 行）</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>名字</th>
+<th>做什么</th>
+<th>解决什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>联合训练（joint-training）</td>
+<td>大脑自己也学<strong>念 FAST 动作词</strong>（第 7 章的离散 token，下一个词预测）；小脑同时用 flow matching 学连续动作</td>
+<td>大脑有了一个干净的学机器人信号，而且学得快</td>
+</tr>
+<tr>
+<td>2</td>
+<td>图文数据共训（VLM data co-training）</td>
+<td>训练时继续混网络上的看图说话、问答、找物体数据，以及机器人规划数据</td>
+<td>常识不丢</td>
+</tr>
+<tr>
+<td>3</td>
+<td>停止梯度（stop-gradient，sg）</td>
+<td>小脑照样读大脑的 K、V，但它的误差<strong>不往大脑里传</strong></td>
+<td>随机小脑改不到大脑</td>
+</tr>
+</tbody>
+</table>
+<p><strong>措施 3 的关键：只读不改</strong></p>
+<p>KI 论文把 attention 改成这样（式 5、6，第 359–371 行）。b = backbone（大脑），a = action expert（小脑）：</p>
+<div class="arithmatex">\[P = \mathrm{softmax}\begin{pmatrix} Q_b K_b^\top &amp; 0 \\ Q_a\, \mathrm{sg}(K_b)^\top &amp; Q_a K_a^\top \end{pmatrix},\qquad E_a = P_{ab}\, \mathrm{sg}(V_b) + P_{aa} V_a\]</div>
+<p>读法："sg 括号 K b" = 把大脑的 K <strong>当成常数</strong>来用。</p>
+<ul>
+<li><strong>前向</strong>（算结果时）：sg 什么也不做，小脑读到的 K、V 和原来一模一样；</li>
+<li><strong>反向</strong>（训练改参数时）：误差走到 sg 就停，<strong>不再往大脑里传</strong>。所以小脑的 flow matching 误差只改小脑自己的权重。</li>
+<li>右上角的 0 是第 8 章的遮挡：大脑看不到小脑。</li>
+</ul>
+<p><strong>为什么措施 3 不会变成"冻住"？</strong> 论文专门说了：stop-gradient <strong>当且仅当</strong>大脑同时被训练去直接预测动作时才合理（第 344–346 行）。也就是说，措施 3 必须和措施 1 一起用：大脑虽然不听小脑的，但它自己在学念 FAST 动作词，照样学到了机器人的东西。这就是和第 1 步"冻住大脑"的区别。</p>
+<p>另外，FAST 动作词和连续动作 token 之间互相看不见（第 333–334 行），两条路各学各的。</p>
+<p><strong>推理时</strong>：FAST 那条路只在训练时用来"教大脑"（第 290–292 行），推理时仍然由小脑用 flow matching 走 10 步出连续动作，所以<strong>照样快</strong>。</p>
+<p><strong>效果</strong>：π0 要多训练约 <strong>7.5 倍</strong>的步数才能达到差不多的水平（图 6，第 476–480 行）；KI 听指令更好，训练和 π0-FAST 一样快，推理又和 π0 一样快。</p>
+<p><strong>白话类比：换个老师</strong></p>
+<p>第 1 步里，老员工（大脑）被实习生（小脑）的错误连累挨批。现在的做法是：
+- 老员工有了<strong>自己的考核</strong>：自己也写一份简化版的工作方案（FAST 动作词），按这份方案打分；
+- 每周还继续做老本行（图文数据），手艺不生疏；
+- 实习生可以随时翻老员工的笔记（读 K、V），但实习生干砸了<strong>只批实习生</strong>（stop-gradient）。</p>
+<p><strong>公式</strong>：总损失 = 念词的损失（语言 + FAST 动作词）+ α × flow matching 损失（式 4，第 315–318 行）。因为两部分改的是不同的权重，论文直接取 α = 1（第 373–374 行）。</p>
+<h3 id="_3">动画演示：知识隔离</h3>
+<p><img alt="知识隔离：小脑只读不改，大脑另有老师" src="../animations/09b-knowledge-insulation.gif" /></p>
+<p>可交互版：<a href="../animations/09b-knowledge-insulation.html">animations/09b-knowledge-insulation.html</a>（可播放、单步、重来）。下方曲线是示意。</p>
+<p><strong>怎么看</strong>：</p>
+<ol>
+<li>三种信号轮流亮：蓝色虚线是前向，小脑读大脑的 K、V；红色是小脑的误差往回传，撞到 sg 墙停下；紫色（FAST 动作词）和橙色（网络图文数据）是大脑自己的两个老师。</li>
+<li>下图：KI（绿）和 π0-FAST（紫）都涨得快；π0（红）涨得慢；冻住大脑（灰）贴着底。</li>
+</ol>
+<h2 id="_4">练习与作答记录</h2>
+<p><strong>题 1</strong>：
+1. π0 训练时，小脑的梯度是通过哪条路流进大脑的？
+2. 为什么偏偏是"训练刚开始"的时候伤害最大？
+3. 既然会被冲坏，为什么不干脆把大脑冻住？</p>
+<p><strong>作答</strong>（2026-11-11，原话）："听指令梯度倒流进大脑，2 刚开始是随机的，3 完全冻住就无法学习了" ◐</p>
+<p><strong>点评</strong>：
+- 问 1 ◐：说出了"梯度倒流进大脑"，但没说<strong>走哪条路</strong>。路是 <strong>attention</strong>：小脑每层读大脑的 K、V，训练时误差顺着这条读的路倒回去，改大脑的 <span class="arithmatex">\(W_K\)</span>、<span class="arithmatex">\(W_V\)</span> 和更深的参数。"听指令"是被伤到的能力，不是路。
+- 问 2 ✓：小脑刚开始是随机的。补一句：所以它的误差又大、方向又没道理，倒流进大脑的就是"乱改"。
+- 问 3 ✓：方向对。说具体：PaliGemma 从没见过机器人数据，冻住后读出的东西不够小脑用，论文里成功率 0%。</p>
+<p><strong>题 2</strong>（第 2 步）：
+1. KI 的三项措施各是什么？哪一项保证"随机小脑改不到大脑"？
+2. stop-gradient 在前向（算结果）和反向（改参数）时各做什么？
+3. 只用 stop-gradient、不让大脑念 FAST 动作词，会退化成第 1 步的哪种情况？</p>
+<p><strong>作答</strong>：（待作答）</p>
+<h2 id="_5">口诀</h2>
+<blockquote>
+<p>实习生干砸，老员工挨批改坏习惯；冻住老员工，又学不会新活。<br />
+知识隔离：小脑只读不改，大脑另有老师（FAST 词 + 图文数据）。</p>
+</blockquote>
+<h2 id="_6">本章复习卡片</h2>
+<p>V25 一起训练为什么伤大脑、为什么不能冻住（见 <a href="../review.html">review.md</a>）</p><nav class="pager"><a href="08-pi0.html">← 第 8 章 · π0：大脑 + 小脑，动作专家（action expert）</a><span></span></nav>
+</main>
+<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a></footer>
+</body></html>

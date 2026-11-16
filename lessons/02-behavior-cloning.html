@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第 2 章 · 行为克隆：照着人类示范抄作业 · VLA 从零到 π0</title>
+<style>
+:root{--bg:#fbfbfa;--fg:#1f2328;--mute:#5d6470;--line:#e3e5e8;--card:#fff;--acc:#2f6fdf;--code:#f2f3f5;--quote:#f4f6fa}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}}
+:root[data-theme="dark"]{--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 -apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",sans-serif}
+a{color:var(--acc)}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+header.top .in{max-width:860px;margin:0 auto;padding:10px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:14px}
+header.top .brand{font-weight:600;color:var(--fg);text-decoration:none;margin-right:auto}
+header.top a{text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:24px 16px 72px;overflow-wrap:anywhere}
+h1{font-size:28px;line-height:1.35;margin:8px 0 16px} h2{font-size:22px;margin:40px 0 12px;padding-top:8px;border-top:1px solid var(--line)} h3{font-size:18px;margin:28px 0 8px}
+img{max-width:100%;height:auto;border-radius:8px;border:1px solid var(--line);background:#fff}
+blockquote{margin:16px 0;padding:10px 16px;background:var(--quote);border-left:3px solid var(--acc);border-radius:4px;color:var(--mute)}
+blockquote p{margin:4px 0}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font-size:.9em}
+pre{background:var(--code);padding:12px 14px;border-radius:8px;overflow-x:auto} pre code{padding:0;background:none}
+table{border-collapse:collapse;display:block;overflow-x:auto;max-width:100%;margin:12px 0;font-size:15px}
+th,td{border:1px solid var(--line);padding:6px 10px;vertical-align:top} th{background:var(--code)}
+details{border:1px solid var(--line);border-radius:8px;padding:6px 12px;margin:8px 0;background:var(--card)}
+details[open]{padding-bottom:10px} summary{cursor:pointer;color:var(--acc);font-weight:500}
+mjx-container{overflow-x:auto;overflow-y:hidden;max-width:100%}
+.btn{display:inline-block;margin:4px 8px 4px 0;padding:6px 14px;border:1px solid var(--acc);border-radius:999px;text-decoration:none;font-size:14px}
+.pager{display:flex;justify-content:space-between;gap:12px;margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0}
+.card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;color:inherit;text-decoration:none}
+.card:hover{border-color:var(--acc)} .card img{border:0;border-bottom:1px solid var(--line);border-radius:0;aspect-ratio:16/10;object-fit:contain;width:100%}
+.card .no{color:var(--mute);font-size:13px;padding:8px 12px 0} .card .t{padding:0 12px 12px;font-weight:500;line-height:1.5}
+.lead{font-size:17px;color:var(--mute)}
+footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-size:13px}
+</style>
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"],["$$","$$"]],processEscapes:true,processEnvironments:true}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+</head><body>
+<header class="top"><div class="in">
+<a class="brand" href="../index.html">VLA 从零到 π0</a>
+<a href="../lessons/index.html">讲义目录</a>
+<a href="../animations/index.html">动画</a>
+<a href="../review.html">复习卡片</a>
+<a href="../lessons/appendix-glossary.html">缩写表</a>
+</div></header>
+<main>
+<h1 id="2">第 2 章 · 行为克隆：照着人类示范抄作业</h1><p><a class="btn" href="../animations/02-compounding-error.html">▶ 打开本章可交互动画</a></p>
+<blockquote>
+<p>本章回答：策略 π 是怎么学出来的？训练数据长什么样？为什么"抄错一步会越错越远"？<br />
+讲解日期：2026-10-27 · 上一章：<a href="../lessons/01-what-is-a-policy.html">第 1 章 策略是什么</a> · 下一章：<a href="../lessons/03-action-chunking.html">第 3 章 动作分块</a><br />
+本章缩写：BC = Behavior Cloning（行为 / 克隆）；DAgger = Dataset Aggregation（数据集 / 聚合）；ACT = Action Chunking with Transformers；OXE = Open X-Embodiment（开放 / 跨 / 本体）；DROID = Distributed Robot Interaction Dataset（分布式 / 机器人 / 交互 / 数据集）；ALOHA = 低成本开源双臂遥操作硬件。全表见 <a href="../lessons/appendix-glossary.html">appendix-glossary.md</a></p>
+</blockquote>
+<h2 id="_1">讲解</h2>
+<h3 id="1">第 1 步：数据从哪来，怎么学</h3>
+<p><strong>白话类比：学徒看师傅做菜</strong></p>
+<p>师傅做一遍菜，学徒在旁边记笔记，每一刻记两样东西：</p>
+<ul>
+<li>锅里现在什么样（看到的）</li>
+<li>师傅这一刻手上做了什么（做的）</li>
+</ul>
+<p>记了 50 遍以后，学徒自己上手：看到锅里是这个样子，就照笔记做师傅当时那个动作。</p>
+<p>这就是<strong>行为克隆（Behavior Cloning，BC）</strong>：照着人的示范抄作业。</p>
+<p><strong>机器人的"笔记"怎么记</strong></p>
+<p>人用遥操作控制机器人做一遍任务。比如 ALOHA 用一对主从臂：人扳主臂，机器人的从臂跟着动。系统每个时刻记下一行：</p>
+<table>
+<thead>
+<tr>
+<th>时刻</th>
+<th>观测 <span class="arithmatex">\(o_t\)</span>（相机图 + 关节读数）</th>
+<th>指令 <span class="arithmatex">\(\ell\)</span></th>
+<th>人当时给的动作 <span class="arithmatex">\(a_t\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>🖼️</td>
+<td>"把杯子放进碗里"</td>
+<td><code>[0, 0, -0.01, 0, 0, 0, 0]</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>🖼️</td>
+<td>同上</td>
+<td><code>[0, 0, -0.01, 0, 0, 0, 0]</code></td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+</tbody>
+</table>
+<p>从开始到做完的一整遍叫一条<strong>示范</strong>（demonstration，也叫 episode）。ACT 论文里每个任务录了 50 条，控制频率 50 Hz（<code>materials/text/papers/act-aloha-2304.13705.txt</code> 第 470 行附近：<em>"We record 50 demonstrations for each task"</em>）。</p>
+<p><strong>怎么学</strong></p>
+<p>把示范里每一行当成一道"看图答题"：</p>
+<ul>
+<li>题目：<span class="arithmatex">\(o_t\)</span> 和 <span class="arithmatex">\(\ell\)</span></li>
+<li>标准答案：人给的 <span class="arithmatex">\(a_t^{\text{人}}\)</span></li>
+<li>模型的答案：<span class="arithmatex">\(\pi(o_t, \ell)\)</span></li>
+</ul>
+<p>训练就是让模型的答案尽量接近标准答案。用"差多少"当损失（loss），然后调参数把它压小：</p>
+<div class="arithmatex">\[\text{loss} = \big|\, \pi(o_t, \ell) - a_t^{\text{人}} \,\big|\]</div>
+<p>这和教模型认猫狗是同一套方法（监督学习），只是答案从"猫 / 狗"换成了一串动作数字。</p>
+<ul>
+<li>用绝对值（L1）还是平方（L2）衡量"差多少"都可以。ACT 选了 L1，论文说 L1 让动作更精确（同文件第 334–335 行）。</li>
+</ul>
+<h3 id="2_1">第 2 步：只看录像学，一走偏就越错越远</h3>
+<p><strong>训练时机器人不动。</strong> BC 只拿录好的示范来学，像学徒关在屋里背笔记，背完才第一次上灶。</p>
+<p><strong>白话类比：只看过"车在车道正中间"录像的新手</strong></p>
+<p>想象一个新手司机，看过的教学录像全是老司机开的，车永远在车道正中间。上路后：</p>
+<ol>
+<li>第 1 秒，方向盘稍微多打了一点，车偏了 10 厘米。</li>
+<li>眼前的画面变成"车靠左一点"。录像里从没出现过这种画面，他不知道该怎么回正，只能瞎猜。</li>
+<li>瞎猜又错一点，车偏到 30 厘米。画面更陌生，猜得更离谱。</li>
+<li>最后压线。</li>
+</ol>
+<p>每一步只错一点点，但<strong>错误会改变下一步看到的画面</strong>（第 1 章说的"吐完世界就变了"），而那个画面在训练数据里没见过，于是错上加错。这叫<strong>复合误差（compounding error）</strong>，也叫<strong>分布偏移（distribution shift）</strong>：训练时见到的是"人走出来的画面"，上场时见到的是"自己走出来的画面"，两者对不上。</p>
+<p><strong>原文出处</strong></p>
+<ul>
+<li>ACT 论文 §2：<em>"errors from previous timesteps accumulate and cause the robot to drift off of its training distribution"</em>（<code>materials/text/papers/act-aloha-2304.13705.txt</code> 第 72–74 行）</li>
+<li>CS285 Lecture 2 "Distributional shift" 一节（<code>cs285-deep-rl/materials/text/cs285-slides/lec-02.txt</code> 第 95–152 行）</li>
+</ul>
+<p><strong>怎么治（先认识名字，后面几章展开）</strong></p>
+<table>
+<thead>
+<tr>
+<th>办法</th>
+<th>一句话</th>
+<th>在哪讲</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DAgger</td>
+<td>让机器人自己跑，跑偏时人告诉它"这里该怎么做"，把这些纠正加回数据再训练</td>
+<td>CS285 lec-02 第 184–216 行；π*0.6 的"人工纠正"数据就是这个思路（第 12 章）</td>
+</tr>
+<tr>
+<td>动作分块（chunk）</td>
+<td>一次规划一整段，需要做决定的次数变少，出错的机会也少</td>
+<td>第 3 章</td>
+</tr>
+<tr>
+<td>更多、更杂的数据</td>
+<td>示范里本来就有"偏了再拉回来"的画面</td>
+<td>阶段 A 的 OXE / DROID</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_2">动画演示：复合误差：一走偏就越错越远</h3>
+<p><img alt="复合误差：一走偏就越错越远" src="../animations/02-compounding-error.gif" /></p>
+<p>可交互版：<a href="../animations/02-compounding-error.html">animations/02-compounding-error.html</a>（用浏览器打开，可播放、单步、换随机数重来）。</p>
+<p><strong>怎么看</strong>：</p>
+<ol>
+<li>绿色带子 = 示范数据覆盖过的状态，虚线 = 人的示范轨迹。两条路在第 12 步都被"碰歪"一下。</li>
+<li>上面（纯 BC）带子很窄：被碰出带子后，模型面对的是没见过的画面，动作不靠谱，偏差越滚越大，最后冲出路面。</li>
+<li>下面（加了"偏了再拉回来"的示范，DAgger / 更杂的数据）带子宽：碰歪后仍在见过的范围里，能拉回中间。对应第 3 题"见过 / 没见过"。</li>
+</ol>
+<h2 id="_3">练习与作答记录</h2>
+<p><strong>题 1</strong>：训练时机器人自己动了吗？换句话说，BC 训练是在真机上一边动一边学，还是只拿录好的数据学？这一点会带来什么后果？（大胆猜，第 2 步就讲这个。）</p>
+<p><strong>作答</strong>（2026-11-04，原话）：边动边学 ✗</p>
+<p><strong>点评</strong>：答反了。BC 训练时机器人<strong>不动</strong>，只拿录好的示范学。"边动边学"是强化学习（CS285 后半段）和 DAgger 的做法。正因为只看录像、从没见过自己犯错后的画面，上场后才会越错越远（复合误差）。</p>
+<p><strong>题 2</strong>（检查理解）：机器人夹杯子时第一步往下多走了 1 厘米，夹爪碰到了杯沿，杯子有点歪。为什么一个纯 BC 训出来的策略，在这之后很可能越做越糟？用"训练时见过 / 没见过"来解释，一两句话就行。</p>
+<p><strong>作答</strong>（2026-11-04，原话）：因为位置可能稍微偏一点就不行了 ◐</p>
+<p><strong>点评</strong>：半对。"稍微偏一点就出事"抓到了现象，但还没说出<strong>为什么</strong>偏一点就不行。完整的链条是三环：</p>
+<ol>
+<li><strong>没见过</strong>：人录示范时每次都夹得很准，录像里从来没有"杯子被碰歪"的画面；</li>
+<li><strong>乱猜</strong>：机器人现在看到的正是这种没见过的画面，不知道该怎么做，只能凭相似的画面瞎猜；</li>
+<li><strong>更偏</strong>：瞎猜的动作又有误差，杯子更歪，画面更陌生，接着猜得更差。</li>
+</ol>
+<p>关键词是"没见过"：问题不在"偏"本身，而在偏了以后进到了训练数据里没有的情况。</p>
+<p><strong>题 3</strong>（确认）：假如录示范时人故意让机器人偶尔碰歪杯子再扶正，训出来的策略再碰到"杯子歪了"会更好还是更差？为什么？</p>
+<p><strong>作答</strong>（2026-11-04，原话）：好，因为机器人在训练数据里见过这个情况 ✓</p>
+<p><strong>点评</strong>：对，抓住了"见过 / 没见过"这个关键。这正是 DAgger 和"更杂的数据"两种治法共同的道理：把"跑偏后怎么救"放进训练数据。</p>
+<h2 id="_4">口诀</h2>
+<blockquote>
+<p>人做一遍记一遍，看图答题对答案；<br />
+只学人走的路，一走偏就是没见过的路，越猜越偏。</p>
+</blockquote>
+<h2 id="_5">本章复习卡片</h2>
+<p>V03 BC 训练时机器人动不动、V04 复合误差的三环、V17 多录正中间示范救不了（见 <a href="../review.html">review.md</a>）</p><nav class="pager"><a href="01-what-is-a-policy.html">← 第 1 章 · 机器人策略是什么</a><a href="03-action-chunking.html">第 3 章 · 动作分块（action chunking）：看一眼，规划一整段 →</a></nav>
+</main>
+<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a></footer>
+</body></html>

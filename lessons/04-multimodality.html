@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第 4 章 · 多峰（multimodality）：同一个情况，两种都对的做法 · VLA 从零到 π0</title>
+<style>
+:root{--bg:#fbfbfa;--fg:#1f2328;--mute:#5d6470;--line:#e3e5e8;--card:#fff;--acc:#2f6fdf;--code:#f2f3f5;--quote:#f4f6fa}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}}
+:root[data-theme="dark"]{--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 -apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",sans-serif}
+a{color:var(--acc)}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+header.top .in{max-width:860px;margin:0 auto;padding:10px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:14px}
+header.top .brand{font-weight:600;color:var(--fg);text-decoration:none;margin-right:auto}
+header.top a{text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:24px 16px 72px;overflow-wrap:anywhere}
+h1{font-size:28px;line-height:1.35;margin:8px 0 16px} h2{font-size:22px;margin:40px 0 12px;padding-top:8px;border-top:1px solid var(--line)} h3{font-size:18px;margin:28px 0 8px}
+img{max-width:100%;height:auto;border-radius:8px;border:1px solid var(--line);background:#fff}
+blockquote{margin:16px 0;padding:10px 16px;background:var(--quote);border-left:3px solid var(--acc);border-radius:4px;color:var(--mute)}
+blockquote p{margin:4px 0}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font-size:.9em}
+pre{background:var(--code);padding:12px 14px;border-radius:8px;overflow-x:auto} pre code{padding:0;background:none}
+table{border-collapse:collapse;display:block;overflow-x:auto;max-width:100%;margin:12px 0;font-size:15px}
+th,td{border:1px solid var(--line);padding:6px 10px;vertical-align:top} th{background:var(--code)}
+details{border:1px solid var(--line);border-radius:8px;padding:6px 12px;margin:8px 0;background:var(--card)}
+details[open]{padding-bottom:10px} summary{cursor:pointer;color:var(--acc);font-weight:500}
+mjx-container{overflow-x:auto;overflow-y:hidden;max-width:100%}
+.btn{display:inline-block;margin:4px 8px 4px 0;padding:6px 14px;border:1px solid var(--acc);border-radius:999px;text-decoration:none;font-size:14px}
+.pager{display:flex;justify-content:space-between;gap:12px;margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0}
+.card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;color:inherit;text-decoration:none}
+.card:hover{border-color:var(--acc)} .card img{border:0;border-bottom:1px solid var(--line);border-radius:0;aspect-ratio:16/10;object-fit:contain;width:100%}
+.card .no{color:var(--mute);font-size:13px;padding:8px 12px 0} .card .t{padding:0 12px 12px;font-weight:500;line-height:1.5}
+.lead{font-size:17px;color:var(--mute)}
+footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-size:13px}
+</style>
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"],["$$","$$"]],processEscapes:true,processEnvironments:true}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+</head><body>
+<header class="top"><div class="in">
+<a class="brand" href="../index.html">VLA 从零到 π0</a>
+<a href="../lessons/index.html">讲义目录</a>
+<a href="../animations/index.html">动画</a>
+<a href="../review.html">复习卡片</a>
+<a href="../lessons/appendix-glossary.html">缩写表</a>
+</div></header>
+<main>
+<h1 id="4-multimodality">第 4 章 · 多峰（multimodality）：同一个情况，两种都对的做法</h1><p><a class="btn" href="../animations/04-multimodality.html">▶ 打开本章可交互动画</a></p>
+<blockquote>
+<p>本章回答：为什么第 2 章那种"和标准答案比差多少"的训练方法，在机器人上会出怪招？为什么 Diffusion Policy、π0 要用生成模型来出动作？<br />
+讲解日期：2026-11-04 · 上一章：<a href="../lessons/03-action-chunking.html">第 3 章 动作分块</a> · 下一章：<a href="../lessons/05-vlm.html">第 5 章 VLM</a><br />
+本章缩写：L1 / L2 = 绝对值误差 / 平方误差；CVAE = Conditional Variational AutoEncoder（条件 / 变分 / 自编码器）；BeT = Behavior Transformer（行为 Transformer）；VLM = Vision-Language Model（视觉 / 语言 / 模型）；RT-1 = Robotics Transformer 1。全表见 <a href="../lessons/appendix-glossary.html">appendix-glossary.md</a></p>
+</blockquote>
+<h2 id="_1">讲解</h2>
+<h3 id="1">第 1 步：两个都对的答案，平均起来是错的</h3>
+<p><strong>白话类比：绕开路中间的石头</strong></p>
+<p>路正中间有块石头。你看过 100 段老司机的录像：50 段从左边绕，50 段从右边绕。两种都对。</p>
+<p>现在让一个"只会求平均"的学生来学：左边一半、右边一半，平均下来就是……<strong>正中间直走</strong>，一头撞上石头。</p>
+<p><strong>机器人里的同一件事</strong></p>
+<p>第 2 章的训练方法是让模型的答案尽量接近人的答案（L1 / L2 损失）。如果同一个画面下，人有时这样做、有时那样做，模型为了让"平均差距"最小，就会输出<strong>几种做法的中间值</strong>，而中间值往往是哪种做法都不是的怪动作。</p>
+<p>"同一个情况下，有好几种都对的做法"，叫<strong>多峰（multimodal）</strong>：把所有人的做法画成分布图，会出现好几座山峰（左边一座、右边一座），而不是只有一座。</p>
+<blockquote>
+<p>注意：这里的 multimodal 和"多模态"（图像 + 文字）是同一个英文词，但意思完全不同。这里说的是<strong>动作分布有多个峰</strong>。</p>
+</blockquote>
+<p><strong>原文出处</strong>：Diffusion Policy §4.1 "Model Multi-Modal Action Distributions"（<code>materials/text/papers/diffusion-policy-2303.04137.txt</code> 第 276 行起）；图 3 的 Push-T 例子是 <em>"the end-effector (blue) can either go left or right to push the block"</em>（第 316–317 行）。</p>
+<h3 id="2">第 2 步：不求平均，改成"抽一个"</h3>
+<p><strong>解决思路</strong>：别让模型输出"一个最稳妥的答案"，而是让它学会<strong>整张分布图</strong>（哪里有山峰、每座山多高），用的时候从图上<strong>抽一个</strong>。抽到左边就往左绕，抽到右边就往右绕，永远不会抽到中间的山谷里。</p>
+<p><strong>白话类比：掷硬币选路</strong></p>
+<p>新手司机不再求平均，而是心里记住"左绕的人一半、右绕的人一半"。遇到石头时掷个硬币：正面左绕，反面右绕。每次都走一条真实存在的路线。</p>
+<p>能"学分布、再抽样"的模型叫<strong>生成模型</strong>。机器人里用过的几种（后面几章逐个讲）：</p>
+<table>
+<thead>
+<tr>
+<th>做法</th>
+<th>怎么表示分布</th>
+<th>谁在用</th>
+<th>在哪讲</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>分箱 + 分类</td>
+<td>把 Δy 切成 256 格，输出每格的概率，再抽一格</td>
+<td>RT-1、RT-2、OpenVLA</td>
+<td>第 6 章</td>
+</tr>
+<tr>
+<td>CVAE</td>
+<td>额外输入一个随机数 z，不同 z 对应不同做法</td>
+<td>ACT</td>
+<td>—</td>
+</tr>
+<tr>
+<td>扩散 / flow</td>
+<td>从一团随机噪声出发，一步步"推"成一个动作</td>
+<td>Diffusion Policy、π0</td>
+<td>第 8 章</td>
+</tr>
+</tbody>
+</table>
+<p>Diffusion Policy 的随机性来自起点：每次都从一团新的高斯噪声开始（<code>diffusion-policy-2303.04137.txt</code> 第 284–292 行），不同的起点会落进不同的山峰。</p>
+<h3 id="3-mode-commitment">第 3 步：抽定了就别变心（mode commitment）</h3>
+<p>每次独立抽签，机器人会"一会儿左、一会儿右"，在障碍物前来回抖，最后哪边都没绕过去。这叫<strong>换峰抖动（mode switching）</strong>。要让它<strong>抽定一边就坚持下去</strong>，现在的系统靠三层：</p>
+<table>
+<thead>
+<tr>
+<th>层</th>
+<th>怎么做到</th>
+<th>出处</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. 一段之内不变心</td>
+<td>一次抽出的是一整段 50 步的轨迹，这 50 步天然在同一个峰里</td>
+<td>Diffusion Policy 图 3：<em>"learns both modes and commits to only one mode within each rollout"</em>；BET <em>"fails to commit to a single mode due to its lack of temporal action consistency"</em>（<code>diffusion-policy-2303.04137.txt</code> 第 316–323 行）</td>
+</tr>
+<tr>
+<td>2. 新画面自己会"提醒"</td>
+<td>往左走了几步之后，新画面里机器人已经偏左了；训练数据里长这样的画面，人后面全是继续往左。所以重新抽签时，左边的峰变得很高、右边的峰几乎消失</td>
+<td>见题 3</td>
+</tr>
+<tr>
+<td>3. 显式接着旧计划想</td>
+<td>想新的一段时，把旧计划还没走完的那几步当成"已知条件"，新计划必须和它接上</td>
+<td>ACT 的 temporal ensembling（第 3 章）；第 13 章 RTC</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_2">动画演示：多峰：求平均会撞上，抽签要抽定</h3>
+<p><img alt="多峰：求平均会撞上，抽签要抽定" src="../animations/04-multimodality.gif" /></p>
+<p>可交互版：<a href="../animations/04-multimodality.html">animations/04-multimodality.html</a>（用浏览器打开，可播放、单步、换随机数重来）。</p>
+<p><strong>怎么看</strong>：</p>
+<ol>
+<li>灰色细线是 20 条示范：一半左绕、一半右绕，形成两座"峰"。</li>
+<li>① L2 求平均：Δy 平均成 0，直直撞上石头（第 1 题）。</li>
+<li>② 每 5 步独立抽签：一会儿左一会儿右（换峰抖动），在石头前来回拐，常常撞上（第 2 题）。</li>
+<li>③ 抽定一边 + 画面提醒：第一次抽完后画面里"已经偏左（或偏右）"，模型学到的分布只剩那一座峰，一路坚持（第 3 题）。交互版多点几次"重新抽签"，③ 有时左有时右，但不会走中间。</li>
+</ol>
+<h2 id="_3">练习与作答记录</h2>
+<p><strong>题 1</strong>：机器人夹爪前面有个障碍物。人的 100 条示范里，50 条往左绕（第 2 位 Δy = +0.05），50 条往右绕（Δy = −0.05）。一个用 L2 损失训练、只会输出"最接近平均"的模型：
+1. 它在这个画面下会输出 Δy 等于多少？
+2. 机器人会怎么样？</p>
+<p><strong>作答</strong>（2026-11-04，原话）：0，机器人这样就回从中间过去 ✓</p>
+<p><strong>点评</strong>：对。(+0.05 × 50 + (−0.05) × 50) / 100 = 0，模型输出 Δy = 0，直直往中间走，正好撞上障碍物。"从中间过去"就是撞上去。这就是求平均在多峰情况下的毛病：两个对的答案，平均出一个错的。</p>
+<p><strong>题 2</strong>：现在换成"抽一个"的模型。结合第 3 章的滚动重规划：每走 5 步就重新想一次、重新抽一次。如果每次都独立地掷硬币（50% 左、50% 右），机器人在绕障碍的过程中可能出现什么问题？</p>
+<p><strong>作答</strong>（2026-11-04，原话）：可能一会左边，一会右，造成动作抖动，当选择某个曲线后，后续抽卡应该尽量哦租一个分布，这样更合理 ✓</p>
+<p><strong>点评</strong>：对。问题叫换峰抖动（mode switching）；你提的"选定一条曲线后就坚持同一个峰"叫 mode commitment，正是 Diffusion Policy 和 RTC 追求的性质。（"哦租"按"用同一个"理解。）</p>
+<p><strong>题 3</strong>：机器人抽到"左绕"，已经往左走了 2 厘米。这时重新看一眼、重新抽签。模型里并没有"记住我上次选了左"的开关，为什么它这次抽到左边的概率会变得很高？用"训练数据里长这样的画面，人后来怎么做"来解释。</p>
+<p><strong>作答</strong>（2026-11-04，原话）：因为数据上走了左边数据都会继续走左边很少有换峰的，这是学出来的 ✓</p>
+<p><strong>点评</strong>：完全对，"这是学出来的"是关键。模型不需要额外的记忆开关：<strong>画面本身就带着"我之前选了左"的信息</strong>。训练数据里"已经偏左"的画面后面几乎都是继续往左，所以模型学到的分布在这种画面下只剩左边一座峰。这也是为什么第 2 章的复合误差和这里是同一个道理的两面：画面决定模型以为自己在哪条路上。</p>
+<h2 id="_4">口诀</h2>
+<blockquote>
+<p>左绕对，右绕也对，平均一下撞上去；<br />
+不求平均抽一个，抽到哪条走哪条；<br />
+抽定一边别变心，一段之内、画面提醒、接着旧计划。</p>
+</blockquote>
+<h2 id="_5">本章复习卡片</h2>
+<p>V08 多峰与求平均的毛病、V09 换峰抖动与 mode commitment（见 <a href="../review.html">review.md</a>）</p><nav class="pager"><a href="03-action-chunking.html">← 第 3 章 · 动作分块（action chunking）：看一眼，规划一整段</a><a href="05-vlm.html">第 5 章 · VLM：图片切块和文字一起排队进 Transformer →</a></nav>
+</main>
+<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a></footer>
+</body></html>

@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>附录 · 公式符号怎么读 · VLA 从零到 π0</title>
+<style>
+:root{--bg:#fbfbfa;--fg:#1f2328;--mute:#5d6470;--line:#e3e5e8;--card:#fff;--acc:#2f6fdf;--code:#f2f3f5;--quote:#f4f6fa}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}}
+:root[data-theme="dark"]{--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 -apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",sans-serif}
+a{color:var(--acc)}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+header.top .in{max-width:860px;margin:0 auto;padding:10px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:14px}
+header.top .brand{font-weight:600;color:var(--fg);text-decoration:none;margin-right:auto}
+header.top a{text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:24px 16px 72px;overflow-wrap:anywhere}
+h1{font-size:28px;line-height:1.35;margin:8px 0 16px} h2{font-size:22px;margin:40px 0 12px;padding-top:8px;border-top:1px solid var(--line)} h3{font-size:18px;margin:28px 0 8px}
+img{max-width:100%;height:auto;border-radius:8px;border:1px solid var(--line);background:#fff}
+blockquote{margin:16px 0;padding:10px 16px;background:var(--quote);border-left:3px solid var(--acc);border-radius:4px;color:var(--mute)}
+blockquote p{margin:4px 0}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font-size:.9em}
+pre{background:var(--code);padding:12px 14px;border-radius:8px;overflow-x:auto} pre code{padding:0;background:none}
+table{border-collapse:collapse;display:block;overflow-x:auto;max-width:100%;margin:12px 0;font-size:15px}
+th,td{border:1px solid var(--line);padding:6px 10px;vertical-align:top} th{background:var(--code)}
+details{border:1px solid var(--line);border-radius:8px;padding:6px 12px;margin:8px 0;background:var(--card)}
+details[open]{padding-bottom:10px} summary{cursor:pointer;color:var(--acc);font-weight:500}
+mjx-container{overflow-x:auto;overflow-y:hidden;max-width:100%}
+.btn{display:inline-block;margin:4px 8px 4px 0;padding:6px 14px;border:1px solid var(--acc);border-radius:999px;text-decoration:none;font-size:14px}
+.pager{display:flex;justify-content:space-between;gap:12px;margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0}
+.card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;color:inherit;text-decoration:none}
+.card:hover{border-color:var(--acc)} .card img{border:0;border-bottom:1px solid var(--line);border-radius:0;aspect-ratio:16/10;object-fit:contain;width:100%}
+.card .no{color:var(--mute);font-size:13px;padding:8px 12px 0} .card .t{padding:0 12px 12px;font-weight:500;line-height:1.5}
+.lead{font-size:17px;color:var(--mute)}
+footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-size:13px}
+</style>
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"],["$$","$$"]],processEscapes:true,processEnvironments:true}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+</head><body>
+<header class="top"><div class="in">
+<a class="brand" href="../index.html">VLA 从零到 π0</a>
+<a href="../lessons/index.html">讲义目录</a>
+<a href="../animations/index.html">动画</a>
+<a href="../review.html">复习卡片</a>
+<a href="../lessons/appendix-glossary.html">缩写表</a>
+</div></header>
+<main>
+<h1 id="_1">附录 · 公式符号怎么读</h1>
+<blockquote>
+<p>用途：看到公式不知道怎么念、不知道上标下标什么意思时，先查这一页。读法给英文和中文近似音，意思给白话解释和本课程里的例子。整理日期：2026-11-08（复习第 8 章题 2 时问"δ = 0.1 里的符号怎么读"）。缩写见 <a href="../lessons/appendix-glossary.html">appendix-glossary.md</a>。</p>
+</blockquote>
+<h2 id="1">1. 先学会念一条完整的公式</h2>
+<p>π0 推理一步（第 8 章；原文 <code>materials/text/papers/pi0-2410.24164.txt</code> 第 291–293 行）：</p>
+<div class="arithmatex">\[A_t^{\tau+\delta} = A_t^\tau + \delta \cdot v_\theta(A_t^\tau, o_t),\quad \delta = 0.1\]</div>
+<table>
+<thead>
+<tr>
+<th>片段</th>
+<th>怎么念</th>
+<th>意思</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(A_t^{\tau}\)</span></td>
+<td>"A 下标 t、上标 tau"</td>
+<td>第 t 个控制时刻那段动作，在进度 τ 时的样子（还半雾半清）</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(A_t^{\tau+\delta}\)</span></td>
+<td>"A 下标 t、上标 tau 加 delta"</td>
+<td>同一段动作，往前推一小步之后的样子</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(=\)</span></td>
+<td>"等于"</td>
+<td>左边由右边算出来</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\delta \cdot v\)</span></td>
+<td>"delta 乘 v"</td>
+<td>步长 × 速度 = 这一步走多远</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(v_\theta(\cdot)\)</span></td>
+<td>"v 下标 theta，括号……"</td>
+<td>小脑（参数是 θ 的网络）猜出来的速度</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\((A_t^\tau, o_t)\)</span></td>
+<td>"括号里是 A t tau 和 o t"</td>
+<td>小脑要看的东西：当前的动作草稿 + 当前观测</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\delta = 0.1\)</span></td>
+<td>"delta 等于零点一"</td>
+<td>每步走 0.1 份进度，10 步从 τ = 0 走到 1</td>
+</tr>
+</tbody>
+</table>
+<p><strong>整句念</strong>："A t 的 tau 加 delta，等于 A t 的 tau，加上 delta 乘以 v theta。"
+<strong>整句意思</strong>：下一步的位置 = 现在的位置 + 步长 × 速度。就是"走路"：现在在哪，往哪个方向迈多大一步。</p>
+<p><strong>最容易误会的一点</strong>：这里的上标 τ <strong>不是乘方</strong>。<span class="arithmatex">\(A^\tau\)</span> 不是"A 的 τ 次方"，而是"进度为 τ 时的 A"，只是个标签。同理 <span class="arithmatex">\(A^{0.3}\)</span> 是"进度 0.3 时的 A"，不是 A 的 0.3 次方。上标是不是乘方要看上下文：<span class="arithmatex">\(x^2\)</span>、<span class="arithmatex">\(e^x\)</span> 是乘方，<span class="arithmatex">\(A^\tau\)</span>、<span class="arithmatex">\(\pi^*\)</span> 是标签。</p>
+<h2 id="2">2. 希腊字母</h2>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>英文名</th>
+<th>中文近似音</th>
+<th>本课程里常表示</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>α</td>
+<td>alpha</td>
+<td>阿尔法</td>
+<td>系数、学习率</td>
+<td></td>
+</tr>
+<tr>
+<td>β</td>
+<td>beta</td>
+<td>贝塔</td>
+<td>系数（Adam 优化器的 β₁、β₂）</td>
+<td></td>
+</tr>
+<tr>
+<td>γ</td>
+<td>gamma</td>
+<td>伽马</td>
+<td>倍数、折扣因子</td>
+<td>FAST 取整前乘的倍数 γ（第 7 章）</td>
+</tr>
+<tr>
+<td>δ</td>
+<td>delta（小写）</td>
+<td>德尔塔</td>
+<td><strong>一小步</strong>的步长</td>
+<td>π0 每步 δ = 0.1（第 8 章）</td>
+</tr>
+<tr>
+<td>Δ</td>
+<td>Delta（大写）</td>
+<td>德尔塔</td>
+<td><strong>变化量</strong>："新的减旧的"</td>
+<td>Δx = 手往前挪了多少（第 1 章）</td>
+</tr>
+<tr>
+<td>ε / ϵ</td>
+<td>epsilon</td>
+<td>艾普西隆</td>
+<td><strong>随机噪声</strong>；或"很小的数"</td>
+<td>起点噪声 ε = −1（第 8 章）</td>
+</tr>
+<tr>
+<td>θ</td>
+<td>theta</td>
+<td>西塔</td>
+<td><strong>模型参数</strong>（网络里所有可学的数）</td>
+<td><span class="arithmatex">\(v_\theta\)</span>、<span class="arithmatex">\(\pi_\theta\)</span></td>
+</tr>
+<tr>
+<td>λ</td>
+<td>lambda</td>
+<td>兰姆达</td>
+<td>权重系数（几项损失按多大比例加起来）</td>
+<td></td>
+</tr>
+<tr>
+<td>μ</td>
+<td>mu</td>
+<td>缪</td>
+<td>平均值</td>
+<td></td>
+</tr>
+<tr>
+<td>σ</td>
+<td>sigma（小写）</td>
+<td>西格玛</td>
+<td>标准差；或 sigmoid 函数</td>
+<td></td>
+</tr>
+<tr>
+<td>Σ</td>
+<td>Sigma（大写）</td>
+<td>西格玛</td>
+<td><strong>求和</strong></td>
+<td><span class="arithmatex">\(\sum_{i=1}^{n}\)</span></td>
+</tr>
+<tr>
+<td>π</td>
+<td>pi</td>
+<td>派</td>
+<td><strong>策略</strong>（不是圆周率 3.14）</td>
+<td>π0 读"pi zero"；<span class="arithmatex">\(\pi(a \mid o)\)</span></td>
+</tr>
+<tr>
+<td>τ</td>
+<td>tau</td>
+<td>套（/taʊ/）</td>
+<td>flow matching 的<strong>进度</strong>，0 → 1</td>
+<td><span class="arithmatex">\(A^\tau\)</span>（第 8 章）</td>
+</tr>
+<tr>
+<td>ϕ / φ</td>
+<td>phi</td>
+<td>斐</td>
+<td>另一组模型参数</td>
+<td></td>
+</tr>
+<tr>
+<td>ω</td>
+<td>omega</td>
+<td>欧米伽</td>
+<td>角速度、频率</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>小写 δ 和大写 Δ 同名不同义：δ 是"人为定的一小步"，Δ 是"两次之间差了多少"。</p>
+<h2 id="3">3. 上标、下标、头上的记号</h2>
+<table>
+<thead>
+<tr>
+<th>写法</th>
+<th>怎么念</th>
+<th>意思</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(x_t\)</span></td>
+<td>"x 下标 t" / "x t"</td>
+<td>第 t 个时刻的 x</td>
+<td><span class="arithmatex">\(o_t\)</span> = 第 t 时刻的观测</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(x_{t:t+H}\)</span></td>
+<td>"x 从 t 到 t 加 H"</td>
+<td>一段连续时刻</td>
+<td><span class="arithmatex">\(a_{t:t+49}\)</span> = 一个 50 步的 chunk</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(v_\theta\)</span></td>
+<td>"v 下标 theta"</td>
+<td>由参数 θ 决定的函数（就是那个网络）</td>
+<td></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(x^2\)</span></td>
+<td>"x 平方"</td>
+<td>乘方</td>
+<td></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(A^\tau\)</span></td>
+<td>"A 上标 tau"</td>
+<td><strong>标签</strong>，不是乘方：进度 τ 时的 A</td>
+<td></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\pi^*\)</span></td>
+<td>"pi star"</td>
+<td>最好的 / 目标策略</td>
+<td>π*0.6</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\hat{a}\)</span></td>
+<td>"a hat"</td>
+<td>模型的<strong>估计值</strong>、预测值</td>
+<td></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\bar{x}\)</span></td>
+<td>"x bar"</td>
+<td>平均值；或取整后的值</td>
+<td>FAST 取整后的系数 <span class="arithmatex">\(\bar C\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(x'\)</span></td>
+<td>"x prime"</td>
+<td>另一个 x、下一个 x</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="4">4. 运算和关系符号</h2>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>怎么念</th>
+<th>意思</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(\cdot\)</span> / <span class="arithmatex">\(\times\)</span></td>
+<td>"乘"</td>
+<td>乘法</td>
+<td><span class="arithmatex">\(\delta \cdot v\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\approx\)</span></td>
+<td>"约等于"</td>
+<td>差不多相等</td>
+<td>73 ms ≈ 0.07 s</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\in\)</span></td>
+<td>"属于"</td>
+<td>在某个范围 / 集合里</td>
+<td><span class="arithmatex">\(\tau \in [0, 1]\)</span>：τ 在 0 到 1 之间</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\([0, 1]\)</span></td>
+<td>"零到一，闭区间"</td>
+<td>包含两端</td>
+<td></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\sim\)</span></td>
+<td>"服从" / "采样自"</td>
+<td>从某个分布里随机抽</td>
+<td><span class="arithmatex">\(\epsilon \sim \mathcal{N}(0, I)\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\mathcal{N}(0, I)\)</span></td>
+<td>"正态分布，均值 0，方差 I"</td>
+<td>标准高斯噪声</td>
+<td>flow matching 的起点</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(p(a \mid o)\)</span></td>
+<td>"p of a given o" / "给定 o 时 a 的概率"</td>
+<td>条件概率：看到 o 以后，做 a 的可能性</td>
+<td>策略 <span class="arithmatex">\(\pi(a \mid o, \ell)\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\sum_{i=1}^{n}\)</span></td>
+<td>"对 i 从 1 到 n 求和"</td>
+<td>加起来</td>
+<td></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\mathbb{E}[\cdot]\)</span></td>
+<td>"期望" / "expectation of"</td>
+<td>平均下来的值</td>
+<td>损失 = 期望误差</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\lVert x \rVert^2\)</span></td>
+<td>"x 的范数的平方"</td>
+<td>每个数平方再加起来：误差有多大</td>
+<td>L2 损失 <span class="arithmatex">\(\lVert v - u \rVert^2\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\nabla_\theta L\)</span></td>
+<td>"nabla theta L" / "L 对 θ 的梯度"</td>
+<td>参数往哪边改，损失下降最快</td>
+<td></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\partial\)</span></td>
+<td>"偏" / "partial"</td>
+<td>偏导数</td>
+<td></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\arg\max\)</span></td>
+<td>"arg max"</td>
+<td>让某个值最大的<strong>那个选项</strong>（不是最大值本身）</td>
+<td>选概率最大的词</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\to\)</span></td>
+<td>"映射到" / "变成"</td>
+<td>输入变成输出</td>
+<td>图像 → token</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\log\)</span> / <span class="arithmatex">\(\exp\)</span></td>
+<td>"log" / "e 的……次方"</td>
+<td>对数 / 指数</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="5">5. 本课程常用的字母约定</h2>
+<table>
+<thead>
+<tr>
+<th>字母</th>
+<th>意思</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(o\)</span> / <span class="arithmatex">\(o_t\)</span></td>
+<td>observation 观测：相机图 + 机器人状态</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\ell\)</span></td>
+<td>language 指令（花体小写 L）</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(a\)</span> / <span class="arithmatex">\(a_t\)</span></td>
+<td>一个动作向量（一个时刻）</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(A_t\)</span></td>
+<td>一个动作 chunk（从 t 开始的一段）</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(q_t\)</span></td>
+<td>机器人自身状态（关节角）</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(H\)</span> / <span class="arithmatex">\(T_p\)</span> / <span class="arithmatex">\(T_a\)</span></td>
+<td>chunk 长度 / 每次想几步 / 走几步再重想</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(L\)</span> / <span class="arithmatex">\(\mathcal{L}\)</span></td>
+<td>损失（loss）</td>
+</tr>
+</tbody>
+</table>
+</main>
+<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a></footer>
+</body></html>

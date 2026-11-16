@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>vla-deep-dive · 复习卡片 · VLA 从零到 π0</title>
+<style>
+:root{--bg:#fbfbfa;--fg:#1f2328;--mute:#5d6470;--line:#e3e5e8;--card:#fff;--acc:#2f6fdf;--code:#f2f3f5;--quote:#f4f6fa}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}}
+:root[data-theme="dark"]{--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 -apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",sans-serif}
+a{color:var(--acc)}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+header.top .in{max-width:860px;margin:0 auto;padding:10px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:14px}
+header.top .brand{font-weight:600;color:var(--fg);text-decoration:none;margin-right:auto}
+header.top a{text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:24px 16px 72px;overflow-wrap:anywhere}
+h1{font-size:28px;line-height:1.35;margin:8px 0 16px} h2{font-size:22px;margin:40px 0 12px;padding-top:8px;border-top:1px solid var(--line)} h3{font-size:18px;margin:28px 0 8px}
+img{max-width:100%;height:auto;border-radius:8px;border:1px solid var(--line);background:#fff}
+blockquote{margin:16px 0;padding:10px 16px;background:var(--quote);border-left:3px solid var(--acc);border-radius:4px;color:var(--mute)}
+blockquote p{margin:4px 0}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font-size:.9em}
+pre{background:var(--code);padding:12px 14px;border-radius:8px;overflow-x:auto} pre code{padding:0;background:none}
+table{border-collapse:collapse;display:block;overflow-x:auto;max-width:100%;margin:12px 0;font-size:15px}
+th,td{border:1px solid var(--line);padding:6px 10px;vertical-align:top} th{background:var(--code)}
+details{border:1px solid var(--line);border-radius:8px;padding:6px 12px;margin:8px 0;background:var(--card)}
+details[open]{padding-bottom:10px} summary{cursor:pointer;color:var(--acc);font-weight:500}
+mjx-container{overflow-x:auto;overflow-y:hidden;max-width:100%}
+.btn{display:inline-block;margin:4px 8px 4px 0;padding:6px 14px;border:1px solid var(--acc);border-radius:999px;text-decoration:none;font-size:14px}
+.pager{display:flex;justify-content:space-between;gap:12px;margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0}
+.card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;color:inherit;text-decoration:none}
+.card:hover{border-color:var(--acc)} .card img{border:0;border-bottom:1px solid var(--line);border-radius:0;aspect-ratio:16/10;object-fit:contain;width:100%}
+.card .no{color:var(--mute);font-size:13px;padding:8px 12px 0} .card .t{padding:0 12px 12px;font-weight:500;line-height:1.5}
+.lead{font-size:17px;color:var(--mute)}
+footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-size:13px}
+</style>
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"],["$$","$$"]],processEscapes:true,processEnvironments:true}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+</head><body>
+<header class="top"><div class="in">
+<a class="brand" href="index.html">VLA 从零到 π0</a>
+<a href="lessons/index.html">讲义目录</a>
+<a href="animations/index.html">动画</a>
+<a href="review.html">复习卡片</a>
+<a href="lessons/appendix-glossary.html">缩写表</a>
+</div></header>
+<main>
+<h1 id="vla-deep-dive">vla-deep-dive · 复习卡片</h1>
+<p>讲解中卡住、追问、答错的地方，以及必须记住的公式和符号，都会自动追加到这里。每张卡片的"来源"链接到 <a href="lessons/index.html">lessons/</a> 里对应的讲义章节，忘了就回去重读那一章。</p>
+<h2 id="_1">怎么用</h2>
+<ol>
+<li>先只看<strong>问题</strong>，自己说出或写出答案；</li>
+<li>再点开"答案"核对；</li>
+<li>答对了，在"复习记录"里补一个日期；答错了就当天再看一遍。</li>
+</ol>
+<p><strong>复习间隔</strong>（按答对的次数）：第 1 次 → 隔 1 天 → 隔 3 天 → 隔 7 天 → 隔 14 天 → 隔 30 天。连续答对 5 次的卡片移到文末"已掌握"。</p>
+<p>想复习时说一声"复习"，我会挑到期的卡片来考你。</p>
+<hr />
+<h2 id="_2">基本概念</h2>
+<h3 id="v01-vla">V01 · VLA 的三个字母分别是什么？它的输入和输出各是什么？</h3>
+<p>来源：<a href="lessons/01-what-is-a-policy.html">第 1 章</a> · 加入 2026-10-27 · 复习记录：2026-11-07 ✓（三个字母、输入图像 + 文字、输出动作 chunk；漏了机器人自身关节状态）</p>
+<details>
+<summary>答案</summary>
+<p>V = Vision（看：相机图像），L = Language（听：一句指令），A = Action（做：输出动作）。</p>
+<p>输入：几张相机图 + 一句指令（通常还有机器人自己的关节状态）。输出：一串数字（一个动作向量），比如 7 个数 = 手往前后/左右/上下移多少 + 三个转角 + 夹爪开合。每秒要输出很多次。</p>
+<p>口诀：看一眼，听一句，吐一串数。</p>
+</details>
+<h3 id="v02-3">V02 · 一个动作向量描述多长时间的事？"往下 3 厘米再合上夹爪"该怎么写？</h3>
+<p>来源：<a href="lessons/01-what-is-a-policy.html#练习与作答记录">第 1 章 · 练习</a> · 加入 2026-10-27 · 复习记录：2026-11-04 ✓（-0.03 往下、第 7 位 0 → 1，分成两个时刻）；2026-11-07 ◐（"往下 3 cm、0 → 1 合上"对；但把一个向量答成"管 50 帧 / 1 秒"，那是一个 chunk）</p>
+<details>
+<summary>答案</summary>
+<p>一个动作向量只描述<strong>一个时刻</strong>要做的事。多件事要分成多个时刻依次输出：</p>
+<ul>
+<li>时刻 1：<code>[0, 0, -0.03, 0, 0, 0, 0]</code>：往下 3 厘米（Δz 为负），夹爪保持张开</li>
+<li>时刻 2：<code>[0, 0, 0, 0, 0, 0, 1]</code>：不动，合上夹爪</li>
+</ul>
+<p>夹爪本来开着就不用再"张开"，保持 0 即可。一次把好几个时刻的动作都规划出来，叫动作分块（action chunk，第 3 章）。</p>
+<p>易错点：把一串步骤塞进一个向量。把"向量"和"chunk"搞混：π0 的一个 chunk = 50 个向量，每个向量只管 1/50 秒（20 ms），整段 1 秒。</p>
+</details>
+<h3 id="v03-bc">V03 · 行为克隆（BC）训练时机器人自己动吗？</h3>
+<p>来源：<a href="lessons/02-behavior-cloning.html#第-2-步只看录像学一走偏就越错越远">第 2 章 · 第 2 步</a> · 加入 2026-11-04 · 复习记录：2026-11-04 ✗（答成"边动边学"）；2026-11-07 ◐（"用记录的数据学"对，但仍答"机器人会动"）</p>
+<details>
+<summary>答案</summary>
+<p><strong>不动。</strong> BC 只拿人录好的示范离线学（看图答题对答案）。"边动边学"是强化学习和 DAgger 的做法。</p>
+<p>易错点：把 BC 和强化学习混在一起。</p>
+</details>
+<h3 id="v04-compounding-error-bc">V04 · 什么是复合误差（compounding error）？为什么 BC 机器人"偏一点"就会越做越糟？</h3>
+<p>来源：<a href="lessons/02-behavior-cloning.html#第-2-步只看录像学一走偏就越错越远">第 2 章 · 第 2 步</a> · 加入 2026-11-04 · 复习记录：2026-11-04 ◐（只答出"偏一点就不行"，没说出"没见过"）；2026-11-04 追问 ✓（"训练数据里见过这个情况"）；2026-11-07 ◐（答出"误差会累积"，但没说为什么：偏出示范覆盖的状态 → 没见过 → 动作更不靠谱；"多个子环节"应为"一步接一步的时刻"）；2026-11-07 补问 ✗（"绿线为什么能回来"忘了，已重讲：数据里有"偏了怎么回"的示范，带子宽 = 见过偏的画面）；2026-11-07 检查题 ✗（"多录 1000 条正中间示范能回来吗"答成"有纠偏数据所以能"，见 V17）</p>
+<details>
+<summary>答案</summary>
+<p>三环：</p>
+<ol>
+<li><strong>没见过</strong>：示范都是人做得好的画面，没有"偏了"的画面；</li>
+<li><strong>乱猜</strong>：一偏就进到训练数据里没有的情况，策略只能瞎猜；</li>
+<li><strong>更偏</strong>：猜错让画面更陌生，错上加错。</li>
+</ol>
+<p>也叫分布偏移（distribution shift）：训练时看的是人走出来的画面，上场时看的是自己走出来的画面。治法：DAgger（人纠正后加回数据）、动作分块（第 3 章）、更杂的数据。核心都是一件事：让训练数据里也有"偏了之后该怎么拉回来"的画面，见过就会救。</p>
+<p>口诀：只学人走的路，一走偏就是没见过的路，越猜越偏。</p>
+</details>
+<h3 id="v05-action-chunk10-50-hz-k-50">V05 · 动作分块（action chunk）是什么？10 秒、50 Hz 的任务，k = 50 时要做几次决定？代价是什么？</h3>
+<p>来源：<a href="lessons/03-action-chunking.html">第 3 章</a> · 加入 2026-11-04 · 复习记录：2026-11-04 ✓（500 步 / 500 次 / 10 次、每段 1 秒）；2026-11-07 ✗（决定次数答成 50，应为 500 ÷ 50 = 10；代价答成"太频繁、开销大、卡顿"，那是不分块的代价，分块的代价是走 chunk 时盲走）；2026-11-07 检查题 ✓（k = 25 → 20 次、每次盲走 0.5 秒）</p>
+<details>
+<summary>答案</summary>
+<p>一次输出 k 个动作向量 <span class="arithmatex">\([a_t,\dots,a_{t+k-1}] = \pi(o_t,\ell)\)</span>，走完再看下一眼。</p>
+<p>10 s × 50 Hz = 500 步；一步一想 500 次决定；k = 50 只要 10 次，每段 1 秒。决定次数变成 1/k，复合误差变小（ACT："k-fold reduction in the effective horizon"）。</p>
+<p>代价：走 chunk 时不看新画面（盲走），接缝处动作会跳。所以 k 不是越大越好。</p>
+<p>易错点：k = 50 是"每段 50 步"，不是"决定 50 次"；"太频繁、算不过来"是一步一想的毛病，分块的毛病反过来，是看得太少。</p>
+<p>口诀：看一眼走一整段，决定少了错得少，但走的时候是闭着眼。</p>
+</details>
+<h3 id="v06-receding-horizont_p-t_a">V06 · 滚动重规划（receding horizon）怎么做？<span class="arithmatex">\(T_p\)</span> 和 <span class="arithmatex">\(T_a\)</span> 分别是什么？</h3>
+<p>来源：<a href="lessons/03-action-chunking.html#第-3-步想一大段只走一小段滚动重规划">第 3 章 · 第 3 步</a> · 加入 2026-11-04 · 复习记录：2026-11-04 ✓（自己想出"10 Hz、每次走 5 步再看"）；2026-11-07 ✓（Tp = 每次规划多长，Ta = 多久重规划一次；还联想到上一段没走完就能换新计划）</p>
+<details>
+<summary>答案</summary>
+<p>每次想 <span class="arithmatex">\(T_p\)</span> 步（prediction horizon，比如 50），只走前 <span class="arithmatex">\(T_a\)</span> 步（action execution horizon，比如 5），然后重新看、重新想。到点就直接换新计划，不比较新旧。</p>
+<p><span class="arithmatex">\(T_a\)</span> 决定最慢多久发现变化：50 Hz 下 5 步 = 0.1 秒（每秒重看 10 次），代价是每次推理必须在 0.1 秒内完成。ACT 更极端：每步都重想，把重叠的预测加权平均（temporal ensembling）。</p>
+<p>口诀：想得远，走得短。</p>
+</details>
+<h3 id="v07-50-5-45">V07 · 想 50 步只走 5 步，没用上的 45 步算浪费吗？</h3>
+<p>来源：<a href="lessons/03-action-chunking.html#练习与作答记录">第 3 章 · 题 3</a> · 加入 2026-11-04 · 复习记录：2026-11-04 ✓（答出"随时调整"和"防卡帧"）；2026-11-07 ✓（"当缓存、避免卡顿"；这次没提随时调整和长远意图）</p>
+<details>
+<summary>答案</summary>
+<p>不算浪费，三个用处：</p>
+<ol>
+<li><strong>随时调整</strong>：每 5 步换新计划，跟上变化；</li>
+<li><strong>防卡帧（异步推理）</strong>：模型在后台算下一段时，机器人接着走旧计划剩下的步数，不停下干等（SmolVLA 的 asynchronous inference，第 13 章 RTC 也靠这个）；</li>
+<li><strong>想得远，走得好</strong>：规划长段让前几步和长远意图连贯，不短视、不来回抖（Diffusion Policy："temporal action consistency"）。</li>
+</ol>
+<p>口诀：没走的是备胎，也是远见。</p>
+</details>
+<h3 id="v08-multimodal-l2">V08 · 什么是多峰（multimodal）动作分布？为什么用 L2 损失求平均会出错？</h3>
+<p>来源：<a href="lessons/04-multimodality.html">第 4 章</a> · 加入 2026-11-04 · 复习记录：2026-11-04 ✓（算出 Δy = 0、会从中间撞上去）；2026-11-07 ◐（"L2 把动作拉平均"对；多峰的定义答成"先学规律、避免来回跳"，混进了 V09 的抽定一边；没说平均的后果是撞上石头）</p>
+<details>
+<summary>答案</summary>
+<p>同一个画面下有好几种都对的做法（左绕 / 右绕），动作分布有好几座山峰，就叫多峰。注意：和"多模态（图像 + 文字）"是同一个英文词，但意思不同。</p>
+<p>L1 / L2 损失让模型输出各种做法的中间值：50 条 +0.05、50 条 −0.05 → 输出 0 → 直走撞上障碍物。</p>
+<p>解法：用生成模型学整张分布，用的时候<strong>抽一个</strong>（分箱 + 分类、CVAE、扩散 / flow）。</p>
+<p>口诀：左绕对，右绕也对，平均一下撞上去；不求平均抽一个。</p>
+</details>
+<h3 id="v09">V09 · 每次重规划都独立抽签，会出什么问题？怎么让机器人"抽定一边"？</h3>
+<p>来源：<a href="lessons/04-multimodality.html#第-3-步抽定了就别变心mode-commitment">第 4 章 · 第 3 步</a> · 加入 2026-11-04 · 复习记录：2026-11-04 ✓（答出"一会左一会右、动作抖动，应坚持同一个峰"）；2026-11-04 题 3 ✓（"走了左边的数据都继续走左边，是学出来的"）；2026-11-07 ◐（"动作跳动"对；抽定一边答成"左右数据都要有、学会分边"，漏了关键：已偏左的画面下，示范里只有继续往左的）</p>
+<details>
+<summary>答案</summary>
+<p>问题：一会儿左一会儿右，来回抖（mode switching），最后哪边都没绕过去。</p>
+<p>要做到 mode commitment，靠三层：</p>
+<ol>
+<li><strong>一段之内不变心</strong>：一次抽一整段 chunk，段内都在同一个峰（Diffusion Policy 图 3）；</li>
+<li><strong>新画面自己提醒</strong>：走偏左之后的画面，在训练数据里后面都是继续往左，左峰变高；</li>
+<li><strong>接着旧计划想</strong>：把旧计划没走完的部分当已知条件（temporal ensembling、RTC）。</li>
+</ol>
+<p>口诀：抽定一边别变心。</p>
+</details>
+<h3 id="v10-224-224-14-14-token3">V10 · 一张 224 × 224 的图，按 14 × 14 切块，变成多少个 token？3 个相机呢？</h3>
+<p>来源：<a href="lessons/05-vlm.html#第-1-步图片切成小块每块变一个词">第 5 章 · 第 1 步</a> · 加入 2026-11-04 · 复习记录：2026-11-04 ✓（16×16 = 256，3 个相机 768）；2026-11-07 ✓（256、768）</p>
+<details>
+<summary>答案</summary>
+<p>224 / 14 = 16，横竖各 16 块，16 × 16 = <strong>256</strong> 个图像 token（PaliGemma 224 px 正好是 256）。3 个相机 × 256 = <strong>768</strong>，远多于指令的几十个 token：图像占了输入的大头。</p>
+<p>做法（ViT）：切块 → 每块像素拉平 → 乘矩阵变成向量 → 和文字 token 排成一队进 Transformer。</p>
+<p>口诀：图片切成拼图块，一块一个 token。</p>
+</details>
+<h3 id="v11-paligemma-prefix-lm">V11 · PaliGemma 由哪三个零件组成？它的 prefix-LM 遮挡规则是什么？</h3>
+<p>来源：<a href="lessons/05-vlm.html#第-2-步paligemma-长什么样">第 5 章 · 第 2 步</a> · 加入 2026-11-04 · 复习记录：2026-11-04 题 2 ✓（图像 token 能看到指令，"对按目的预测有好处"）；2026-11-07 ◐（三个零件 SigLIP ViT / 一层线性投影 / Gemma 2B 都对；prefix-LM 遮挡规则没答）</p>
+<details>
+<summary>答案</summary>
+<p>3B VLM，π0 / π0.5 的骨干：</p>
+<ol>
+<li><strong>SigLIP-So400m</strong>（看图的 ViT，约 4 亿参数）= 眼睛；</li>
+<li><strong>一层线性投影</strong> = 视神经，把图像向量转成 Gemma 的长度；</li>
+<li><strong>Gemma-2B</strong>（decoder-only 语言模型）= 大脑。</li>
+</ol>
+<p>prefix-LM：前缀（图像 + 指令）内部<strong>前后都能看</strong>，图像 token 能"偷看"指令；后缀（输出的回答）<strong>只能看前面</strong>。</p>
+<p>好处：图像 token 看图时已经知道要找什么（像"找钥匙时看房间"），杯子、碗的图块被重点加工。</p>
+<p>口诀：眼睛 SigLIP，视神经一层线性，大脑 Gemma；前缀互相看，回答往前看。</p>
+</details>
+<h3 id="v12-x-0128-0128-256-x-002-openvla-199">V12 · Δx 范围 −0.128 到 +0.128 米，切 256 格：每格多宽？Δx = +0.02 落在第几格？为什么 OpenVLA 用 1%–99% 分位数定范围？</h3>
+<p>来源：<a href="lessons/06-action-tokens.html#第-1-步连续的数--格子编号--词">第 6 章 · 第 1 步</a> · 加入 2026-11-04 · 复习记录：2026-11-04 ◐（格宽 1 mm、Δx=0 在 128 格对；+0.02 答成 130，异常值格宽答成 8–9 mm）；2026-11-04 重做 ✗（−0.05 答成 178，正负方向反了，应为 78）；2026-11-04 再做 ✓（−0.1 → 28，在左边）；2026-11-07 ◐（格宽 1 mm ✓；+0.02 又答成 130，应为 148，0.02 m = 20 mm 不是 2 mm；±1 m 异常值答 0.004 m，应为 2 m ÷ 256 ≈ 7.8 mm，0.004 是只有 +1 一侧时的 4.4 mm）；2026-11-07 补练 ✓（+0.035 → 163）</p>
+<details>
+<summary>答案</summary>
+<ul>
+<li>格宽：0.256 m ÷ 256 = <strong>1 mm</strong>；</li>
+<li>格号 = (Δx − 最小值) ÷ 格宽：Δx = 0 → 128；Δx = +0.02 m = <strong>20 mm</strong> → 128 + 20 = <strong>148</strong>；</li>
+<li>若有一个异常值 +1.0 m，用最小–最大定范围：1.128 m ÷ 256 ≈ <strong>4.4 mm</strong>/格，正常动作只用得上约 58 格，精度变粗。所以用 1%–99% 分位数，忽略异常值。</li>
+</ul>
+<p>易错点：米 ↔ 毫米换算（0.02 m = 2 cm = 20 mm）；范围是"最大 − 最小"，不是"两倍最大"；负数往左：Δx = −0.05 → 128 − 50 = <strong>78</strong>，不是 178。</p>
+</details>
+<h3 id="v13-rt-2-openvla-50-hz">V13 · RT-2 / OpenVLA 逐词输出动作，为什么撑不住 50 Hz？</h3>
+<p>来源：<a href="lessons/06-action-tokens.html#第-2-步代价是一个字一个字地念太慢">第 6 章 · 第 2 步</a> · 加入 2026-11-04 · 复习记录：2026-11-04 ✓（350 个词、约 8 秒、撑不住）；2026-11-07 ◐（只说"延迟太高"，没说原因：一个词跑一遍大模型，50 步 = 350 个词 ≈ 8.3 秒）</p>
+<details>
+<summary>答案</summary>
+<p>自回归：说完一个词才能说下一个，每个词跑一遍大模型。7 维动作 = 7 个词。OpenVLA 在 RTX 4090 上约 6 Hz ≈ 每秒 42 个动作词。</p>
+<p>一个 50 步 chunk = 350 个词 ≈ 8.3 秒，却只管 1 秒的动作 → 撑不住 50 Hz。</p>
+<p>两条出路：少念几个字（FAST，第 7 章）；不逐字念（OpenVLA-OFT 并行解码、π0 连续动作头，第 8 章）。</p>
+<p>口诀：一个字一个字地念，念得太慢。</p>
+</details>
+<h3 id="v14">V14 · 高频控制下逐维分箱为什么"学不动"？只会抄上一个的模型在哪种时刻出错？</h3>
+<p>来源：<a href="lessons/07-fast.html#第-1-步相邻的词太像模型学会了抄上一个">第 7 章 · 第 1 步</a> · 加入 2026-11-04 · 复习记录：2026-11-04 ◐（<code>128 128 129 129 129 130 130 130 131 131</code> 抄上一个答成 5 次，应为 6；选择题两问都对）；2026-11-07 ◐（"每步差异很小、只抄上一个"对；出错时刻答成"线性变化的动作"，应为"动作变化的时刻"：匀速时 Δ 不变，抄上一个反而全对）</p>
+<details>
+<summary>答案</summary>
+<p>50 Hz 下相邻动作几乎一样，"抄上一个 token"就能让损失很低，模型卡在偷懒解里（FAST 原文："simply copying the most recent action token"）。</p>
+<p>例：上面那串抄上一个能对 6/9。只数"变了"的地方：9 − 3 = 6。</p>
+<p>它恰好在<strong>动作变化</strong>的时刻出错（开始抓、减速、转向；匀速段 Δ 不变，抄上一个反而全对），而这正是最关键的时刻；这些错误被大量简单题平均掉，在总损失里不显眼。</p>
+<p>口诀：相邻太像，抄上一个就高分，什么都没学会。</p>
+</details>
+<h3 id="v15-fast-tokenizer">V15 · FAST 动作 tokenizer 的四步是什么？它同时解决了哪两个问题？</h3>
+<p>来源：<a href="lessons/07-fast.html#第-2-步别逐时刻记改记整体形状--细节dct">第 7 章 · 第 2 步</a> · 加入 2026-11-04 · 复习记录：2026-11-04 ◐（匀速段答成"要 4 个数"，应为 1 个非零 + 49 个 0；"每个 token 都不一样"对）；2026-11-07 ✗（四步没说出来，答成"估算规律再确定时间点"；只说解决了学不动，漏了"慢"）；2026-11-07 重讲后 ✓（四步全对；追问答出"词太多慢、学不动"）</p>
+<details>
+<summary>答案</summary>
+<ol>
+<li>按 1%–99% 分位数归一化到 [−1, 1]；</li>
+<li>每维做 <strong>DCT</strong>：时刻值 → 频率系数（低频 = 整体形状，高频 = 急剧变化）；</li>
+<li>缩放 + 取整：小系数变 0，矩阵稀疏；</li>
+<li>拉平后用 <strong>BPE</strong> 合并常见组合 → 少量高信息 token。</li>
+</ol>
+<p>解决：<strong>慢</strong>（token 少）和<strong>学不动</strong>（相邻 token 不再几乎相同）。和 JPEG 压图片是同一个原理。</p>
+<p>例：50 步完全匀速（Δx 恒为 +0.01）→ DCT 后只有 <strong>1 个</strong>非零系数（最低频 / 直流分量），其余 49 个是 0；有加速、减速才需要多几个低频系数。变化越少，数越少。</p>
+<p>口诀：先说形状再补细节，DCT 压一压，BPE 并一并。</p>
+</details>
+<h3 id="v16-0-50-chunk-openvla">V16 · π0 出一段 50 步的动作 chunk，网络要跑几次？各花多久？和 OpenVLA 比呢？</h3>
+<p>来源：<a href="lessons/08-pi0.html#第-1-步一个会议室两套脑子">第 8 章 · 第 1 步</a> · 加入 2026-11-04 · 复习记录：2026-11-04 ◐（参数 3B 对；第 2 问答成"用形状规律 + 起始点，不需要跑多次"，混进了 FAST 的思路，实际要跑 1 + 10 次）；2026-11-07 ◐（大脑 1 次、约 0.1 秒 ✓；小脑答成 50 次，应为 10 次，每次推整段 50 步；OpenVLA 答成 50 次，应为 50 × 7 = 350 个词、约 8.3 秒）</p>
+<details>
+<summary>答案</summary>
+<ul>
+<li><strong>大脑跑 1 次</strong>：编码 3 张相机图（14 ms）+ 图像/指令/状态这段前缀前向一次（32 ms），算完把 K、V <strong>缓存</strong>起来；</li>
+<li><strong>小脑跑 10 次</strong>：flow matching 推 10 步（δ = 0.1），每步只重算动作那 50 个 token，用的是 300M 的动作专家，10 次合计 27 ms；</li>
+<li>总共约 <strong>73 ms</strong>（RTX 4090，π0 论文附录 D 表 I）。</li>
+</ul>
+<p>对比 OpenVLA：350 个词 = 350 次 7B 大模型前向，约 8.3 秒。</p>
+<p>易错点：π0 <strong>不是只跑 1 次</strong>，也<strong>不是</strong>"形状 + 起点"（那是 FAST 的压缩思路）。它快在：① 每一步整段 50 个动作一起出，不逐词；② 大的那部分只跑一次，反复跑的是小的那部分。</p>
+<p>参数：3.3B = PaliGemma 约 3B（大脑）+ 动作专家约 300M（小脑）。</p>
+</details>
+<h3 id="v17-bc-1000">V17 · 给纯 BC 机器人再多录 1000 条"一直开在正中间"的示范，它被碰歪后能回来吗？</h3>
+<p>来源：<a href="lessons/02-behavior-cloning.html#第-2-步只看录像学一走偏就越错越远">第 2 章 · 第 2 步</a> · 加入 2026-11-07 · 复习记录：2026-11-07 ✗（答成"有纠偏数据，覆盖 bad case，所以能"，没注意新数据全是正中间的）</p>
+<details>
+<summary>答案</summary>
+<p><strong>不能。</strong> 1000 条全是正中间的示范，浅绿色带子还是那么窄，"偏了以后的画面"一张都没多出来。被碰歪后，模型看到的仍然是没见过的画面，照样乱猜、越偏越远。</p>
+<p>关键在<strong>覆盖</strong>，不在<strong>数量</strong>：要的是"偏了怎么拉回来"的数据（DAgger、录示范时加干扰、更杂的数据），不是更多同样的数据。</p>
+<p>口诀：录一万遍正中间，还是不会救车。</p>
+</details>
+<h3 id="v18-flow-matching-a-atau-u">V18 · flow matching：噪声 ε、真动作 A、进度 τ。中途位置 <span class="arithmatex">\(A^\tau\)</span>、目标速度 u、推理一步各怎么算？</h3>
+<p>来源：<a href="lessons/08-pi0.html#练习与作答记录">第 8 章 · 第 2 步</a> · 加入 2026-11-07 · 复习记录：2026-11-07 ✗（题 2 没自己算，看了示范）；2026-11-09 重讲后 ◐（<span class="arithmatex">\(A^{0.5}\)</span> = 7 ✓、每步 1 ✓；u 答成 5，把"已走的路"当成整段路）；2026-11-09 补练 ◐（ε = 3、A = −1 答 u = 4、每步 0.4，大小对、丢了负号）；2026-11-09 再练 ✓（ε = 5、A = 1 → u = −4，一步到 4.6）</p>
+<details>
+<summary>答案</summary>
+<ul>
+<li>中途位置：<span class="arithmatex">\(A^\tau = \tau A + (1-\tau)\epsilon\)</span>（进度 30% = 30% 终点 + 70% 起点）</li>
+<li>目标速度：<span class="arithmatex">\(u = A - \epsilon\)</span>（从起点指向终点）。<strong>u 有正负</strong>：终点在起点左边就是负的（ε = 3，A = −1 → u = −4，每步 −0.4）</li>
+<li>推理一步：<span class="arithmatex">\(A^{\tau+\delta} = A^\tau + \delta \cdot v_\theta\)</span>，π0 用 δ = 0.1 走 10 步</li>
+</ul>
+<p>例：ε = −1，A = +1 → <span class="arithmatex">\(A^{0.3} = -0.4\)</span>，u = 2，每步 +0.2，10 步正好到 +1；走 3 步后的位置就是 <span class="arithmatex">\(A^{0.3}\)</span>。</p>
+<p>口诀：按进度混起点和终点，速度就是终点减起点，每步走 0.1 份。</p>
+</details>
+<h3 id="v19-ataudelta-atau-delta-cdot-v_theta-01-atau">V19 · 把 <span class="arithmatex">\(A^{\tau+\delta} = A^\tau + \delta \cdot v_\theta\)</span>，δ = 0.1 念出来，并说出每个符号的意思。<span class="arithmatex">\(A^\tau\)</span> 是乘方吗？</h3>
+<p>来源：<a href="lessons/appendix-symbols.html">附录 · 公式符号怎么读</a> · 加入 2026-11-08 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<p>念法："A 上标 tau 加 delta，等于 A 上标 tau，加上 delta 乘 v theta；delta 等于零点一"。</p>
+<ul>
+<li>τ（tau，"套"）：进度，0 = 纯噪声，1 = 真动作；</li>
+<li>δ（小写 delta，"德尔塔"）：每一步走多少进度，0.1 → 10 步走完；</li>
+<li>v（velocity 速度），下标 θ（theta，"西塔"）= 由网络参数决定，也就是小脑猜的速度；</li>
+<li>意思：下一步位置 = 现在位置 + 步长 × 速度。</li>
+</ul>
+<p><span class="arithmatex">\(A^\tau\)</span> <strong>不是乘方</strong>，上标 τ 是标签，"进度为 τ 时的 A"。小写 δ = 一小步，大写 Δ = 变化量（Δx）。</p>
+</details>
+<h3 id="v20-0-1">V20 · π0 三块注意力各能看见谁？为什么前两块只算 1 次？改成"状态能看动作"会怎样？</h3>
+<p>来源：<a href="lessons/08-pi0.html#第-3-步三块注意力谁能看见谁">第 8 章 · 第 3 步</a> · 加入 2026-11-09 · 复习记录：2026-11-09 ◐（题 3 答成"大脑都要重算"；第 1 块不看后面的原因只说了"隔离、提升性能"）；2026-11-09 补练 ✓（第 1 块能看动作 → 大脑算 10 次）</p>
+<details>
+<summary>答案</summary>
+<p>三块：[图像 + 指令] → [状态 <span class="arithmatex">\(q_t\)</span>] → [带噪动作]。块内双向，后块能看前块，前块看不到后块。</p>
+<ul>
+<li>第 1 块只看自己：和 PaliGemma 预训练一样，不跑偏、不丢常识（minimize distribution shift）；</li>
+<li>第 2 块不看动作：状态 10 步不变，K/V 可缓存；</li>
+<li>第 3 块看全部，动作之间互相看。</li>
+</ul>
+<p>判断规则：<strong>一块要不要每步重算，只看它看得见的东西里有没有在变的。</strong> 状态改成能看动作 → 状态块每步重算；第 1 块仍只算 1 次。</p>
+<p>口诀：三排座位，同排互相听，后排听前排；前排听不见后排，所以前排算一次就够。</p>
+</details>
+<h3 id="v21-paligemma-0">V21 · PaliGemma 在 π0 里干什么？它交给动作专家的是什么？</h3>
+<p>来源：<a href="lessons/08-pi0.html#插问2026-11-09paligemma-在-π0-里干什么它交给动作专家的是什么">第 8 章 · 插问</a> · 加入 2026-11-09 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<p>作用：大脑，负责把图像 + 指令变成"读懂了"的 token（看懂、理解），不出动作。</p>
+<p>交出去的：<strong>不是文字，也不是一个总结向量，而是每一层里图 + 指令 token 的 K 和 V</strong>。π0 是一个 18 层 transformer、两套权重，只在 self-attention 里交互：动作 token 用自己的 Q 去查大脑那部分的 K、取 V。PaliGemma 自己最后的输出不用；只取动作 token 的输出，线性投影成速度 <span class="arithmatex">\(v_\theta\)</span>。</p>
+<p>因为大脑看不到动作，这些 K/V 算 1 次存缓存，10 步都来读。</p>
+<p>口诀：大脑写白板，小脑翻白板；18 层每层都翻，白板只写一次。</p>
+</details>
+<h3 id="v22-paligemma-kv">V22 · PaliGemma 和动作专家用两套权重，动作专家怎么"看懂"大脑的 K/V？</h3>
+<p>来源：<a href="lessons/08-pi0.html#插问-22026-11-09两套权重怎么互相看懂kv-到了动作专家那里它怎么知道是什么意思">第 8 章 · 插问 2</a> · 加入 2026-11-09 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<ol>
+<li><strong>同一个空间</strong>：每层里，大脑 token 用 PaliGemma 的 <span class="arithmatex">\(W_K, W_V\)</span>，动作 token 用动作专家的 <span class="arithmatex">\(W_Q\)</span>，都投影到同样的 head 维度（256），所以能做点积。宽度（2048 vs 1024）可以不同。</li>
+<li><strong>同一套计算</strong>：Q·K 点积 → softmax 权重 → V 加权平均 → 动作专家的 <span class="arithmatex">\(W_O\)</span> 变回自己的宽度。</li>
+<li><strong>看得懂是训练出来的</strong>：大脑从 PaliGemma 初始化，K/V 本来就有意义；动作专家的 <span class="arithmatex">\(W_Q\)</span> 从随机开始，动作误差的梯度把 Q 推向"对动作有用"的 K（比如杯子的位置）。</li>
+</ol>
+<p>类比：新员工学查老员工的档案柜，学会的是怎么提问。</p>
+<p>口诀：同一间会议室说同一种语言（256 维），问题是被误差教出来的。</p>
+</details>
+<h3 id="v23-vla">V23 · VLA 遇到没见过的物体，分哪三种情况？各靠什么？</h3>
+<p>来源：<a href="lessons/08-pi0.html#插问-32026-11-09遇到没见过的物体怎么让它学会拿起来完成任务">第 8 章 · 插问 3</a> · 加入 2026-11-09 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<ol>
+<li><strong>同类新样子</strong>（没见过的碗）：靠机器人数据多样，π0.5 训练家庭从 3 个加到 104 个，泛化一路变好；</li>
+<li><strong>新类别、旧动作</strong>（没抓过打蛋器）：靠大脑从网上学的常识 + 已会的动作（RT-2："动作本领限于机器人数据，但能用网上知识用到新东西上"）。前提是常识不被冲掉：π0.5 去掉网络数据后，没见过类别的物体明显变差；</li>
+<li><strong>新动作</strong>（换卷纸芯）：要人遥操作示范再微调，π0 简单任务约 5 小时，复杂 100 小时以上。</li>
+</ol>
+<p>口诀：见多不怕换样子，认识靠大脑常识，新动作得人带。</p>
+</details>
+<h3 id="v24-0">V24 · τ 小还是 τ 大是"雾大"？π0 训练时偏向抽哪边？为什么？</h3>
+<p>来源：<a href="lessons/08-pi0.html#第-4-步训练时-τ-怎么抽多练雾大的地方">第 8 章 · 第 4 步</a> · 加入 2026-11-09 · 复习记录：2026-11-09 ✗（答成"π0 抽 τ 大的多、τ &lt; 0.5 占得少"，方向反了）；2026-11-09 补练 ◐（"π0 更常抽 0.1"对；"离真动作更远"答成 0.9，应为 0.1）；2026-11-09 再练 ✓（第 1 步、τ 从 0 出发雾最大）</p>
+<details>
+<summary>答案</summary>
+<p>τ 是"走了几成路"：<strong>τ 小 = 离终点远 = 噪声大 = 雾大</strong>；τ 大 = 快到了 = 几乎是真动作。</p>
+<p>π0 偏向抽 <strong>τ 小</strong>（Beta 分布，s = 0.999）：τ &lt; 0.5 约占 65%（均匀是 50%），τ &gt; 0.9 只约 3%。</p>
+<p>原因：雾最大时，网络要凭画面猜出动作的大方向（接近 E[A|o]）。机器人画面对动作约束很强，这一步最难也最关键，方向对了后面只是微调。图像生成不同，"给文字猜平均图"很容易，所以 SD3 偏向中间。</p>
+<p>口诀：τ 小雾大，π0 多练雾大处；第一步方向定，后面都微调。</p>
+</details>
+<h3 id="v25-0">V25 · π0 一起训练大脑和小脑，为什么会伤大脑？梯度走哪条路？为什么不能干脆冻住大脑？</h3>
+<p>来源：<a href="lessons/09-knowledge-insulation.html#第-1-步两难一起训练会冲掉常识冻住又学不会">第 9 章 · 第 1 步</a> · 加入 2026-11-11 · 复习记录：2026-11-11 ◐（路答成"听指令"，应为 attention；问 2、3 对）</p>
+<details>
+<summary>答案</summary>
+<ul>
+<li><strong>路</strong>：attention。小脑每层读大脑的 K、V，训练时动作误差顺着这条路倒流，改动大脑的 <span class="arithmatex">\(W_K\)</span>、<span class="arithmatex">\(W_V\)</span> 和更深的参数。</li>
+<li><strong>为什么伤</strong>：小脑是新加的、随机初始化的，开头误差大、方向没道理，倒流进大脑就是乱改（"梯度干扰"）。结果：听指令变差、训练变慢；"把勺子放进垃圾桶"π0 去抓了垃圾（KI 论文图 2）。</li>
+<li><strong>为什么不冻住</strong>：PaliGemma 没见过机器人数据，冻住后表示不够用，成功率 0%（"freezing doesn't work"）。</li>
+</ul>
+<p>口诀：实习生干砸，老员工挨批改坏习惯；冻住老员工，又学不会新活。</p>
+</details>
+<h3 id="v26-aw-0-711-329">V26 · AW-0 默认模式下代码根本不执行，为什么去掉代码专家，真机分数会从 71.1 掉到 32.9？</h3>
+<p>来源：面试资料 07 · §2.3 AW-0 · 加入 2026-11-13 · 复习记录：2026-11-13 ◐（答到"计划在注意力里给想象和动作提供条件"，没讲为什么有用）</p>
+<details>
+<summary>答案</summary>
+<p>注意力顺序 C → V → A：C 只看 C，V 看 C + V，A 看全部。计划通过注意力约束想象和动作——这是"怎么起作用"，还要说"为什么有用"：</p>
+<ul>
+<li><strong>定阶段、消歧</strong>：长程任务里同一画面下一步有多种可能（抓左角 / 抓右角 / 对折），计划写明当前子任务，把多种可能压成一种。</li>
+<li><strong>计划要先于想象</strong>：V → C → A 掉到 48.3——未来本身也有多种，先由计划选定，想象和动作才对得上。</li>
+<li><strong>形式有用</strong>：无计划 32.9 → 自然语言子目标 63.6 → 完整代码 71.1。大头来自"有阶段计划"，代码格式再加 7.5。</li>
+<li>（推测）技能名给人类视频和机器人数据一套共享词汇；训练时代码交叉熵是额外监督，去掉专家也丢了这路训练信号。</li>
+</ul>
+<p>口诀：计划先定阶段，想象跟着计划，动作跟着两者。</p>
+</details>
+<hr />
+<h2 id="_3">已掌握</h2>
+</main>
+<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a></footer>
+</body></html>
