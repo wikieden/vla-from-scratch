@@ -40,4 +40,5 @@ function next(){if(t>=N)return false;const x=(t+1)/N;
   draw();return true}
 function draw(){lanes.forEach(L=>{L.path.setAttribute('points',L.pts.map(p=>p.join(',')).join(' '));const p=L.pts[L.pts.length-1];L.dot.setAttribute('cx',p[0]);L.dot.setAttribute('cy',p[1])})}
 setupPlayer({captureSeed:3,reset,next},120);
-</script></body></html>
+</script><a href="https://wikieden.github.io/ai-books/" style="position:fixed;right:12px;bottom:12px;z-index:99;padding:4px 10px;border-radius:14px;background:rgba(127,127,127,.18);color:inherit;font:13px/1.6 system-ui,sans-serif;text-decoration:none">← 全部讲义书</a>
+</body></html>

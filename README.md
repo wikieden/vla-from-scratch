@@ -1,6 +1,6 @@
 # VLA 从零到 π0
 
-**在线阅读：<https://wikieden.github.io/vla-from-scratch/>** · [讲义目录](https://wikieden.github.io/vla-from-scratch/lessons/index.html) · [全部动画](https://wikieden.github.io/vla-from-scratch/animations/index.html) · [复习卡片](https://wikieden.github.io/vla-from-scratch/review.html)
+**在线阅读：<https://wikieden.github.io/vla-from-scratch/>** · [讲义目录](https://wikieden.github.io/vla-from-scratch/lessons/index.html) · [全部动画](https://wikieden.github.io/vla-from-scratch/animations/index.html) · [复习卡片](https://wikieden.github.io/vla-from-scratch/review.html) · [全部讲义书](https://wikieden.github.io/ai-books/)
 
 
 
