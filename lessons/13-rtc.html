@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第 13 章 · 实时执行：RTC，边想下一段，边把这一段走完 · VLA 从零到 π0</title>
+<style>
+:root{--bg:#fbfbfa;--fg:#1f2328;--mute:#5d6470;--line:#e3e5e8;--card:#fff;--acc:#2f6fdf;--code:#f2f3f5;--quote:#f4f6fa}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}}
+:root[data-theme="dark"]{--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 -apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",sans-serif}
+a{color:var(--acc)}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+header.top .in{max-width:860px;margin:0 auto;padding:10px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:14px}
+header.top .brand{font-weight:600;color:var(--fg);text-decoration:none;margin-right:auto}
+header.top a{text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:24px 16px 72px;overflow-wrap:anywhere}
+h1{font-size:28px;line-height:1.35;margin:8px 0 16px} h2{font-size:22px;margin:40px 0 12px;padding-top:8px;border-top:1px solid var(--line)} h3{font-size:18px;margin:28px 0 8px}
+img{max-width:100%;height:auto;border-radius:8px;border:1px solid var(--line);background:#fff}
+blockquote{margin:16px 0;padding:10px 16px;background:var(--quote);border-left:3px solid var(--acc);border-radius:4px;color:var(--mute)}
+blockquote p{margin:4px 0}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font-size:.9em}
+pre{background:var(--code);padding:12px 14px;border-radius:8px;overflow-x:auto} pre code{padding:0;background:none}
+table{border-collapse:collapse;display:block;overflow-x:auto;max-width:100%;margin:12px 0;font-size:15px}
+th,td{border:1px solid var(--line);padding:6px 10px;vertical-align:top} th{background:var(--code)}
+details{border:1px solid var(--line);border-radius:8px;padding:6px 12px;margin:8px 0;background:var(--card)}
+details[open]{padding-bottom:10px} summary{cursor:pointer;color:var(--acc);font-weight:500}
+mjx-container{overflow-x:auto;overflow-y:hidden;max-width:100%}
+.btn{display:inline-block;margin:4px 8px 4px 0;padding:6px 14px;border:1px solid var(--acc);border-radius:999px;text-decoration:none;font-size:14px}
+.pager{display:flex;justify-content:space-between;gap:12px;margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0}
+.card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;color:inherit;text-decoration:none}
+.card:hover{border-color:var(--acc)} .card img{border:0;border-bottom:1px solid var(--line);border-radius:0;aspect-ratio:16/10;object-fit:contain;width:100%}
+.card .no{color:var(--mute);font-size:13px;padding:8px 12px 0} .card .t{padding:0 12px 12px;font-weight:500;line-height:1.5}
+.lead{font-size:17px;color:var(--mute)}
+footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-size:13px}
+</style>
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"],["$$","$$"]],processEscapes:true,processEnvironments:true}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+</head><body>
+<header class="top"><div class="in">
+<a class="brand" href="../index.html">VLA 从零到 π0</a>
+<a href="../lessons/index.html">讲义目录</a>
+<a href="../animations/index.html">动画</a>
+<a href="../review.html">复习卡片</a>
+<a href="../lessons/appendix-glossary.html">缩写表</a>
+<a href="https://wikieden.github.io/ai-books/">← 全部讲义书</a>
+</div></header>
+<main>
+<h1 id="13-rtc">第 13 章 · 实时执行：RTC，边想下一段，边把这一段走完</h1><p><a class="btn" href="../animations/13-rtc.html">▶ 打开本章可交互动画</a></p>
+<blockquote>
+<p>本章回答：模型想一次要几十到几百毫秒，机器人每 20 毫秒就要一个动作。想的时候机器人干什么？新一段动作接上旧一段时，为什么会抖、怎么不抖？<br />
+讲解日期：2026-11-20 · 上一章：<a href="../lessons/12-rl-recap.html">第 12 章 RL 后训练：Recap</a> · 下一章：<a href="../lessons/14-vla-landscape.html">第 14 章 主流 VLA 模型全景</a><br />
+对应原文：<code>materials/text/papers/real-time-chunking-2506.07339.txt</code>（RTC）摘要 L19–L33；§2 L155–L215（图 3）；§3 L216–L300（式 2、式 5）；L44–L48、L99–L102（效果）<br />
+本章缩写：RTC = Real-Time Chunking（实时 / 分块）；Δt（Delta t）= 控制周期，两个动作之间隔多久；δ（小写 delta）= 推理延迟，想一次要多久；d = inference delay（推理延迟折合成几个控制步）；s = execution horizon（执行长度，第 3 章的 <span class="arithmatex">\(T_a\)</span>）；H = 一段 chunk 的长度；ΠGDM = Pseudoinverse-Guided Diffusion Models（伪逆 / 引导 / 扩散模型）。全表见 <a href="../lessons/appendix-glossary.html">appendix-glossary.md</a>；符号读法见 <a href="../lessons/appendix-symbols.html">appendix-symbols.md</a></p>
+</blockquote>
+<h2 id="_1">讲解</h2>
+<h3 id="1-2026-11-20">第 1 步：问题，想得慢，动得快（2026-11-20）</h3>
+<p><strong>类比：边说话边想下一句。</strong> 好的演讲者说着这一句，心里已经在组织下一句；说完这一句，下一句马上接上。差的演讲者说完一句停下来想（冷场），或者没想好就硬接（前言不搭后语）。</p>
+<p><strong>两个数</strong>（L165–L172）：
+- 控制周期 Δt：50 Hz 时是 20 毫秒；
+- 推理延迟 δ：模型想一次的时间。论文举例：专门优化过速度的 7B OpenVLA，在 A100 上也要 321 毫秒（L161–L163）。</p>
+<p><strong>推理延迟折成控制步数</strong>（L171）：</p>
+<div class="arithmatex">\[d = \lfloor \delta / \Delta t \rfloor\]</div>
+<p>读法："d 等于 δ 除以 Δt 向下取整"。意思：想一次的工夫，机器人本该走几步。</p>
+<p><strong>数字例子</strong>：50 Hz（Δt = 20 ms），想一次 80 ms → d = 4，正好是论文图 3 的设定。</p>
+<p><strong>三种做法</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>做法</th>
+<th>怎么做</th>
+<th>问题</th>
+<th>原文</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>同步</td>
+<td>走完一段才开始想，想的时候等着</td>
+<td>每段之间<strong>停顿</strong> d 步；停顿还改变了机器人的动力学，和训练时不一样</td>
+<td>L165–L169</td>
+</tr>
+<tr>
+<td>简单异步</td>
+<td>提前 d 步开始想，想好了直接换上新一段</td>
+<td>新一段不知道这 d 步里会发生什么，接缝处<strong>跳变</strong>，动作发抖</td>
+<td>L170–L179</td>
+</tr>
+<tr>
+<td>时间集成（ACT）</td>
+<td>把重叠的几段取平均</td>
+<td>加速度小了，但平均出来的动作不好（第 4 章：平均会出错）</td>
+<td>L161–L163</td>
+</tr>
+</tbody>
+</table>
+<p><strong>一句话</strong>：同步会停，直接换会跳，取平均会出错。</p>
+<h3 id="2-2026-11-20">第 2 步：把"接上一段"当成补画（2026-11-20）</h3>
+<p><strong>类比：补一幅被撕掉一角的画。</strong> 剩下的部分不能动，补上的部分要和剩下的画风、线条接得上。</p>
+<p><strong>关键观察</strong>（L221–L227）：新一段想好时，旧一段的前 d 步<strong>已经执行完了</strong>（或者正在执行，改不了）。所以：
+- 新一段的前 d 步 = <strong>冻结</strong>成旧一段里那几步的值；
+- 后面的部分 = 在"和冻结部分接得上"的前提下<strong>补全</strong>（inpainting），同时还看新画面，保留对变化的反应。</p>
+<p><strong>怎么补</strong>（L231–L262）：flow matching 走 10 步（第 8 章）的每一步，在模型算出的速度 <span class="arithmatex">\(v\)</span> 上<strong>加一个引导项</strong>，把结果往"和旧一段一致"的方向推（基于 ΠGDM 的免训练补画方法，式 2）。论文自己加了一个上限 β，防止引导太猛（L260–L262）。</p>
+<p><strong>最大的好处：不用重新训练</strong>。任何扩散或 flow matching 的 VLA 拿来就能用（摘要 L23–L25）。</p>
+<p><strong>一段动作里的三个区域</strong>（图 3，L196–L213）：</p>
+<table>
+<thead>
+<tr>
+<th>区域</th>
+<th>位置</th>
+<th>怎么处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>冻结区</td>
+<td>前 d 步</td>
+<td>必须等于旧一段，权重 1</td>
+</tr>
+<tr>
+<td>中间区</td>
+<td>第 d 到 H − s 步</td>
+<td>旧一段有值，但可以改；越往后越"不确定"，权重逐渐降到 0</td>
+</tr>
+<tr>
+<td>新生成区</td>
+<td>最后 s 步</td>
+<td>旧一段里没有，完全新生成，权重 0</td>
+</tr>
+</tbody>
+</table>
+<p>约束：<span class="arithmatex">\(d \le s \le H - d\)</span>（L213）。</p>
+<p><strong>一句话</strong>：想好的时候，前 d 步已经走了，就把它们冻住，剩下的照着接。</p>
+<h3 id="3-2026-11-20">第 3 步：软遮罩，权重怎么算（2026-11-20）</h3>
+<p><strong>为什么不只冻前 d 步？</strong> 论文发现，只冻前 d 步（硬遮罩）不够：d 小时引导太弱，新一段还是可能换策略（比如从左绕改成右绕），接缝仍然会跳（L266–L273，图 4）。</p>
+<p><strong>软遮罩</strong>（式 5，L274–L290）：对重叠的所有 H − s 步都给权重，越往后越小：</p>
+<div class="arithmatex">\[W_i = \begin{cases} 1 &amp; i &lt; d \\ c_i \dfrac{e^{c_i} - 1}{e - 1} &amp; d \le i &lt; H - s \\ 0 &amp; i \ge H - s \end{cases},\qquad c_i = \frac{H - s - i}{H - s - d + 1}\]</div>
+<p>读法："W 下标 i"是第 i 步对旧一段的重视程度；<span class="arithmatex">\(c_i\)</span> 是一个从接近 1 线性降到接近 0 的数，再套一个指数，让权重下降得更快。</p>
+<p><strong>数字例子</strong>（论文图 3 的设定：H = 16，d = 4，s = 5，所以中间区是第 4–10 步，<span class="arithmatex">\(c_i = (11 - i)/8\)</span>）：</p>
+<table>
+<thead>
+<tr>
+<th>i</th>
+<th>0–3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+<th>9</th>
+<th>10</th>
+<th>11–15</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(c_i\)</span></td>
+<td>—</td>
+<td>0.875</td>
+<td>0.75</td>
+<td>0.625</td>
+<td>0.5</td>
+<td>0.375</td>
+<td>0.25</td>
+<td>0.125</td>
+<td>—</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(W_i\)</span></td>
+<td>1</td>
+<td>0.712</td>
+<td>0.488</td>
+<td>0.316</td>
+<td>0.189</td>
+<td>0.099</td>
+<td>0.041</td>
+<td>0.010</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>算一个：i = 7，<span class="arithmatex">\(c = 0.5\)</span>，<span class="arithmatex">\(W = 0.5 \times (e^{0.5} - 1)/(e - 1) = 0.5 \times 0.6487 / 1.7183 \approx 0.189\)</span>。</p>
+<p><strong>一句话</strong>：离现在越近，越要和旧计划一致；越远，越听新画面的。</p>
+<h3 id="4-2026-11-20">第 4 步：效果和意义（2026-11-20）</h3>
+<ul>
+<li>在 12 个动态仿真任务和 6 个真实双臂任务上测试（摘要 L27–L29）；</li>
+<li>即使推理延迟超过 <strong>300 毫秒</strong>，也能完成点火柴这种精细任务（L44–L48）；</li>
+<li>所有真实任务上的<strong>完成速度</strong>都明显提高（L99–L102），因为不再停顿。</li>
+</ul>
+<p><strong>和前面章节的关系</strong>：
+- 第 3 章：执行 <span class="arithmatex">\(T_a\)</span> 步就重想、没走完的部分当"备胎"防卡帧，RTC 把这件事做到了不停顿也不跳；
+- 第 8 章：RTC 是在 flow matching 的 10 步积分里加引导项，所以只对扩散 / flow 类 VLA 有效；
+- 第 10 章：Gemini Robotics 端到端约 250 ms 延迟，也是靠 chunk + 本地解码器撑住 50 Hz，问题是同一个。</p>
+<p><strong>一句话</strong>：RTC 让大而慢的 VLA 也能流畅地实时干活，而且不用重训。</p>
+<h3 id="_2">动画演示：三种接法</h3>
+<p><img alt="实时分块：三种接法" src="../animations/13-rtc.gif" /></p>
+<p>可交互版：<a href="../animations/13-rtc.html">animations/13-rtc.html</a>（可播放、单步、换一组）。轨迹和每段的偏差是编的；H、d、s 取自论文图 3；RTC 那一条用加权平均近似论文里的引导项。</p>
+<p><strong>怎么看</strong>：</p>
+<ol>
+<li>① 同步：灰色平台是机器人停着等模型想完（第 1 步）。</li>
+<li>② 简单异步：不停了，但每次换段都有红点，就是跳变（第 1 步）。</li>
+<li>③ RTC：接缝平滑得多，统计里的"最大跳变"比 ② 小几倍（第 2–3 步）。</li>
+<li>下方小条：一段 16 步的软遮罩权重，紫色 4 步冻结、橙色逐渐下降、灰色为 0（第 3 步的表）。</li>
+</ol>
+<h2 id="_3">练习与作答记录</h2>
+<p><strong>题 1</strong>（第 1 步）：控制频率 50 Hz，模型想一次 130 ms，d 是多少？同步执行时，每段之间会停几步？</p>
+<p><strong>作答</strong>：（待作答）</p>
+<p><strong>题 2</strong>（第 2 步）：
+1. 为什么新一段的前 d 步要"冻结"？
+2. RTC 要不要重新训练模型？它是在哪个环节动手脚的？</p>
+<p><strong>作答</strong>：（待作答）</p>
+<p><strong>题 3</strong>（第 3 步）：换一组设定 H = 20、d = 5、s = 6。中间区是第几步到第几步？算第 10 步的 <span class="arithmatex">\(c_{10}\)</span> 和 <span class="arithmatex">\(W_{10}\)</span>。为什么权重要随 i 变小？</p>
+<p><strong>作答</strong>：（待作答）</p>
+<h2 id="_4">口诀</h2>
+<blockquote>
+<p>说着这句想下句：停了冷场，硬接跑题。<br />
+走掉的冻住，剩下的照着补。<br />
+近的听旧计划，远的听新画面。<br />
+不重训，加引导，慢模型也能流畅。</p>
+</blockquote>
+<h2 id="_5">本章复习卡片</h2>
+<p>练习做完后，按答错、卡住的地方补上。</p>
+<h2 id="_6">附录 · 延伸阅读</h2>
+<blockquote>
+<p>留给以后深入学习用，不影响本章主线。★ 是建议先读的。</p>
+</blockquote>
+<h3 id="_7">推荐阅读</h3>
+<table>
+<thead>
+<tr>
+<th>读什么</th>
+<th>读哪里</th>
+<th>读它为了什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>★ RTC（Black 等，2025）</td>
+<td><code>real-time-chunking-2506.07339.txt</code> §2 L155–L215；§3 L216–L300；算法 1</td>
+<td>延迟 d、冻结 + 补全、软遮罩</td>
+</tr>
+<tr>
+<td>SmolVLA</td>
+<td><code>smolvla-2506.01844.txt</code>（异步推理一节）</td>
+<td>另一种异步执行的工程做法</td>
+</tr>
+<tr>
+<td>ACT 的时间集成</td>
+<td><code>act-aloha-2304.13705.txt</code></td>
+<td>RTC 论文对比的基线之一</td>
+</tr>
+<tr>
+<td>Gemini Robotics §3.1</td>
+<td><code>gemini-robotics-2503.20020.txt</code> L829–L838</td>
+<td>云端大模型 + 本地解码器对抗延迟</td>
+</tr>
+<tr>
+<td>ΠGDM、Pokle 等的免训练补画</td>
+<td>RTC 文献 [48]、[55]，本地无原文</td>
+<td>引导项的数学来源</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_8">数学原理</h3>
+<ul>
+<li><strong>向下取整</strong>：<span class="arithmatex">\(\lfloor x \rfloor\)</span> 是不超过 x 的最大整数，如 <span class="arithmatex">\(\lfloor 4.5 \rfloor = 4\)</span>。</li>
+<li><strong>免训练引导</strong>：在去噪 / flow 的每一步，用"当前结果和约束的差"对输入求梯度（向量–雅可比积），加到速度上，把结果推向满足约束（L235–L258）。</li>
+<li><strong>指数衰减权重</strong>：<span class="arithmatex">\(c(e^c - 1)/(e - 1)\)</span> 在 c = 1 时等于 1，c → 0 时比线性下降得更快。</li>
+</ul>
+<h3 id="_9">公式清单</h3>
+<table>
+<thead>
+<tr>
+<th>公式</th>
+<th>意思</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(d = \lfloor \delta / \Delta t \rfloor\)</span></td>
+<td>想一次的工夫，机器人本该走几步</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(d \le s \le H - d\)</span></td>
+<td>执行长度的约束</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(W_i = 1\ (i&lt;d)\)</span>；<span class="arithmatex">\(c_i\frac{e^{c_i}-1}{e-1}\ (d \le i &lt; H-s)\)</span>；<span class="arithmatex">\(0\ (i \ge H-s)\)</span>，<span class="arithmatex">\(c_i = \frac{H-s-i}{H-s-d+1}\)</span></td>
+<td>软遮罩权重（式 5）</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(v' = v + \min(\beta, \cdot)\,(\text{引导项})\)</span></td>
+<td>在 flow matching 的速度上加引导（式 2 的结构）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_10">代码对照</h3>
+<p>本章无代码对照：第 3 步的权重表可以自己用计算器复算。</p><nav class="pager"><a href="12-rl-recap.html">← 第 12 章 · RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="14-vla-landscape.html">第 14 章 · 主流 VLA 模型全景：架构、关键改进、优劣势 →</a></nav>
+</main>
+<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a></footer>
+</body></html>

@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第 12 章 · RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot; · VLA 从零到 π0</title>
+<style>
+:root{--bg:#fbfbfa;--fg:#1f2328;--mute:#5d6470;--line:#e3e5e8;--card:#fff;--acc:#2f6fdf;--code:#f2f3f5;--quote:#f4f6fa}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}}
+:root[data-theme="dark"]{--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 -apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",sans-serif}
+a{color:var(--acc)}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+header.top .in{max-width:860px;margin:0 auto;padding:10px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:14px}
+header.top .brand{font-weight:600;color:var(--fg);text-decoration:none;margin-right:auto}
+header.top a{text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:24px 16px 72px;overflow-wrap:anywhere}
+h1{font-size:28px;line-height:1.35;margin:8px 0 16px} h2{font-size:22px;margin:40px 0 12px;padding-top:8px;border-top:1px solid var(--line)} h3{font-size:18px;margin:28px 0 8px}
+img{max-width:100%;height:auto;border-radius:8px;border:1px solid var(--line);background:#fff}
+blockquote{margin:16px 0;padding:10px 16px;background:var(--quote);border-left:3px solid var(--acc);border-radius:4px;color:var(--mute)}
+blockquote p{margin:4px 0}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font-size:.9em}
+pre{background:var(--code);padding:12px 14px;border-radius:8px;overflow-x:auto} pre code{padding:0;background:none}
+table{border-collapse:collapse;display:block;overflow-x:auto;max-width:100%;margin:12px 0;font-size:15px}
+th,td{border:1px solid var(--line);padding:6px 10px;vertical-align:top} th{background:var(--code)}
+details{border:1px solid var(--line);border-radius:8px;padding:6px 12px;margin:8px 0;background:var(--card)}
+details[open]{padding-bottom:10px} summary{cursor:pointer;color:var(--acc);font-weight:500}
+mjx-container{overflow-x:auto;overflow-y:hidden;max-width:100%}
+.btn{display:inline-block;margin:4px 8px 4px 0;padding:6px 14px;border:1px solid var(--acc);border-radius:999px;text-decoration:none;font-size:14px}
+.pager{display:flex;justify-content:space-between;gap:12px;margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0}
+.card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;color:inherit;text-decoration:none}
+.card:hover{border-color:var(--acc)} .card img{border:0;border-bottom:1px solid var(--line);border-radius:0;aspect-ratio:16/10;object-fit:contain;width:100%}
+.card .no{color:var(--mute);font-size:13px;padding:8px 12px 0} .card .t{padding:0 12px 12px;font-weight:500;line-height:1.5}
+.lead{font-size:17px;color:var(--mute)}
+footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-size:13px}
+</style>
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"],["$$","$$"]],processEscapes:true,processEnvironments:true}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+</head><body>
+<header class="top"><div class="in">
+<a class="brand" href="../index.html">VLA 从零到 π0</a>
+<a href="../lessons/index.html">讲义目录</a>
+<a href="../animations/index.html">动画</a>
+<a href="../review.html">复习卡片</a>
+<a href="../lessons/appendix-glossary.html">缩写表</a>
+<a href="https://wikieden.github.io/ai-books/">← 全部讲义书</a>
+</div></header>
+<main>
+<h1 id="12-rl-recap">第 12 章 · RL 后训练：Recap，告诉模型"这段做得比平时好"</h1><p><a class="btn" href="../animations/12-recap-advantage.html">▶ 打开本章可交互动画</a></p>
+<blockquote>
+<p>本章回答：行为克隆最多只能学到和示范一样好（第 2 章），机器人怎么靠自己上场练习变得比示范更快、更稳？π<em>0.6 的 Recap 具体怎么做？<br />
+讲解日期：2026-11-20 · 上一章：<a href="../lessons/11-latent-actions.html">第 11 章 隐动作与世界模型</a> · 下一章：<a href="../lessons/13-rtc.html">第 13 章 实时执行：RTC</a><br />
+对应原文：<code>materials/text/papers/pistar06-recap-2511.14759.txt</code>（π</em>0.6 / Recap）摘要 L20–L41；引言 L59–L68；§III L100–L143；§IV L145–L320；§V L326–L440<br />
+本章缩写：RL = Reinforcement Learning（强化 / 学习）；Recap = RL with Experience and Corrections via Advantage-conditioned Policies（用经验和纠正做强化学习，靠"优势条件"的策略）；VF = Value Function（价值 / 函数）；CFG = Classifier-Free Guidance（无分类器 / 引导）；AWR = Advantage-Weighted Regression（优势 / 加权 / 回归）；PPO = Proximal Policy Optimization（近端 / 策略 / 优化）。全表见 <a href="../lessons/appendix-glossary.html">appendix-glossary.md</a></p>
+</blockquote>
+<h2 id="_1">讲解</h2>
+<h3 id="1-2026-11-20">第 1 步：为什么要在模仿之后再练（2026-11-20）</h3>
+<p><strong>类比：学钢琴。</strong> 看老师弹一百遍（模仿），你最多弹得和老师一样；要更熟练，得自己一遍遍弹、听自己哪里卡住、改掉（练习）。</p>
+<p>π*0.6 论文的说法（L59–L66）：只靠示范数据训练，会有复合误差（第 2 章），而且<strong>最多和示范数据一样好</strong>。要让机器人更可靠、更快，就要让它从自己上场的经验里学。</p>
+<p><strong>它能从三种数据里学</strong>（摘要 L27–L32）：</p>
+<table>
+<thead>
+<tr>
+<th>数据</th>
+<th>是什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>示范</td>
+<td>人遥操作的录像（第 2 章）</td>
+</tr>
+<tr>
+<td>自己上场的录像</td>
+<td>机器人自己跑任务，记下成功还是失败</td>
+</tr>
+<tr>
+<td>人的纠正</td>
+<td>机器人干着干着要出错时，人接手遥操作纠正一段</td>
+</tr>
+</tbody>
+</table>
+<p><strong>奖励怎么定</strong>（L383–L392，式 5）：每一步 −1；最后成功得 0；最后失败得一个很大的负数 <span class="arithmatex">\(-C_{fail}\)</span>。</p>
+<div class="arithmatex">\[r_t = \begin{cases} 0 &amp; t = T \text{ 且成功} \\ -C_{fail} &amp; t = T \text{ 且失败} \\ -1 &amp; \text{其他} \end{cases}\]</div>
+<p>读法："r 下标 t"是第 t 步的奖励；<span class="arithmatex">\(T\)</span> 是最后一步。这样一来，一局的总奖励 = −（用了多少步）。成功越快，总奖励越高；失败很糟。</p>
+<p><strong>一句话</strong>：模仿只能学到示范的水平；要更好，得让机器人自己练，并且有个"打分标准"：越快成功越好。</p>
+<h3 id="2-2026-11-20">第 2 步：价值和优势，"这段做得比平时好多少"（2026-11-20）</h3>
+<p><strong>类比：导航软件的"预计还要 40 分钟"。</strong> 你开了 10 分钟，导航变成"预计还要 25 分钟"，说明这 10 分钟走得比预想的快；要是还剩 38 分钟，说明刚才堵了。</p>
+<p><strong>价值函数</strong>（Value Function，L186–L213）：看当前画面和任务，估计"<strong>照平时的水平，从这里到成功还要多少步</strong>"。因为每步 −1，价值就是 −（还剩几步）；论文按任务最大长度归一化到 (−1, 0)，0 = 已成功（L395–L402）。</p>
+<p>π*0.6 的价值函数用一个比 VLA 小的 VLM 做主干，输出不是一个数，而是 201 个格子上的概率（分布式价值，L192–L206）。</p>
+<p><strong>优势</strong>（advantage，L112–L114）：</p>
+<div class="arithmatex">\[A(o_t, a_t) = \sum_{t'=t}^{t+N-1} r_{t'} + V(o_{t+N}) - V(o_t)\]</div>
+<p>读法："A 括号 o t、a t 等于：从 t 到 t 加 N 减 1 的奖励加起来，加上 N 步之后的价值，减去现在的价值"。</p>
+<p>意思：走了这 N 步实际得到的，比"照平时水平预计能得到的"多了多少。</p>
+<p><strong>数字例子</strong>（编的数，每段 N = 10 步，奖励每步 −1）：</p>
+<table>
+<thead>
+<tr>
+<th>情况</th>
+<th>走之前还剩</th>
+<th>走 10 步后还剩</th>
+<th>A = −10 − 后 + 前</th>
+<th>意思</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>顺利</td>
+<td>40</td>
+<td>25</td>
+<td>−10 − 25 + 40 = <strong>+5</strong></td>
+<td>比平时快</td>
+</tr>
+<tr>
+<td>一般</td>
+<td>40</td>
+<td>30</td>
+<td>−10 − 30 + 40 = <strong>0</strong></td>
+<td>和平时一样</td>
+</tr>
+<tr>
+<td>衣服掉了</td>
+<td>40</td>
+<td>38</td>
+<td>−10 − 38 + 40 = <strong>−8</strong></td>
+<td>比平时差</td>
+</tr>
+</tbody>
+</table>
+<p>（价值 V 是"−还剩几步"，所以 <span class="arithmatex">\(V(o_{t+N}) - V(o_t)\)</span> = 前面还剩 − 后面还剩。）</p>
+<p>论文图 4 显示价值函数能看出失误：出错时价值曲线会往下掉（L249–L251）。</p>
+<p><strong>一句话</strong>：价值 = 照平时还要多久；优势 = 这一段比平时快了还是慢了。</p>
+<h3 id="3-positive-negative2026-11-20">第 3 步：优势条件，给动作贴"positive / negative"标签（2026-11-20）</h3>
+<p><strong>类比：给练习录像贴标签。</strong> 把自己弹琴的录像剪成一段段，好的贴"这段弹得好"，差的贴"这段弹得差"。以后让模型学的时候，告诉它"照着'弹得好'的那些学"。</p>
+<p><strong>做法</strong>（L253–L300、L326–L335）：</p>
+<ol>
+<li>用价值函数给数据里<strong>每段动作</strong>算优势 A；</li>
+<li>设一个门槛 <span class="arithmatex">\(\epsilon_\ell\)</span>（每个任务一个，取这个任务所有 A 的 <strong>30% 分位数</strong>，L437），A 高于门槛的贴 <span class="arithmatex">\(I_t\)</span> = True，否则 False；</li>
+<li>人纠正的动作一律贴 True（假设人的纠正总是好的，L258–L262）；</li>
+<li>把标签变成一句<strong>文字</strong>放进输入："Advantage: positive" 或 "Advantage: negative"（L329–L333）；</li>
+<li>训练损失（式 3）：</li>
+</ol>
+<div class="arithmatex">\[\min_\theta\ \mathbb{E}\left[-\log \pi_\theta(a_t \mid o_t, \ell) - \alpha \log \pi_\theta(a_t \mid I_t, o_t, \ell)\right]\]</div>
+<p>读法："对 θ 最小化：负的 log π θ（a t 给定 o t、ℓ），减 α 乘 log π θ（a t 给定 I t、o t、ℓ）"。意思：模型既要会"不带标签地模仿所有数据"，又要会"带着标签模仿"。</p>
+<ol start="6">
+<li><strong>用的时候永远输入 "Advantage: positive"</strong>：模型就按"好的那部分"的样子出动作。</li>
+</ol>
+<p><strong>为什么这样能变好？</strong> 这和图像生成里的 CFG 是同一个思路（L268–L271）：同一个模型学会"有条件"和"无条件"两种分布，用的时候偏向好的条件。论文推出：带"positive"的分布就是对原策略的一种改进（式 2，L253–L265）。</p>
+<p><strong>好处</strong>：
+- 不用 PPO 那种要算策略梯度的在线 RL，训练就是普通的监督学习，稳定；
+- 对 flow matching 这种连续动作的 VLA 也能用（L128–L132），因为只是多了一句输入文字。</p>
+<p><strong>数字例子</strong>（接第 2 步）：一个任务所有片段的 A 排好序，30% 分位数是 −4。那么 A = +5 和 0 贴 positive；−8 贴 negative。大约 70% 的片段是 positive。</p>
+<p><strong>一句话</strong>：给每段动作贴"比平时好 / 差"的文字标签一起训练，上场时只说"好"。</p>
+<h3 id="4-recap-2026-11-20">第 4 步：Recap 的循环和效果（2026-11-20）</h3>
+<p><strong>三步循环</strong>（L145–L170，算法 1）：</p>
+<pre><code>1. 收集数据：让当前 VLA 去做任务，记下成功/失败；必要时人接手纠正
+2. 训练价值函数：用到目前为止的所有数据
+3. 优势条件训练：用新价值函数给数据贴标签，重训 VLA
+→ 回到 1，重复一到几轮
+</code></pre>
+<p>先用所有示范数据预训练一个通用模型（π0.6 本身就是带优势条件的，称为离线 RL 预训练），再对每个任务用自己上场的数据做几轮（L314–L320）。</p>
+<p><strong>效果</strong>（摘要 L36–L41、L139）：π*0.6 能在真实家庭里叠衣服、可靠地组装纸箱、用专业咖啡机做浓缩咖啡；最难的任务上，<strong>每小时完成数翻倍以上，失败率大约减半</strong>。</p>
+<p><strong>和前几章的关系</strong>：π*0.6 的 VLA 用了第 9 章的 stop-gradient 小脑（图 3 说明，L189–L192），价值函数是另一个更小的 VLM。</p>
+<p><strong>一句话</strong>：练、评、学，循环几轮，越练越快越稳。</p>
+<h3 id="recap">动画演示：Recap 的优势标签</h3>
+<p><img alt="Recap：给每段动作贴比平时好 / 差的标签" src="../animations/12-recap-advantage.gif" /></p>
+<p>可交互版：<a href="../animations/12-recap-advantage.html">animations/12-recap-advantage.html</a>（可播放、单步、换一局）。这一局的数据是编的。</p>
+<p><strong>怎么看</strong>：</p>
+<ol>
+<li>上图：价值曲线（离成功越近越高）。中途"衣服掉了"，曲线往下掉：价值函数看出了失误（第 2 步）。</li>
+<li>下图：每走一段（10 步）出一根柱子，就是这段的优势 A。掉衣服那段是一根很长的负柱子（第 2 步数字例子）。</li>
+<li>全部走完后，橙线是 30% 分位数门槛：低于它的变红（negative），其余变绿（positive）（第 3 步）。</li>
+</ol>
+<h2 id="_2">练习与作答记录</h2>
+<p><strong>题 1</strong>（第 1–2 步）：
+1. Recap 的奖励是怎么定的？为什么这样定以后，"总奖励高"就等于"成功得快"？
+2. 走之前价值估计还剩 60 步，走 10 步后估计还剩 52 步，优势 A 是多少？比平时好还是差？</p>
+<p><strong>作答</strong>：（待作答）</p>
+<p><strong>题 2</strong>（第 3 步）：
+1. "Advantage: positive / negative" 是怎么进入模型的？
+2. 为什么用的时候永远输入 positive？
+3. 人接手纠正的那些动作贴什么标签？为什么？</p>
+<p><strong>作答</strong>：（待作答）</p>
+<p><strong>题 3</strong>（第 4 步）：Recap 一轮循环有哪三步？它比 PPO 这类在线 RL 好在哪？</p>
+<p><strong>作答</strong>：（待作答）</p>
+<h2 id="_3">口诀</h2>
+<blockquote>
+<p>看老师只能学到老师那样，自己练才能更好。<br />
+价值是导航的"还要多久"，优势是"比预计快了多少"。<br />
+好段贴正，差段贴负，上场只说"正"。<br />
+练、评、学，转几圈。</p>
+</blockquote>
+<h2 id="_4">本章复习卡片</h2>
+<p>练习做完后，按答错、卡住的地方补上。</p>
+<h2 id="_5">附录 · 延伸阅读</h2>
+<blockquote>
+<p>留给以后深入学习用，不影响本章主线。★ 是建议先读的。</p>
+</blockquote>
+<h3 id="_6">推荐阅读</h3>
+<table>
+<thead>
+<tr>
+<th>读什么</th>
+<th>读哪里</th>
+<th>读它为了什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>★ π*0.6 / Recap（Physical Intelligence，2025）</td>
+<td><code>pistar06-recap-2511.14759.txt</code> §III L100–L143；§IV L145–L320（式 1–3、算法 1）；§V L326–L440</td>
+<td>奖励、分布式价值函数、优势条件、整个循环</td>
+</tr>
+<tr>
+<td>CFGRL（Frans 等）</td>
+<td>π*0.6 文献 [4]，本地无原文</td>
+<td>优势条件 = 无分类器引导的 RL 版本</td>
+</tr>
+<tr>
+<td>SimpleVLA-RL（2025）</td>
+<td><code>simplevla-rl-2509.09674.txt</code></td>
+<td>另一条路：对离散 token VLA 直接用结果奖励做在线 RL</td>
+</tr>
+<tr>
+<td>CS285 深度强化学习</td>
+<td>本仓库 <code>cs285-deep-rl/</code>（强化学习讲义书）</td>
+<td>价值函数、优势、策略梯度的系统讲解</td>
+</tr>
+<tr>
+<td>第 2 章 行为克隆</td>
+<td><code>02-behavior-cloning.md</code></td>
+<td>为什么模仿有上限、复合误差</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_7">数学原理</h3>
+<ul>
+<li><strong>回报与价值</strong>：回报 <span class="arithmatex">\(R_t = \sum_{t' \ge t} r_{t'}\)</span>；价值 <span class="arithmatex">\(V(o_t) = \mathbb{E}[R_t]\)</span>，是"照平时的策略"能得到的期望回报。</li>
+<li><strong>n 步优势</strong>：<span class="arithmatex">\(A = \sum_{k&lt;N} r_{t+k} + V(o_{t+N}) - V(o_t)\)</span>，用 N 步真实奖励加一个估计，比只用估计更准、比只用真实回报方差更小。</li>
+<li><strong>分布式价值</strong>：不只预测一个数，而是预测回报落在 201 个格子上的概率，用交叉熵训练（式 1）。</li>
+<li><strong>正则化 RL 的闭式解</strong>：<span class="arithmatex">\(\hat\pi(a \mid o) \propto \pi_{ref}(a \mid o)\exp(A/\beta)\)</span>；Recap 用"条件在优势标签上"来表示这个改进后的策略，不用显式算指数权重（式 2）。</li>
+</ul>
+<h3 id="_8">公式清单</h3>
+<table>
+<thead>
+<tr>
+<th>公式</th>
+<th>意思</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(r_t = -1\)</span>（过程中），<span class="arithmatex">\(0\)</span>（成功），<span class="arithmatex">\(-C_{fail}\)</span>（失败）</td>
+<td>奖励：越快成功越好</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(A(o_t, a_t) = \sum_{t'=t}^{t+N-1} r_{t'} + V(o_{t+N}) - V(o_t)\)</span></td>
+<td>优势：这段比平时好多少</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(I_t = \mathbb{1}[A(o_t, a_t, \ell) &gt; \epsilon_\ell]\)</span>，<span class="arithmatex">\(\epsilon_\ell\)</span> = 30% 分位数</td>
+<td>贴 positive / negative 标签</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\min_\theta \mathbb{E}[-\log\pi_\theta(a \mid o, \ell) - \alpha\log\pi_\theta(a \mid I, o, \ell)]\)</span></td>
+<td>无条件 + 有条件一起学（式 3）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_9">代码对照</h3>
+<p>本章无代码对照：可以用第 2 步的表格自己算几个优势。</p><nav class="pager"><a href="11-latent-actions.html">← 第 11 章 · 没有动作标签：隐动作与世界模型</a><a href="13-rtc.html">第 13 章 · 实时执行：RTC，边想下一段，边把这一段走完 →</a></nav>
+</main>
+<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a></footer>
+</body></html>

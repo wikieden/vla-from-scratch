@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第 11 章 · 没有动作标签：隐动作与世界模型 · VLA 从零到 π0</title>
+<style>
+:root{--bg:#fbfbfa;--fg:#1f2328;--mute:#5d6470;--line:#e3e5e8;--card:#fff;--acc:#2f6fdf;--code:#f2f3f5;--quote:#f4f6fa}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}}
+:root[data-theme="dark"]{--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 -apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",sans-serif}
+a{color:var(--acc)}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+header.top .in{max-width:860px;margin:0 auto;padding:10px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:14px}
+header.top .brand{font-weight:600;color:var(--fg);text-decoration:none;margin-right:auto}
+header.top a{text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:24px 16px 72px;overflow-wrap:anywhere}
+h1{font-size:28px;line-height:1.35;margin:8px 0 16px} h2{font-size:22px;margin:40px 0 12px;padding-top:8px;border-top:1px solid var(--line)} h3{font-size:18px;margin:28px 0 8px}
+img{max-width:100%;height:auto;border-radius:8px;border:1px solid var(--line);background:#fff}
+blockquote{margin:16px 0;padding:10px 16px;background:var(--quote);border-left:3px solid var(--acc);border-radius:4px;color:var(--mute)}
+blockquote p{margin:4px 0}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font-size:.9em}
+pre{background:var(--code);padding:12px 14px;border-radius:8px;overflow-x:auto} pre code{padding:0;background:none}
+table{border-collapse:collapse;display:block;overflow-x:auto;max-width:100%;margin:12px 0;font-size:15px}
+th,td{border:1px solid var(--line);padding:6px 10px;vertical-align:top} th{background:var(--code)}
+details{border:1px solid var(--line);border-radius:8px;padding:6px 12px;margin:8px 0;background:var(--card)}
+details[open]{padding-bottom:10px} summary{cursor:pointer;color:var(--acc);font-weight:500}
+mjx-container{overflow-x:auto;overflow-y:hidden;max-width:100%}
+.btn{display:inline-block;margin:4px 8px 4px 0;padding:6px 14px;border:1px solid var(--acc);border-radius:999px;text-decoration:none;font-size:14px}
+.pager{display:flex;justify-content:space-between;gap:12px;margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0}
+.card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;color:inherit;text-decoration:none}
+.card:hover{border-color:var(--acc)} .card img{border:0;border-bottom:1px solid var(--line);border-radius:0;aspect-ratio:16/10;object-fit:contain;width:100%}
+.card .no{color:var(--mute);font-size:13px;padding:8px 12px 0} .card .t{padding:0 12px 12px;font-weight:500;line-height:1.5}
+.lead{font-size:17px;color:var(--mute)}
+footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-size:13px}
+</style>
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"],["$$","$$"]],processEscapes:true,processEnvironments:true}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+</head><body>
+<header class="top"><div class="in">
+<a class="brand" href="../index.html">VLA 从零到 π0</a>
+<a href="../lessons/index.html">讲义目录</a>
+<a href="../animations/index.html">动画</a>
+<a href="../review.html">复习卡片</a>
+<a href="../lessons/appendix-glossary.html">缩写表</a>
+<a href="https://wikieden.github.io/ai-books/">← 全部讲义书</a>
+</div></header>
+<main>
+<h1 id="11">第 11 章 · 没有动作标签：隐动作与世界模型</h1><p><a class="btn" href="../animations/11-latent-action.html">▶ 打开本章可交互动画</a></p>
+<blockquote>
+<p>本章回答：机器人示范要靠人遥操作，又贵又少；网上的视频多得是，却没有动作标签。怎么让 VLA 从没有动作的视频里学东西？<br />
+讲解日期：2026-11-20 · 上一章：<a href="../lessons/10-hierarchy.html">第 10 章 慢想快做</a> · 下一章：<a href="../lessons/12-rl-recap.html">第 12 章 RL 后训练：Recap</a><br />
+对应原文：<code>materials/text/papers/lapa-2410.11758.txt</code>（LAPA）摘要 L26–L45、§3.1–3.2 L215–L256、L118–L124；<code>genie-2402.15391.txt</code>（Genie）L43–L44、L186–L200、L246–L250；<code>univla-2505.06111.txt</code>（UniVLA）L62–L76、L92–L100；<code>unipi-2302.00111.txt</code>（UniPi）L81–L94；<code>gr2-2410.06158.txt</code>（GR-2）L20–L27<br />
+本章缩写：LAPA = Latent Action Pretraining（隐 / 动作 / 预训练）；VQ-VAE = Vector-Quantized Variational AutoEncoder（向量 / 量化 / 变分 / 自编码器）；IDM = Inverse Dynamics Model（逆 / 动力学 / 模型）；LAM = Latent Action Model（隐 / 动作 / 模型）；DINOv2 = 自监督视觉特征模型（DINO = self-DIstillation with NO labels：无标签自蒸馏）；UniPi = Universal Policy（通用 / 策略）；GR = Generative Robot（ByteDance 的生成式机器人模型）。全表见 <a href="../lessons/appendix-glossary.html">appendix-glossary.md</a></p>
+</blockquote>
+<h2 id="_1">讲解</h2>
+<h3 id="1-2026-11-20">第 1 步：问题，视频很多，动作标签很少（2026-11-20）</h3>
+<p><strong>类比：学做菜。</strong> 你可以看几千个做菜视频，但视频里没写"手腕转了 15 度、用了 3 牛的力"。你得自己看出"这里是在翻炒""这里是在倒油"。</p>
+<p>LAPA 摘要把问题说得很直接（L26–L32）：现有 VLA 预训练要靠人遥操作采集的动作标签，这<strong>严重限制了数据来源和规模</strong>；而网上的视频没有机器人动作标签。引言又补了第二个难点：网上视频里的身体、环境和机器人差别很大（L37–L44）。</p>
+<table>
+<thead>
+<tr>
+<th>数据</th>
+<th>多不多</th>
+<th>有没有动作标签</th>
+<th>是不是机器人的身体</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>遥操作示范（第 2 章）</td>
+<td>少，贵</td>
+<td>有</td>
+<td>是</td>
+</tr>
+<tr>
+<td>网上的人类视频</td>
+<td>极多</td>
+<td><strong>没有</strong></td>
+<td>不是</td>
+</tr>
+</tbody>
+</table>
+<p><strong>一句话</strong>：视频里有"世界怎么变"的知识，缺的是"动作"这一栏。</p>
+<h3 id="2-2026-11-20">第 2 步：隐动作，让模型自己给两帧之间起个名字（2026-11-20）</h3>
+<p><strong>类比：看动画片配字幕。</strong> 你不知道角色按了哪个按键，但看前后两帧，你可以说"他往右跳了"。如果只许你用 8 个词来描述（右、右上、上……），你就会只描述最要紧的变化。</p>
+<p><strong>做法</strong>（Genie L186–L200；LAPA L215–L238）：训练一个"编码器 + 解码器"：</p>
+<table>
+<thead>
+<tr>
+<th>部分</th>
+<th>输入</th>
+<th>输出</th>
+<th>另一个名字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>编码器</td>
+<td>这一帧 <span class="arithmatex">\(x_t\)</span> + 下一帧 <span class="arithmatex">\(x_{t+H}\)</span></td>
+<td>一个<strong>码</strong> <span class="arithmatex">\(z_t\)</span>（隐动作）</td>
+<td>逆动力学模型（IDM）：从结果反推动作</td>
+</tr>
+<tr>
+<td>解码器</td>
+<td>这一帧 <span class="arithmatex">\(x_t\)</span> + 码 <span class="arithmatex">\(z_t\)</span></td>
+<td>还原下一帧 <span class="arithmatex">\(\hat x_{t+H}\)</span></td>
+<td>世界模型：给动作，预测会发生什么</td>
+</tr>
+</tbody>
+</table>
+<p><strong>关键是码本很小</strong>：用 VQ-VAE 把 <span class="arithmatex">\(z_t\)</span> 只能从一个很小的码本里选。Genie 只用 <span class="arithmatex">\(\lvert A \rvert = 8\)</span> 个码（L192–L195）。解码器只拿到"这一帧 + 码"，所以码<strong>必须</strong>记下两帧之间最要紧的变化，否则还原不出下一帧（L196–L199）。训练只靠"还原得像不像"，<strong>全程不需要任何动作标签</strong>。</p>
+<p>读法：<span class="arithmatex">\(z_t = \mathrm{Enc}(x_t, x_{t+H})\)</span>，"z 下标 t 等于编码器括号 x t、x t 加 H"；<span class="arithmatex">\(\hat x_{t+H} = \mathrm{Dec}(x_t, z_t)\)</span>，"x hat"是还原出来的下一帧。</p>
+<p><strong>数字例子</strong>（动画里同一个玩具设定，数是编的）：画面简化成一个小球的位置。这一帧在 (0, 0)，下一帧在 (1.6, −2.0)。编码器算出变化 (1.6, −2.0)，在 8 个方向里最接近"↘"，于是选码 z7。解码器只知道"↘、走一步"，还原到大约 (1.1, −1.1)，有误差，但方向对了。</p>
+<p>LAPA 的一个发现（L1026–L1028，附录）：训练好以后，编码器就是一个逆动力学模型，解码器就是一个世界模型。</p>
+<p><strong>一句话</strong>：隐动作 = 模型自己从前后两帧里总结出来的"动作词"，码本小，逼它只记最要紧的变化。</p>
+<h3 id="3-vlalapa-2026-11-20">第 3 步：把隐动作用进 VLA，LAPA 三段式（2026-11-20）</h3>
+<p><strong>类比：先学"翻炒、倒油"这些说法，再学自己手腕该怎么动。</strong></p>
+<p>LAPA 分三段（摘要 L28–L33，§3.2 L249–L256）：</p>
+<table>
+<thead>
+<tr>
+<th>段</th>
+<th>做什么</th>
+<th>数据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. 学码</td>
+<td>训练第 2 步的编码器 + 解码器</td>
+<td>只要视频</td>
+</tr>
+<tr>
+<td>2. 隐动作预训练</td>
+<td>用编码器把所有视频帧标上码；让 VLM 看画面 + 指令，<strong>预测码</strong>（像念词，第 6 章）</td>
+<td>视频 + 文字说明，不要动作</td>
+</tr>
+<tr>
+<td>3. 微调</td>
+<td>用少量真实机器人数据，学"码 → 真实关节动作"</td>
+<td>少量遥操作数据</td>
+</tr>
+</tbody>
+</table>
+<p>第 2 段给 VLM 加了一个单独的"隐动作头"（一层 MLP，输出码本大小那么多类，L252–L253）。</p>
+<p><strong>效果</strong>（L118–L124）：比用真实动作标签训练的最强 VLA 还高 <strong>6.22%</strong>，预训练效率高 <strong>30 倍以上</strong>。只用人类做事的视频训练，也有正面迁移。</p>
+<p><strong>UniVLA 的改进：只记跟任务有关的变化</strong>（L62–L76、L92–L100）</p>
+<p>只看"还原得像不像"有个问题：画面里<strong>和任务无关的变化</strong>也会被记进码，比如别人走过、镜头晃动（L95–L97）。UniVLA 的办法：
+- 不在像素上算，而在 <strong>DINOv2 特征</strong>上算：这种特征更关注物体，对镜头晃动不敏感；
+- 用语言指令帮忙，把"跟任务有关的动作"和"无关的变化"分开。</p>
+<p>结果：比 OpenVLA 强，预训练算力不到它的 <strong>1/20</strong>，下游数据只要 <strong>1/10</strong>（L74–L75）。</p>
+<p><strong>一句话</strong>：先用视频学"动作词"，再用少量机器人数据学"词 → 关节"。</p>
+<h3 id="4-2026-11-20">第 4 步：另一条路，先想象视频，再反推动作（2026-11-20）</h3>
+<p><strong>类比：先在脑子里过一遍"做完是什么样子"，再照着去做。</strong></p>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>做法</th>
+<th>原文</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UniPi</td>
+<td>文字 → <strong>生成一段未来视频</strong>（视频扩散模型）→ 逆动力学模型从生成的视频里反推动作</td>
+<td>UniPi L84–L91</td>
+</tr>
+<tr>
+<td>GR-1 / GR-2</td>
+<td>先在大量视频上做<strong>视频预测</strong>预训练（GR-2 用了 3800 万段、500 多亿 token），再用机器人轨迹同时学"预测视频 + 预测动作"</td>
+<td>GR-2 L20–L27</td>
+</tr>
+</tbody>
+</table>
+<p>UniPi 的说法：因为任务的文字描述往往和动作高度相关，按文字生成视频，会自然地把注意力放在和动作有关的部分（L91–L93）。</p>
+<p><strong>两条路对比</strong></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>隐动作（LAPA / UniVLA / Genie）</th>
+<th>想象视频（UniPi / GR-2）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>中间表示</td>
+<td>一个小码</td>
+<td>一整段未来画面</td>
+</tr>
+<tr>
+<td>推理成本</td>
+<td>低（念几个词）</td>
+<td>高（要生成视频）</td>
+</tr>
+<tr>
+<td>能看懂吗</td>
+<td>码要再解读</td>
+<td>视频人能直接看</td>
+</tr>
+</tbody>
+</table>
+<p>两条路都在第 11 章的问题上给出答案：<strong>用视频学"世界会怎么变"，只把"怎么用这具身体做到"留给少量机器人数据</strong>。这也是"世界模型 / WAM"路线的起点，详见面试资料 05 世界模型与 WAM。</p>
+<p><strong>一句话</strong>：要么学一个动作的"代号"，要么直接想象出未来画面；两种都把视频里的知识搬进机器人。</p>
+<h3 id="_2">动画演示：隐动作</h3>
+<p><img alt="隐动作：从两帧画面里猜发生了什么" src="../animations/11-latent-action.gif" /></p>
+<p>可交互版：<a href="../animations/11-latent-action.html">animations/11-latent-action.html</a>（可播放、单步、换一段视频）。画面简化成小球位置，码本简化成 8 个方向，是示意。</p>
+<p><strong>怎么看</strong>：</p>
+<ol>
+<li>左边灰球是这一帧，橙球是下一帧。没有动作标签（第 1 步）。</li>
+<li>青色箭头是编码器猜的变化，右边 8 个码里亮起最接近的一个：这就是隐动作（第 2 步）。</li>
+<li>紫色虚线圈是解码器只凭"这一帧 + 码"还原的下一帧，和橙球之间的距离就是还原误差（第 2 步）。</li>
+<li>下方一行：整段视频被标成一串码，可以像念词一样拿去预训练 VLA（第 3 步）。</li>
+</ol>
+<h2 id="_3">练习与作答记录</h2>
+<p><strong>题 1</strong>（第 2 步）：
+1. 隐动作模型的编码器和解码器各输入什么、输出什么？
+2. 为什么码本要很小（Genie 只用 8 个）？码本很大会怎样？</p>
+<p><strong>作答</strong>：（待作答）</p>
+<p><strong>题 2</strong>（第 3 步）：LAPA 三段式各用什么数据？哪一段才需要真实机器人动作？</p>
+<p><strong>作答</strong>：（待作答）</p>
+<p><strong>题 3</strong>（第 3–4 步）：
+1. UniVLA 为什么要在 DINOv2 特征上学隐动作，而不是直接在像素上？
+2. "隐动作"和"想象视频"两条路，推理时哪条更省算力？为什么？</p>
+<p><strong>作答</strong>：（待作答）</p>
+<h2 id="_4">口诀</h2>
+<blockquote>
+<p>视频多，动作缺：缺的那一栏自己猜。<br />
+两帧之间起个名，码本小，只记要紧的变化。<br />
+先学动作词，再学词到关节。<br />
+要么记代号，要么想画面。</p>
+</blockquote>
+<h2 id="_5">本章复习卡片</h2>
+<p>练习做完后，按答错、卡住的地方补上。</p>
+<h2 id="_6">附录 · 延伸阅读</h2>
+<blockquote>
+<p>留给以后深入学习用，不影响本章主线。★ 是建议先读的。</p>
+</blockquote>
+<h3 id="_7">推荐阅读</h3>
+<table>
+<thead>
+<tr>
+<th>读什么</th>
+<th>读哪里</th>
+<th>读它为了什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>★ LAPA（Ye 等，ICLR 2025）</td>
+<td><code>lapa-2410.11758.txt</code> 摘要 L26–L45；§3.1 L215–L245；§3.2 L247–L260</td>
+<td>三段式：学码、隐动作预训练、微调</td>
+</tr>
+<tr>
+<td>★ Genie（Bruce 等，2024）</td>
+<td><code>genie-2402.15391.txt</code> L43–L44、§2 隐动作模型 L160–L250</td>
+<td>隐动作模型的原型，<span class="arithmatex">\(\lvert A \rvert = 8\)</span></td>
+</tr>
+<tr>
+<td>UniVLA（2025）</td>
+<td><code>univla-2505.06111.txt</code> 摘要 L62–L76；引言 L92–L100</td>
+<td>任务相关的隐动作、DINOv2 特征</td>
+</tr>
+<tr>
+<td>UniPi（Du 等，2023）</td>
+<td><code>unipi-2302.00111.txt</code> L81–L100</td>
+<td>文字 → 视频 → 逆动力学</td>
+</tr>
+<tr>
+<td>GR-1 / GR-2（ByteDance）</td>
+<td><code>gr1-2312.13139.txt</code> L136–L142；<code>gr2-2410.06158.txt</code> L20–L27、L86</td>
+<td>视频预测预训练再学动作</td>
+</tr>
+<tr>
+<td>VQ-VAE（van den Oord 等，2017）</td>
+<td>本地无原文</td>
+<td>向量量化：连续向量 → 码本里最近的一个</td>
+</tr>
+<tr>
+<td>面试资料 05</td>
+<td><code>../interview/05-world-models-wam.md</code></td>
+<td>世界模型 / WAM 路线的全景</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_8">数学原理</h3>
+<ul>
+<li><strong>向量量化（VQ）</strong>：<span class="arithmatex">\(z = \arg\min_k \lVert e - c_k \rVert\)</span>，在码本 <span class="arithmatex">\(\{c_1, \dots, c_K\}\)</span> 里找离 <span class="arithmatex">\(e\)</span> 最近的那个；梯度用"直通"或 NSVQ 之类的技巧绕过 arg min。</li>
+<li><strong>信息瓶颈</strong>：码本越小，码能携带的信息越少（8 个码最多 3 比特），模型被迫只编码最重要的变化。</li>
+<li><strong>逆动力学 vs 正向动力学</strong>：逆：<span class="arithmatex">\((x_t, x_{t+1}) \to a_t\)</span>；正：<span class="arithmatex">\((x_t, a_t) \to x_{t+1}\)</span>。隐动作模型同时训练两者。</li>
+</ul>
+<h3 id="_9">公式清单</h3>
+<table>
+<thead>
+<tr>
+<th>公式</th>
+<th>意思</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(z_t = \mathrm{VQ}(\mathrm{Enc}(x_t, x_{t+H}))\)</span></td>
+<td>编码器看两帧，选一个码（隐动作）</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\hat x_{t+H} = \mathrm{Dec}(x_t, z_t)\)</span></td>
+<td>解码器用这一帧 + 码还原下一帧</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(L = \lVert \hat x_{t+H} - x_{t+H} \rVert^2 + \text{VQ 项}\)</span></td>
+<td>只靠还原误差训练，不需要动作标签</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(p_\theta(z_t \mid x_t, \ell)\)</span></td>
+<td>LAPA 第 2 段：VLM 看画面 + 指令预测码</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_10">代码对照</h3>
+<p>本章无代码对照：后续可在 V-M2（tokenizer）里用小例子演示向量量化。</p><nav class="pager"><a href="10-hierarchy.html">← 第 10 章 · 慢想快做：分层系统</a><a href="12-rl-recap.html">第 12 章 · RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot; →</a></nav>
+</main>
+<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a></footer>
+</body></html>

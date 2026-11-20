@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recap 优势标签</title><link rel="stylesheet" href="anim.css"></head>
+<body><main>
+<h1>第 12 章 · Recap：给每段动作贴"比平时好 / 差"的标签</h1>
+<p class="sub">配套讲义：<a href="../lessons/12-rl-recap.html">第 12 章 · RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a>。依据 π*0.6 <code>pistar06-recap-2511.14759.txt</code> 第 105–114 行（优势）、第 383–402 行（奖励：每步 −1）、第 326–335 行（"Advantage: positive" 文字输入）、第 437 行（门槛 = 30% 分位数）。这一局的数据是编的。</p>
+<div class="panel"><svg id="sv" viewBox="0 0 680 380"></svg></div>
+<div class="stats">
+<div class="stat"><div class="l">第几段动作</div><div class="v" id="s0">0</div></div>
+<div class="stat"><div class="l">这段前 → 后还剩几步</div><div class="v" id="s1">—</div></div>
+<div class="stat"><div class="l">优势 A</div><div class="v" id="s2">—</div></div>
+<div class="stat"><div class="l">标签</div><div class="v" id="s3">—</div></div>
+</div>
+<div class="row"><button id="play">▶ 播放</button><button id="step">→ 单步</button><button id="reset">↺ 换一局</button></div>
+<p class="note">看点：① 上图：价值函数估计"离成功还剩几步"（越往上越接近成功）。中途衣服掉了一次，曲线往下掉：价值函数看出了失误。② 每段动作走 10 步：优势 A = −10 +（后面还剩几步的估计 × −1）−（前面还剩几步的估计 × −1）。比平时进展快就是正的。③ 下图：每段的 A 画成柱子，低于橙色门槛（30% 分位数）的标"negative"（红），其余标"positive"（绿）。训练时把标签当一句文字放进输入；用的时候永远说"Advantage: positive"。</p>
+</main>
+<script src="anim.js"></script>
+<script>
+const sv=$('sv');const X0=60,W=580,H1=130,T1=30,H2=120,T2=225;
+el('rect',{x:X0,y:T1,width:W,height:H1,fill:'var(--bg)',stroke:'var(--line)'},sv);
+txt('价值：离成功还剩几步（越高越近）',{x:X0,y:T1-10,class:'m'},sv);
+el('rect',{x:X0,y:T2,width:W,height:H2,fill:'var(--bg)',stroke:'var(--line)'},sv);
+txt('每段动作的优势 A',{x:X0,y:T2-10,class:'m'},sv);
+const zeroY=T2+H2*0.55;el('line',{x1:X0,y1:zeroY,x2:X0+W,y2:zeroY,stroke:'var(--muted)','stroke-dasharray':'3 3'},sv);txt('0',{x:X0-8,y:zeroY+4,'text-anchor':'end',class:'m'},sv);
+const vline=el('polyline',{fill:'none',stroke:'var(--accent)','stroke-width':2.2},sv),bars=el('g',{},sv);
+const thr=el('line',{x1:X0,x2:X0+W,stroke:'var(--amber)','stroke-width':2,opacity:0},sv),thrT=txt('',{x:X0+W,y:0,'text-anchor':'end',style:'fill:var(--amber)'},sv);
+const drop=txt('',{x:0,y:0,style:'fill:var(--bad)'},sv);
+let rem,K,k,As,lab;
+function reset(sd){seed(sd);K=14;rem=[140];const ev=4+Math.floor(rnd()*5);
+  for(let i=0;i<K;i++){let prog=10+Math.round(gauss()*4);if(i===ev)prog=-18;if(i===ev+1)prog=4;rem.push(Math.max(0,rem[i]-prog))}
+  k=0;As=[];lab=[];clear(bars);thr.setAttribute('opacity',0);thrT.textContent='';drop.textContent='';draw()}
+const VY=r=>T1+H1-(1-r/160)*H1,PX=i=>X0+i/K*W;
+function draw(){const pts=[];for(let i=0;i<=k;i++)pts.push(PX(i)+','+VY(rem[i]));vline.setAttribute('points',pts.join(' '));
+  $('s0').textContent=k;if(k){$('s1').textContent=rem[k-1]+' → '+rem[k];$('s2').textContent=(As[k-1]>0?'+':'')+As[k-1];$('s3').textContent=lab[k-1]||'—'}else{['s1','s2','s3'].forEach(i=>$(i).textContent='—')}}
+function next(){if(k>=K){if(lab.length<K){const s=[...As].sort((a,b)=>a-b);const e=s[Math.floor(0.3*K)];
+    const ty=zeroY-e*1.8;thr.setAttribute('y1',ty);thr.setAttribute('y2',ty);thr.setAttribute('opacity',1);thrT.setAttribute('y',T2+H2+16);thrT.textContent='门槛 ε = 30% 分位数 = '+e;
+    [...bars.children].forEach((r,i)=>{const pos=As[i]>e;lab[i]=pos?'positive':'negative';r.setAttribute('style','fill:var(--'+(pos?'good':'bad')+')')});draw();return true}return false}
+  const A=-10-rem[k+1]+rem[k];As.push(A);const h=A*1.8;
+  el('rect',{x:PX(k)+6,y:h>=0?zeroY-h:zeroY,width:W/K-12,height:Math.abs(h),style:'fill:var(--muted)',opacity:.85},bars);
+  if(A<-15){drop.setAttribute('x',PX(k)+4);drop.setAttribute('y',VY(rem[k+1])+16);drop.textContent='衣服掉了'}
+  k++;draw();return true}
+setupPlayer({captureSeed:3,reset,next},600);
+</script><a href="https://wikieden.github.io/ai-books/" style="position:fixed;right:12px;bottom:12px;z-index:99;padding:4px 10px;border-radius:14px;background:rgba(127,127,127,.18);color:inherit;font:13px/1.6 system-ui,sans-serif;text-decoration:none">← 全部讲义书</a>
+</body></html>

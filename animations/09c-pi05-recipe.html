@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>π0.5 训练配方</title><link rel="stylesheet" href="anim.css"></head>
+<body><main>
+<h1>第 9 章 · π0.5：五路数据、两段训练、先想后做</h1>
+<p class="sub">配套讲义：<a href="../lessons/09-knowledge-insulation.html">第 9 章 · 知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a> 第 3 步。依据 <code>pi05-2504.16054.txt</code> 第 100–112 行（97.6% 不是家庭移动机器人数据）、第 285–297 行（两段训练）、第 330–335 行（先出子任务再出动作）、第 419–451 行（数据来源）、第 486–499 行（后训练）。条形长度是<strong>示意</strong>，只有 97.6% 和步数来自原文。</p>
+<div class="panel"><svg id="sv" viewBox="0 0 680 400"></svg></div>
+<div class="stats">
+<div class="stat"><div class="l">阶段</div><div class="v" id="s1">—</div></div>
+<div class="stat"><div class="l">训练步数</div><div class="v" id="s2">0</div></div>
+<div class="stat"><div class="l">动作怎么出</div><div class="v" id="s3">—</div></div>
+</div>
+<div class="row"><button id="play">▶ 播放</button><button id="step">→ 单步</button><button id="reset">↺ 重来</button></div>
+<p class="note">看点：① 预训练 280k 步：五路数据全部变成离散 token（动作用 FAST），一起学"下一个词"。真正的家庭移动机器人数据（MM）只占 2.4%。② 后训练 80k 步：加上随机初始化的小脑，用 flow matching 学连续动作，同时继续念词；换上口头指导数据（VI），去掉实验室数据（CE）。③ 推理：同一个模型先写出子任务"拿起盘子"，再按子任务让小脑出动作。</p>
+</main>
+<script src="anim.js"></script>
+<script>
+const sv=$('sv');
+const src=[{k:'MM',n:'家庭移动机器人（约 400 小时）',w:.024,c:'teal'},{k:'ME',n:'各种环境的固定机械臂',w:.3,c:'accent'},{k:'CE',n:'实验室多种机器人',w:.25,c:'purple'},{k:'HL',n:'高层子任务预测（文字）',w:.12,c:'amber'},{k:'WD',n:'网络图文：看图说话、问答',w:.306,c:'warm'}];
+const X0=200,BW=300;
+txt('预训练的数据来源（条长示意）',{x:20,y:24},sv);
+src.forEach((s,i)=>{const y=40+i*30;txt(s.k,{x:20,y:y+15,style:`fill:var(--${s.c})`},sv);txt(s.n,{x:52,y:y+15,class:'m',style:'font-size:11px'},sv);
+  el('rect',{x:X0+20,y:y+3,width:BW,height:16,rx:3,fill:'var(--bg)',stroke:'var(--line)'},sv);
+  s.bar=el('rect',{x:X0+20,y:y+3,width:0,height:16,rx:3,style:`fill:var(--${s.c})`,opacity:.85},sv);s.lab=txt('',{x:X0+BW+28,y:y+15,class:'m'},sv)});
+const vi=txt('',{x:20,y:200,style:'fill:var(--good)'},sv),ce=txt('',{x:330,y:200,style:'fill:var(--bad)'},sv);
+// timeline
+txt('两段训练',{x:20,y:236},sv);
+el('rect',{x:20,y:246,width:640,height:28,rx:4,fill:'var(--bg)',stroke:'var(--line)'},sv);
+const pre=el('rect',{x:20,y:246,width:0,height:28,rx:4,style:'fill:var(--purple)',opacity:.75},sv);
+const post=el('rect',{x:20+640*280/360,y:246,width:0,height:28,rx:4,style:'fill:var(--teal)',opacity:.75},sv);
+txt('预训练 280k 步：全部离散 token（FAST）',{x:24,y:290,class:'m'},sv);txt('后训练 80k 步：+ 小脑 flow matching',{x:656,y:290,'text-anchor':'end',class:'m'},sv);
+// inference
+const inf=el('g',{opacity:.15},sv);
+const ib=(x,w,t,c)=>{el('rect',{x,y:318,width:w,height:46,rx:8,fill:'var(--accent-bg)',style:`stroke:var(--${c})`},inf);txt(t,{x:x+w/2,y:346,'text-anchor':'middle'},inf)};
+ib(20,170,'"收拾厨房"（总指令）','muted');ib(240,190,'先想："拿起盘子"','amber');ib(480,180,'再做：50 步动作','teal');
+el('path',{d:'M192 341 L236 341',style:'stroke:var(--muted)','stroke-width':2,fill:'none'},inf);el('path',{d:'M432 341 L476 341',style:'stroke:var(--muted)','stroke-width':2,fill:'none'},inf);
+txt('同一个模型：π(动作 | 画面, 子任务) × π(子任务 | 画面, 总指令)',{x:340,y:388,'text-anchor':'middle',class:'m'},inf);
+let t;const N=16;
+function draw(){
+  const f=Math.min(t/5,1);src.forEach(s=>{s.bar.setAttribute('width',BW*s.w/0.306*f*0.95);s.lab.textContent=f>=1&&s.k==='MM'?'2.4%':''});
+  const steps=t<=5?0:t<=10?Math.round((t-5)/5*280):Math.min(360,280+Math.round((t-10)/3*80));
+  pre.setAttribute('width',640*Math.min(steps,280)/360);post.setAttribute('width',640*Math.max(0,steps-280)/360);
+  vi.textContent=t>10?'+ VI 口头指导数据':'';ce.textContent=t>10?'− CE 实验室数据（后训练不用）':'';
+  src[2].bar.setAttribute('opacity',t>10?.25:.85);
+  inf.setAttribute('opacity',t>=14?1:.15);
+  $('s1').textContent=t===0?'—':t<=5?'看数据来源':t<=10?'预训练':t<14?'后训练':'推理';$('s2').textContent=steps>0?steps+'k':'0';
+  $('s3').textContent=t<=5?'—':t<=10?'念 FAST 词':t<14?'念词 + 小脑':'小脑 10 步'}
+function reset(){t=0;draw()}
+function next(){if(t>=N)return false;t++;draw();return true}
+setupPlayer({captureSeed:1,reset,next},420);
+</script><a href="https://wikieden.github.io/ai-books/" style="position:fixed;right:12px;bottom:12px;z-index:99;padding:4px 10px;border-radius:14px;background:rgba(127,127,127,.18);color:inherit;font:13px/1.6 system-ui,sans-serif;text-decoration:none">← 全部讲义书</a>
+</body></html>

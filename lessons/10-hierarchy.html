@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第 10 章 · 慢想快做：分层系统 · VLA 从零到 π0</title>
+<style>
+:root{--bg:#fbfbfa;--fg:#1f2328;--mute:#5d6470;--line:#e3e5e8;--card:#fff;--acc:#2f6fdf;--code:#f2f3f5;--quote:#f4f6fa}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}}
+:root[data-theme="dark"]{--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 -apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",sans-serif}
+a{color:var(--acc)}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+header.top .in{max-width:860px;margin:0 auto;padding:10px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:14px}
+header.top .brand{font-weight:600;color:var(--fg);text-decoration:none;margin-right:auto}
+header.top a{text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:24px 16px 72px;overflow-wrap:anywhere}
+h1{font-size:28px;line-height:1.35;margin:8px 0 16px} h2{font-size:22px;margin:40px 0 12px;padding-top:8px;border-top:1px solid var(--line)} h3{font-size:18px;margin:28px 0 8px}
+img{max-width:100%;height:auto;border-radius:8px;border:1px solid var(--line);background:#fff}
+blockquote{margin:16px 0;padding:10px 16px;background:var(--quote);border-left:3px solid var(--acc);border-radius:4px;color:var(--mute)}
+blockquote p{margin:4px 0}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font-size:.9em}
+pre{background:var(--code);padding:12px 14px;border-radius:8px;overflow-x:auto} pre code{padding:0;background:none}
+table{border-collapse:collapse;display:block;overflow-x:auto;max-width:100%;margin:12px 0;font-size:15px}
+th,td{border:1px solid var(--line);padding:6px 10px;vertical-align:top} th{background:var(--code)}
+details{border:1px solid var(--line);border-radius:8px;padding:6px 12px;margin:8px 0;background:var(--card)}
+details[open]{padding-bottom:10px} summary{cursor:pointer;color:var(--acc);font-weight:500}
+mjx-container{overflow-x:auto;overflow-y:hidden;max-width:100%}
+.btn{display:inline-block;margin:4px 8px 4px 0;padding:6px 14px;border:1px solid var(--acc);border-radius:999px;text-decoration:none;font-size:14px}
+.pager{display:flex;justify-content:space-between;gap:12px;margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0}
+.card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;color:inherit;text-decoration:none}
+.card:hover{border-color:var(--acc)} .card img{border:0;border-bottom:1px solid var(--line);border-radius:0;aspect-ratio:16/10;object-fit:contain;width:100%}
+.card .no{color:var(--mute);font-size:13px;padding:8px 12px 0} .card .t{padding:0 12px 12px;font-weight:500;line-height:1.5}
+.lead{font-size:17px;color:var(--mute)}
+footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-size:13px}
+</style>
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"],["$$","$$"]],processEscapes:true,processEnvironments:true}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+</head><body>
+<header class="top"><div class="in">
+<a class="brand" href="../index.html">VLA 从零到 π0</a>
+<a href="../lessons/index.html">讲义目录</a>
+<a href="../animations/index.html">动画</a>
+<a href="../review.html">复习卡片</a>
+<a href="../lessons/appendix-glossary.html">缩写表</a>
+<a href="https://wikieden.github.io/ai-books/">← 全部讲义书</a>
+</div></header>
+<main>
+<h1 id="10">第 10 章 · 慢想快做：分层系统</h1><p><a class="btn" href="../animations/10-two-clocks.html">▶ 打开本章可交互动画</a></p>
+<blockquote>
+<p>本章回答：一个模型既要想清楚"下一步干什么"，又要每秒出 50 个动作，怎么兼顾？高层和低层之间传什么？高层的训练数据从哪来？<br />
+讲解日期：2026-11-20 · 上一章：<a href="../lessons/09-knowledge-insulation.html">第 9 章 知识隔离与 π0.5</a> · 下一章：<a href="../lessons/11-latent-actions.html">第 11 章 隐动作与世界模型</a><br />
+对应原文：<code>materials/text/papers/hi-robot-2502.19417.txt</code>（Hi Robot）§4 L325–L400、L205–L235；<code>gr00t-n1-2503.14734.txt</code>（GR00T N1）L76–L92、L164–L169、L248–L262；<code>gemini-robotics-2503.20020.txt</code> L829–L838；<code>pi05-2504.16054.txt</code> L297、L330–L335<br />
+本章缩写：System 1 / System 2 = 系统 1 / 系统 2（Kahneman 的快思考 / 慢思考）；VLM = Vision-Language Model（视觉 / 语言 / 模型）；DiT = Diffusion Transformer（扩散 / Transformer）；Hz = hertz（每秒几次）；HL = High-Level（高层）；GR00T = Generalist Robot 00 Technology（NVIDIA 人形机器人基础模型）；ER = Embodied Reasoning（具身 / 推理）。全表见 <a href="../lessons/appendix-glossary.html">appendix-glossary.md</a></p>
+</blockquote>
+<h2 id="_1">讲解</h2>
+<h3 id="1-2026-11-20">第 1 步：为什么要分两层（2026-11-20）</h3>
+<p><strong>类比：开车。</strong> 你一边在心里想"前面路口右转，然后找停车位"（慢，一两秒想一次），一边手脚在不停地微调方向盘和油门（快，眼睛一直在看）。想和做是两套节奏。</p>
+<p>Hi Robot 论文直接用了这个说法：心理学家 Kahneman 的 <strong>System 1</strong>（自动、快）和 <strong>System 2</strong>（推理、慢）（L68–L70、L196–L205）。</p>
+<table>
+<thead>
+<tr>
+<th>层</th>
+<th>管什么</th>
+<th>多久一次</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>高层（System 2）</td>
+<td>理解复杂指令、听用户插话、决定"现在该干什么"</td>
+<td>慢：Hi Robot 约 1 秒一次</td>
+<td>"收拾桌子" → "拿起杯子"</td>
+</tr>
+<tr>
+<td>低层（System 1）</td>
+<td>把一句简单指令变成连续动作</td>
+<td>快：每秒几十到上百个动作</td>
+<td>50 Hz 的关节动作</td>
+</tr>
+</tbody>
+</table>
+<p><strong>为什么不能一层干完？</strong>
+- 想得越深，模型越大、越慢；动作却要 50 Hz 不停地出（第 3 章）。
+- 高层对画面的小变化<strong>不敏感</strong>："该拿杯子"这件事，0.02 秒内不会变。所以高层可以低频运行（Hi Robot L370–L373："less sensitive to quick changes in the environment"）。</p>
+<p><strong>三个系统的节奏</strong>（原文数字）：</p>
+<table>
+<thead>
+<tr>
+<th>系统</th>
+<th>高层</th>
+<th>低层</th>
+<th>出处</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hi Robot</td>
+<td>每 1 秒，或用户一插话就立刻重想</td>
+<td>VLA 出动作 chunk</td>
+<td>Hi Robot L373–L378</td>
+</tr>
+<tr>
+<td>GR00T N1</td>
+<td>VLM 10 Hz（L40 显卡）</td>
+<td>DiT 120 Hz；出 16 步 chunk 用 63.9 ms</td>
+<td>GR00T N1 L80–L89、L168</td>
+</tr>
+<tr>
+<td>Gemini Robotics</td>
+<td>云端大模型，响应 &lt; 160 ms</td>
+<td>机器人本地的动作解码器；端到端约 250 ms，靠 chunk 做到有效 50 Hz</td>
+<td>Gemini Robotics L829–L838</td>
+</tr>
+</tbody>
+</table>
+<p><strong>数字例子</strong>（按 Hi Robot 的节奏，任务是编的）：一个 8 秒的任务，高层每秒想一次 = 8 次；中途用户插一次话，再加 1 次 = 9 次；低层 50 Hz × 8 秒 = 400 个动作。</p>
+<p><strong>一句话</strong>：想得慢、做得快，两层各按自己的节奏跑。</p>
+<h3 id="2-2026-11-20">第 2 步：高层和低层之间传什么（2026-11-20）</h3>
+<p><strong>类比：经理给工人派活。</strong> 可以写一张纸条"去拿杯子"（文字），也可以直接把自己脑子里的整个想法"灌"给工人（一串向量）。纸条人人看得懂，但信息少；灌想法信息多，但别人看不懂。</p>
+<table>
+<thead>
+<tr>
+<th>传什么</th>
+<th>谁这么做</th>
+<th>好处</th>
+<th>坏处</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>一句文字子任务</strong> <span class="arithmatex">\(\hat\ell\)</span></td>
+<td>Hi Robot（L211–L216："grasp the cup"）；π0.5（第 9 章：先写子任务再出动作）</td>
+<td>看得懂、能调试；用户能插话；高层可以换成更大的 VLM</td>
+<td>文字是瓶颈：说不清的细节（抓哪里、多用力）传不过去</td>
+</tr>
+<tr>
+<td><strong>一串向量</strong>（隐表示）</td>
+<td>GR00T N1：取 VLM <strong>第 12 层</strong>的输出，DiT 用 cross-attention 去读（L256–L259、L182–L184）</td>
+<td>信息多，两层一起端到端训练</td>
+<td>看不懂；换高层就要重新训练</td>
+</tr>
+</tbody>
+</table>
+<p>GR00T N1 的一个发现：用 VLM <strong>中间层</strong>（不是最后一层）的输出，推理更快、成功率还更高（L257–L259）。</p>
+<p><strong>和第 8 章的关系</strong>：π0 的大脑和小脑也是"传向量"：每一层的 K、V（第 8 章插问 1）。π0.5 在这之上又加了一层"文字子任务"。</p>
+<p><strong>一句话</strong>：文字好懂但信息少，向量信息多但看不懂；π0.5 两样都用。</p>
+<h3 id="3-2026-11-20">第 3 步：高层的训练数据从哪来（2026-11-20）</h3>
+<p><strong>问题</strong>：机器人示范数据里，标注的只是简单指令（"拿起杯子"）。高层要学会理解"我想要一个素三明治"这种复杂要求（例子是编的）、还要能接住用户插话，这种数据几乎没有。</p>
+<p><strong>Hi Robot 的办法：倒过来合成</strong>（L224–L235）</p>
+<ol>
+<li>拿一段真实的机器人录像，和它对应的简单指令（如"拿起生菜"）；</li>
+<li>把画面和这个指令交给一个强大的 VLM，让它<strong>编</strong>一个"之前用户可能说了什么"，比如"做个素的"或插话"别放番茄"（例子是编的）；</li>
+<li>得到（画面，复杂指令 / 插话 → 简单指令）的配对，用来训练高层。</li>
+</ol>
+<p>原文的说法是给 VLM 一个观察和目标指令，让它想出之前可能出现的提示或人的插话（L227–L231）。</p>
+<p><strong>π0.5 的做法</strong>（第 9 章）：HL 数据（人工标注子任务）+ 后训练加 VI（口头指导：人一步步用语言指挥机器人做事的录像）。</p>
+<p><strong>一句话</strong>：高层的数据靠"倒推"：先有动作和简单指令，再编出会导致它的复杂指令。</p>
+<h3 id="_2">动画演示：两只钟</h3>
+<p><img alt="慢想快做：两只钟" src="../animations/10-two-clocks.gif" /></p>
+<p>可交互版：<a href="../animations/10-two-clocks.html">animations/10-two-clocks.html</a>（可播放、单步、重来）。任务和子任务是编的例子，节奏按 Hi Robot 原文。</p>
+<p><strong>怎么看</strong>：</p>
+<ol>
+<li>上面是高层：每过 1 秒亮一个点，写出一句子任务（第 1 步）。</li>
+<li>下面是低层：每秒 50 个动作，青色条一直不断（第 1 步）。</li>
+<li>第 4.3 秒用户插话"别动那个碗"：红点马上出现，不等满 1 秒，子任务立刻改成"先放下，绕开碗"；之后从 4.3 秒起重新按每秒一次（第 1 步、Hi Robot L374–L387）。</li>
+<li>结束时：高层想了 9 次，低层出了 400 个动作（第 1 步的数字例子）。</li>
+</ol>
+<h2 id="_3">练习与作答记录</h2>
+<p><strong>题 1</strong>（第 1 步）：
+1. 为什么高层可以 1 秒才想一次，低层却要每秒 50 次？
+2. Hi Robot 的高层在什么两种情况下会重新想？</p>
+<p><strong>作答</strong>：（待作答）</p>
+<p><strong>题 2</strong>（第 2 步）：
+1. 高层传"文字子任务"给低层，有什么好处和坏处？
+2. GR00T N1 的低层读的是 VLM 的哪一层？为什么不用最后一层？</p>
+<p><strong>作答</strong>：（待作答）</p>
+<p><strong>题 3</strong>（第 3 步）：Hi Robot 怎么在没有"复杂指令"数据的情况下训练高层？</p>
+<p><strong>作答</strong>：（待作答）</p>
+<h2 id="_4">口诀</h2>
+<blockquote>
+<p>心里想路口，手上调方向：想得慢，做得快。<br />
+纸条好懂信息少，灌想法信息多看不懂。<br />
+先有动作再编话，倒推出高层的教材。</p>
+</blockquote>
+<h2 id="_5">本章复习卡片</h2>
+<p>练习做完后，按答错、卡住的地方补上。</p>
+<h2 id="_6">附录 · 延伸阅读</h2>
+<blockquote>
+<p>留给以后深入学习用，不影响本章主线。★ 是建议先读的。</p>
+</blockquote>
+<h3 id="_7">推荐阅读</h3>
+<table>
+<thead>
+<tr>
+<th>读什么</th>
+<th>读哪里</th>
+<th>读它为了什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>★ Hi Robot（Shi 等，2025）</td>
+<td><code>hi-robot-2502.19417.txt</code> §1 L60–L76、L205–L235；§4.1–4.2 L325–L400</td>
+<td>System 1/2 的分法、高层多久想一次、用户插话、合成数据</td>
+</tr>
+<tr>
+<td>★ GR00T N1（NVIDIA，2025）</td>
+<td><code>gr00t-n1-2503.14734.txt</code> §1 L76–L92；§2 模型 L164–L262</td>
+<td>10 Hz VLM + 120 Hz DiT、用 VLM 第 12 层、数据金字塔</td>
+</tr>
+<tr>
+<td>Gemini Robotics（Google DeepMind，2025）</td>
+<td><code>gemini-robotics-2503.20020.txt</code> §3.1 L810–L840</td>
+<td>云端大模型 + 本地解码器，250 ms 延迟也能 50 Hz</td>
+</tr>
+<tr>
+<td>π0.5</td>
+<td><code>pi05-2504.16054.txt</code> L297、L330–L335</td>
+<td>同一个模型里先想后做</td>
+</tr>
+<tr>
+<td>面试资料 06</td>
+<td><code>../interview/06-autonomy-architecture.md</code></td>
+<td>把 VLM / 世界模型大脑和技能层拼成完整自主架构</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_8">数学原理</h3>
+<ul>
+<li><strong>条件分解</strong>：<span class="arithmatex">\(p(a, \hat\ell \mid o, \ell) = p(a \mid o, \hat\ell)\,p(\hat\ell \mid o, \ell)\)</span>，高层管右边第二项，低层管第一项。</li>
+<li><strong>频率与延迟</strong>：频率 = 1 / 周期；chunk 让"出一次结果的延迟"和"控制频率"脱钩：250 ms 出一段，段里的动作照样 50 Hz 播放（第 3 章）。</li>
+</ul>
+<h3 id="_9">公式清单</h3>
+<table>
+<thead>
+<tr>
+<th>公式</th>
+<th>意思</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(\hat\ell_t \sim \pi^{hi}(\hat\ell \mid I_t, \ell_t)\)</span></td>
+<td>高层：看画面和总指令，写出当前子任务</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(a_{t:t+H} \sim \pi^{lo}(a \mid I_t, \hat\ell_t, q_t)\)</span></td>
+<td>低层：按子任务出动作 chunk</td>
+</tr>
+<tr>
+<td>高层次数 = 任务秒数 × 高层频率 + 插话次数</td>
+<td>本章数字例子：8 × 1 + 1 = 9</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_10">代码对照</h3>
+<p>本章无代码对照：讲的是系统结构和节奏。</p><nav class="pager"><a href="09-knowledge-insulation.html">← 第 9 章 · 知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="11-latent-actions.html">第 11 章 · 没有动作标签：隐动作与世界模型 →</a></nav>
+</main>
+<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a></footer>
+</body></html>

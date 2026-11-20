@@ -204,6 +204,144 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <td>训练时混入图文数据 / 让大脑同时学离散动作词、小脑学连续动作（第 9 章）</td>
 <td><a href="../lessons/09-knowledge-insulation.html">第 9 章</a></td>
 </tr>
+<tr>
+<td>MM / ME / CE</td>
+<td>Mobile Manipulator / Multi-Environment / Cross-Embodiment</td>
+<td>移动操作臂（家里的机器人）/ 多环境固定臂 / 实验室多本体：π0.5 的三路机器人数据（第 9 章）</td>
+<td><a href="../lessons/09-knowledge-insulation.html">第 9 章</a></td>
+</tr>
+<tr>
+<td>HL / WD / VI</td>
+<td>High-Level / Web Data / Verbal Instruction</td>
+<td>高层子任务预测 / 网络图文数据 / 口头指导数据（第 9 章）</td>
+<td><a href="../lessons/09-knowledge-insulation.html">第 9 章</a></td>
+</tr>
+<tr>
+<td>System 1 / System 2</td>
+<td>系统 1 / 系统 2</td>
+<td>Kahneman 的快思考 / 慢思考：低层快做、高层慢想（第 10 章）</td>
+<td><a href="../lessons/10-hierarchy.html">第 10 章</a></td>
+</tr>
+<tr>
+<td>DiT</td>
+<td>Diffusion Transformer</td>
+<td>扩散 / Transformer：用 Transformer 做去噪的网络（GR00T 的动作头）</td>
+<td><a href="../lessons/10-hierarchy.html">第 10 章</a></td>
+</tr>
+<tr>
+<td>GR00T</td>
+<td>Generalist Robot 00 Technology</td>
+<td>NVIDIA 的人形机器人基础模型（N1：双系统；GR00T 2：世界-动作模型）</td>
+<td><a href="../lessons/10-hierarchy.html">第 10 章</a></td>
+</tr>
+<tr>
+<td>ER</td>
+<td>Embodied Reasoning</td>
+<td>具身 / 推理：Gemini Robotics-ER，会看空间、会规划的大模型</td>
+<td><a href="../lessons/10-hierarchy.html">第 10 章</a></td>
+</tr>
+<tr>
+<td>LAPA</td>
+<td>Latent Action Pretraining</td>
+<td>隐 / 动作 / 预训练：从无标签视频学动作码（第 11 章）</td>
+<td><a href="../lessons/11-latent-actions.html">第 11 章</a></td>
+</tr>
+<tr>
+<td>VQ-VAE</td>
+<td>Vector-Quantized Variational AutoEncoder</td>
+<td>向量 / 量化 / 变分 / 自编码器：输出只能从一个小码本里选</td>
+<td><a href="../lessons/11-latent-actions.html">第 11 章</a></td>
+</tr>
+<tr>
+<td>IDM</td>
+<td>Inverse Dynamics Model</td>
+<td>逆 / 动力学 / 模型：看前后两帧，反推动作</td>
+<td><a href="../lessons/11-latent-actions.html">第 11 章</a></td>
+</tr>
+<tr>
+<td>LAM</td>
+<td>Latent Action Model</td>
+<td>隐 / 动作 / 模型（Genie 的说法）</td>
+<td><a href="../lessons/11-latent-actions.html">第 11 章</a></td>
+</tr>
+<tr>
+<td>DINOv2</td>
+<td>self-DIstillation with NO labels, v2</td>
+<td>无标签自蒸馏视觉特征，关注物体、对镜头晃动不敏感（UniVLA 用）</td>
+<td><a href="../lessons/11-latent-actions.html">第 11 章</a></td>
+</tr>
+<tr>
+<td>UniPi / GR-1 / GR-2</td>
+<td>Universal Policy / Generative Robot</td>
+<td>先生成未来视频再反推动作 / 视频预测预训练的机器人模型</td>
+<td><a href="../lessons/11-latent-actions.html">第 11 章</a></td>
+</tr>
+<tr>
+<td>RL</td>
+<td>Reinforcement Learning</td>
+<td>强化 / 学习：靠奖励从自己的经验里学</td>
+<td><a href="../lessons/12-rl-recap.html">第 12 章</a></td>
+</tr>
+<tr>
+<td>Recap</td>
+<td>RL with Experience and Corrections via Advantage-conditioned Policies</td>
+<td>用经验和人的纠正做强化学习，策略以"优势标签"为条件（π*0.6）</td>
+<td><a href="../lessons/12-rl-recap.html">第 12 章</a></td>
+</tr>
+<tr>
+<td>VF</td>
+<td>Value Function</td>
+<td>价值 / 函数：照平时水平，从这里到成功还要多少</td>
+<td><a href="../lessons/12-rl-recap.html">第 12 章</a></td>
+</tr>
+<tr>
+<td>CFG</td>
+<td>Classifier-Free Guidance</td>
+<td>无分类器 / 引导：同一模型学有条件和无条件两种分布，用时偏向条件</td>
+<td><a href="../lessons/12-rl-recap.html">第 12 章</a></td>
+</tr>
+<tr>
+<td>PPO / AWR</td>
+<td>Proximal Policy Optimization / Advantage-Weighted Regression</td>
+<td>近端策略优化 / 优势加权回归：常见 RL 算法，Recap 拿来对比</td>
+<td><a href="../lessons/12-rl-recap.html">第 12 章</a></td>
+</tr>
+<tr>
+<td>ΠGDM</td>
+<td>Pseudoinverse-Guided Diffusion Models</td>
+<td>伪逆 / 引导 / 扩散模型：免训练补画，RTC 的引导项来源</td>
+<td><a href="../lessons/13-rtc.html">第 13 章</a></td>
+</tr>
+<tr>
+<td>RDT</td>
+<td>Robotics Diffusion Transformer</td>
+<td>机器人 / 扩散 / Transformer：清华的 1.2B 双臂扩散模型</td>
+<td><a href="../lessons/14-vla-landscape.html">第 14 章</a></td>
+</tr>
+<tr>
+<td>CogACT</td>
+<td>Cognition + Action</td>
+<td>认知 + 动作：VLM 认知特征接专门的扩散动作模块</td>
+<td><a href="../lessons/14-vla-landscape.html">第 14 章</a></td>
+</tr>
+<tr>
+<td>JEPA</td>
+<td>Joint-Embedding Predictive Architecture</td>
+<td>联合 / 嵌入 / 预测 / 架构：在隐空间里预测，不还原像素（VLA-JEPA）</td>
+<td><a href="../lessons/14-vla-landscape.html">第 14 章</a></td>
+</tr>
+<tr>
+<td>WAM</td>
+<td>World Action Model</td>
+<td>世界 / 动作 / 模型：同时预测未来画面和动作（GR00T 2）</td>
+<td><a href="../lessons/14-vla-landscape.html">第 14 章</a></td>
+</tr>
+<tr>
+<td>LIBERO</td>
+<td>Lifelong robot learning benchmark</td>
+<td>最常用的 VLA 仿真基准，已接近饱和</td>
+<td><a href="../lessons/14-vla-landscape.html">第 14 章</a></td>
+</tr>
 </tbody>
 </table>
 <h2 id="_3">数据与硬件</h2>
@@ -301,6 +439,30 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <td>scale</td>
 <td>FAST 取整前乘的倍数：大 → 细节多、词多；小 → 词少、精度低</td>
 <td><a href="../lessons/07-fast.html">第 7 章</a></td>
+</tr>
+<tr>
+<td>Δt / δ / d</td>
+<td>control period / inference latency / inference delay</td>
+<td>控制周期 / 想一次的时间 / 折成几个控制步，<span class="arithmatex">\(d = \lfloor \delta/\Delta t \rfloor\)</span>（第 13 章）</td>
+<td><a href="../lessons/13-rtc.html">第 13 章</a></td>
+</tr>
+<tr>
+<td>s / H</td>
+<td>execution horizon / chunk length</td>
+<td>每段执行几步 / 一段有几步（第 13 章）</td>
+<td><a href="../lessons/13-rtc.html">第 13 章</a></td>
+</tr>
+<tr>
+<td>A</td>
+<td>advantage</td>
+<td>优势：这段比平时好多少（第 12 章）</td>
+<td><a href="../lessons/12-rl-recap.html">第 12 章</a></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\hat\ell\)</span></td>
+<td>ℓ hat</td>
+<td>模型自己写出的子任务（π0.5、Hi Robot）</td>
+<td><a href="../lessons/09-knowledge-insulation.html">第 9 章</a></td>
 </tr>
 </tbody>
 </table>

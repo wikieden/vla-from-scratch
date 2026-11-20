@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VLA 全景地图</title><link rel="stylesheet" href="anim.css"></head>
+<body><main>
+<h1>第 14 章 · 主流 VLA 全景：动作怎么出，一路怎么变</h1>
+<p class="sub">配套讲义：<a href="../lessons/14-vla-landscape.html">第 14 章 · 主流 VLA 模型全景：架构、关键改进、优劣势</a>。横轴是 arXiv 编号对应的年月，纵轴是"动作怎么出"。每一步亮出一个模型和它的关键改进。</p>
+<div class="panel"><svg id="sv" viewBox="0 0 680 420"></svg></div>
+<div class="stats">
+<div class="stat"><div class="l">模型</div><div class="v" id="s1" style="font-size:16px">—</div></div>
+<div class="stat"><div class="l">关键改进</div><div class="v" id="s2" style="font-size:14px;line-height:1.4">—</div></div>
+</div>
+<div class="row"><button id="play">▶ 播放</button><button id="step">→ 单步</button><button id="reset">↺ 重来</button></div>
+<p class="note">看点：① 2023 年：小模型策略（ACT、Diffusion Policy）解决了"分块"和"多峰"。② 2023–2024：RT-2、OpenVLA 把 VLM 拿来"把动作当词"，有了常识但慢。③ 2024 下半年起：连续动作头（π0、RDT、CogACT、GR00T、SmolVLA）成为主流。④ 2025：配方之争：FAST、OFT、知识隔离、π0.5 的共训、Recap 的 RL、RTC 的实时执行。⑤ 2025–2026：视频 / 隐动作 / 世界动作模型，把网上视频变成机器人的知识。</p>
+</main>
+<script src="anim.js"></script>
+<script>
+const sv=$('sv');const X0=110,W=550,Y0=40;
+const rows=[['离散 token','念词'],['连续回归','一次出完'],['扩散 / flow 头','从噪声推出'],['视频 / 隐动作','先想象再做']];
+const RH=86;rows.forEach((r,i)=>{const y=Y0+i*RH;el('rect',{x:X0,y,width:W,height:RH-8,rx:6,fill:'var(--bg)',stroke:'var(--line)'},sv);txt(r[0],{x:X0-8,y:y+34,'text-anchor':'end'},sv);txt(r[1],{x:X0-8,y:y+52,'text-anchor':'end',class:'m'},sv)});
+const T=(y,m)=>X0+((y-2023)*12+m-1)/(4*12)*W;
+[2023,2024,2025,2026].forEach(y=>{el('line',{x1:T(y,1),y1:Y0-6,x2:T(y,1),y2:Y0+4*RH,stroke:'var(--line)','stroke-dasharray':'2 4'},sv);txt(String(y),{x:T(y,1)+4,y:Y0-10,class:'m'},sv)});
+const M=[
+ ['Diffusion Policy',2023,3,2,'扩散出动作，解决多峰（第 4 章）'],
+ ['ACT',2023,4,1,'一次出一段 chunk（第 3 章）'],
+ ['RT-2',2023,7,0,'VLM 直接把动作当词（第 6 章）'],
+ ['Octo',2024,5,2,'开源通用策略，扩散头，80 万条轨迹'],
+ ['OpenVLA',2024,6,0,'7B 开源 VLA，256 格分箱'],
+ ['RDT-1B',2024,10,2,'1.2B 扩散，统一动作空间，双臂'],
+ ['π0',2024,10,2,'VLM + flow 动作专家（第 8 章）'],
+ ['CogACT',2024,11,2,'VLM 认知特征 + 专门的扩散动作模块'],
+ ['FAST',2025,1,0,'DCT + BPE 压缩动作词（第 7 章）'],
+ ['OpenVLA-OFT',2025,2,1,'并行解码 + L1 回归，LIBERO 97.1%'],
+ ['GR00T N1',2025,3,2,'System 2 VLM + System 1 DiT（第 10 章）'],
+ ['π0.5',2025,4,2,'五路共训 + 先想后做（第 9 章）'],
+ ['KI',2025,5,2,'stop-gradient 知识隔离（第 9 章）'],
+ ['SmolVLA',2025,6,2,'450M，消费级显卡，异步推理'],
+ ['UniVLA',2025,5,3,'任务相关的隐动作（第 11 章）'],
+ ['π*0.6',2025,11,2,'Recap：从经验里学（第 12 章）'],
+ ['VLA-JEPA',2026,2,3,'在隐空间预测未来状态'],
+ ['GR00T 2',2026,11,3,'世界-动作模型：同时去噪视频和动作'],
+];
+const SUB={'RDT-1B':1,'GR00T N1':1,'CogACT':2,'SmolVLA':2,'π0.5':3,'FAST':1,'UniVLA':1,'VLA-JEPA':0,'GR00T 2':2};
+const dots=M.map((m,i)=>{const x=T(m[1],m[2]),y=Y0+m[3]*RH+14+(SUB[m[0]]||0)*16;const g=el('g',{opacity:0},sv);el('circle',{cx:x,cy:y,r:5},g).setAttribute('style','fill:var(--'+['purple','amber','teal','warm'][m[3]]+')');const end=x>X0+W-60;txt(m[0],{x:end?x-8:x+7,y:y+4,'text-anchor':end?'end':'start',style:'font-size:11px'},g);return g});
+let k;
+function reset(){k=0;dots.forEach(g=>g.setAttribute('opacity',0));$('s1').textContent='—';$('s2').textContent='—'}
+function next(){if(k>=M.length)return false;dots.forEach((g,i)=>g.setAttribute('opacity',i<k?.55:i===k?1:0));$('s1').textContent=M[k][0]+'（'+M[k][1]+'-'+String(M[k][2]).padStart(2,'0')+'）';$('s2').textContent=M[k][4];k++;return true}
+setupPlayer({captureSeed:1,reset,next},900);
+</script><a href="https://wikieden.github.io/ai-books/" style="position:fixed;right:12px;bottom:12px;z-index:99;padding:4px 10px;border-radius:14px;background:rgba(127,127,127,.18);color:inherit;font:13px/1.6 system-ui,sans-serif;text-decoration:none">← 全部讲义书</a>
+</body></html>

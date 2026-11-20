@@ -16,7 +16,12 @@
 | [6](https://wikieden.github.io/vla-from-scratch/lessons/06-action-tokens.html) | 动作当词：每个数切成 256 格 | V12–V13 | [▶](https://wikieden.github.io/vla-from-scratch/animations/06-binning-autoregressive.html) | 完成 |
 | [7](https://wikieden.github.io/vla-from-scratch/lessons/07-fast.html) | FAST：先压缩再变词 | V14–V15 | [▶](https://wikieden.github.io/vla-from-scratch/animations/07-fast-dct.html) | 完成 |
 | [8](https://wikieden.github.io/vla-from-scratch/lessons/08-pi0.html) | π0：大脑 + 小脑，动作专家 | V16、V18、V20–V24 | [▶](https://wikieden.github.io/vla-from-scratch/animations/08-pi0-inference.html) [▶](https://wikieden.github.io/vla-from-scratch/animations/08b-pi0-block-mask.html) [▶](https://wikieden.github.io/vla-from-scratch/animations/08c-tau-sampling.html) [▶](https://wikieden.github.io/vla-from-scratch/animations/08d-cross-attention.html) | 完成 |
-| [9](https://wikieden.github.io/vla-from-scratch/lessons/09-knowledge-insulation.html) | 知识隔离与 π0.5：别让小脑冲掉大脑的常识 | V25 | [▶](https://wikieden.github.io/vla-from-scratch/animations/09-gradient-interference.html) [▶](https://wikieden.github.io/vla-from-scratch/animations/09b-knowledge-insulation.html) | 进行中 |
+| [9](https://wikieden.github.io/vla-from-scratch/lessons/09-knowledge-insulation.html) | 知识隔离与 π0.5：别让小脑冲掉大脑的常识 | V25 | [▶](https://wikieden.github.io/vla-from-scratch/animations/09-gradient-interference.html) [▶](https://wikieden.github.io/vla-from-scratch/animations/09b-knowledge-insulation.html) [▶](https://wikieden.github.io/vla-from-scratch/animations/09c-pi05-recipe.html) | 已写，练习待作答 |
+| [10](https://wikieden.github.io/vla-from-scratch/lessons/10-hierarchy.html) | 慢想快做：高层 1 秒想一次，低层每秒 50 个动作 | — | [▶](https://wikieden.github.io/vla-from-scratch/animations/10-two-clocks.html) | 已写，练习待作答 |
+| [11](https://wikieden.github.io/vla-from-scratch/lessons/11-latent-actions.html) | 没有动作标签：隐动作与世界模型 | — | [▶](https://wikieden.github.io/vla-from-scratch/animations/11-latent-action.html) | 已写，练习待作答 |
+| [12](https://wikieden.github.io/vla-from-scratch/lessons/12-rl-recap.html) | RL 后训练 Recap：告诉模型"这段做得比平时好" | — | [▶](https://wikieden.github.io/vla-from-scratch/animations/12-recap-advantage.html) | 已写，练习待作答 |
+| [13](https://wikieden.github.io/vla-from-scratch/lessons/13-rtc.html) | 实时执行 RTC：边想下一段，边把这一段走完 | — | [▶](https://wikieden.github.io/vla-from-scratch/animations/13-rtc.html) | 已写，练习待作答 |
+| [14](https://wikieden.github.io/vla-from-scratch/lessons/14-vla-landscape.html) | 主流 VLA 模型全景：架构、关键改进、优劣势 | — | [▶](https://wikieden.github.io/vla-from-scratch/animations/14-vla-landscape.html) | 已写，练习待作答 |
 
 ---
 

@@ -166,6 +166,97 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <li>三种信号轮流亮：蓝色虚线是前向，小脑读大脑的 K、V；红色是小脑的误差往回传，撞到 sg 墙停下；紫色（FAST 动作词）和橙色（网络图文数据）是大脑自己的两个老师。</li>
 <li>下图：KI（绿）和 π0-FAST（紫）都涨得快；π0（红）涨得慢；冻住大脑（灰）贴着底。</li>
 </ol>
+<h3 id="3-05-2026-11-20">第 3 步：π0.5 的配方，五路数据、两段训练、先想后做（2026-11-20）</h3>
+<blockquote>
+<p>对应原文：<code>pi05-2504.16054.txt</code> 第 100–112 行（数据来源与 97.6%）、第 285–297 行（两段训练）、第 330–335 行（分解成子任务 + 动作）、第 419–451 行（图 4 与各数据源）、第 486–499 行（后训练）、第 600–630 与 692–699 行（泛化实验）。KI 论文第 166–170 行说明了两者的关系。</p>
+</blockquote>
+<p><strong>类比：培养一个新管家。</strong> 不能只让他在你家干活：先让他看很多别人家、别的工种的录像，读很多书（预训练）；再到你家这类场景里专门练手艺（后训练）；干活时先在心里说一句"现在先拿盘子"，再动手（先想后做）。</p>
+<p><strong>① 五路数据（第 419–451 行）</strong></p>
+<table>
+<thead>
+<tr>
+<th>缩写</th>
+<th>全称</th>
+<th>是什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MM</td>
+<td>Mobile Manipulator（移动 / 操作臂）</td>
+<td>家里的移动双臂机器人，约 400 小时</td>
+</tr>
+<tr>
+<td>ME</td>
+<td>Multi-Environment（多 / 环境）</td>
+<td>各种环境里的固定机械臂</td>
+</tr>
+<tr>
+<td>CE</td>
+<td>Cross-Embodiment（跨 / 本体）</td>
+<td>实验室里多种机器人的数据（含 π0 的数据）</td>
+</tr>
+<tr>
+<td>HL</td>
+<td>High-Level（高层）</td>
+<td>给画面，预测文字子任务（如"拿起枕头"）</td>
+</tr>
+<tr>
+<td>WD</td>
+<td>Web Data（网络 / 数据）</td>
+<td>看图说话、图片问答、找物体位置</td>
+</tr>
+</tbody>
+</table>
+<p>原文的关键数字：预训练里 <strong>97.6%</strong> 的样本<strong>不是</strong>家庭移动机器人做家务的数据（第 110–112 行）。也就是说，真正的目标场景只占 2.4%，其余全是"别处的经验"。</p>
+<p><strong>② 两段训练（第 285–297、486–499 行）</strong></p>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>步数</th>
+<th>动作怎么表示</th>
+<th>数据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>预训练</td>
+<td>280k 步</td>
+<td>全部是离散 token，动作用 FAST（第 7 章）</td>
+<td>MM + ME + CE + HL + WD</td>
+</tr>
+<tr>
+<td>后训练</td>
+<td>80k 步</td>
+<td>加一个<strong>随机初始化</strong>的小脑，用 flow matching 出连续动作；同时继续念词</td>
+<td>MM + ME（筛过）+ WD + HL；<strong>加</strong> VI（Verbal Instruction，口头指导），<strong>去掉</strong> CE</td>
+</tr>
+</tbody>
+</table>
+<p>后训练的损失 = 念词的交叉熵 + α × flow matching 损失，α = 10（式 (1)，第 340–345 行；第 498–499 行）。</p>
+<p><strong>和第 2 步 KI 的关系</strong>：π0.5 就是 KI 思路的前身：先用 FAST 词把大脑练好，再接上小脑。KI 论文说自己把 π0.5 的做法"正式化"，并改成<strong>一段</strong>训练、加上 stop-gradient（KI 论文第 166–170 行）。</p>
+<p><strong>③ 先想后做：一个模型两层推理（第 297、330–335 行）</strong></p>
+<div class="arithmatex">\[\pi_\theta(a_{t:t+H}, \hat{\ell} \mid o_t, \ell) = \pi_\theta(a_{t:t+H} \mid o_t, \hat{\ell})\ \pi_\theta(\hat{\ell} \mid o_t, \ell)\]</div>
+<p>读法："π 下标 θ，括号 a 从 t 到 t 加 H、ℓ hat，竖线 o t、ℓ"。</p>
+<ul>
+<li><span class="arithmatex">\(\ell\)</span>：总指令（"收拾厨房"）；<span class="arithmatex">\(\hat\ell\)</span>（ℓ hat）：模型自己写出的子任务（"拿起盘子"）；</li>
+<li>右边第二项：<strong>先想</strong>，看画面 + 总指令，写出子任务（高层）；</li>
+<li>右边第一项：<strong>再做</strong>，看画面 + 子任务，出动作 chunk（低层）。注意它只看子任务，不看总指令；</li>
+<li>两项是<strong>同一个模型</strong>算的。</li>
+</ul>
+<p><strong>数字例子</strong>（流程，不是论文的数）：总指令"收拾厨房" → 子任务"拿起盘子" → 小脑 10 步出 50 步动作 → 走完一段 → 再看画面 → 子任务换成"把盘子放进水槽"……</p>
+<p><strong>效果</strong>（第 600–630、692–699 行）：训练用的家庭从 3 个加到 104 个，在<strong>完全没去过的新家</strong>里，表现接近直接在测试家里训练过的模型；去掉网络数据后，对没见过类别的物体明显变差（第 8 章插问 3）。</p>
+<p><strong>一句话</strong>：π0.5 = 大量"别处的经验"（97.6%）+ 先 FAST 后小脑的两段训练 + 先写子任务再出动作。</p>
+<h3 id="305">动画演示 3：π0.5 的配方</h3>
+<p><img alt="π0.5：五路数据、两段训练、先想后做" src="../animations/09c-pi05-recipe.gif" /></p>
+<p>可交互版：<a href="../animations/09c-pi05-recipe.html">animations/09c-pi05-recipe.html</a>（可播放、单步、重来）。条形长度是示意，只有 97.6%、280k、80k 来自原文。</p>
+<p><strong>怎么看</strong>：</p>
+<ol>
+<li>五条数据依次填满；MM 那条标着 2.4%，目标场景只占这么一点（第 3 步 ①）。</li>
+<li>时间轴：紫色是预训练 280k 步（只念 FAST 词）；青色是后训练 80k 步（加小脑）。后训练时 VI 加进来，CE 变淡（第 3 步 ②）。</li>
+<li>最后亮出推理：总指令 → 先写子任务 → 小脑出 50 步动作（第 3 步 ③，下一章展开）。</li>
+</ol>
 <h2 id="_4">练习与作答记录</h2>
 <p><strong>题 1</strong>：
 1. π0 训练时，小脑的梯度是通过哪条路流进大脑的？
@@ -181,13 +272,97 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 2. stop-gradient 在前向（算结果）和反向（改参数）时各做什么？
 3. 只用 stop-gradient、不让大脑念 FAST 动作词，会退化成第 1 步的哪种情况？</p>
 <p><strong>作答</strong>：（待作答）</p>
+<p><strong>题 3</strong>（第 3 步）：
+1. π0.5 预训练的五路数据各是什么？目标场景（家庭移动机器人）的数据大约占多少？
+2. 两段训练里，小脑是在哪一段加进来的？加进来时它的权重是什么样的？
+3. 用"先想后做"的公式说明：低层出动作时，看的是总指令还是子任务？</p>
+<p><strong>作答</strong>：（待作答）</p>
 <h2 id="_5">口诀</h2>
 <blockquote>
 <p>实习生干砸，老员工挨批改坏习惯；冻住老员工，又学不会新活。<br />
-知识隔离：小脑只读不改，大脑另有老师（FAST 词 + 图文数据）。</p>
+知识隔离：小脑只读不改，大脑另有老师（FAST 词 + 图文数据）。<br />
+π0.5：九成多是别处经验，先念词后接小脑，先写子任务再出动作。</p>
 </blockquote>
 <h2 id="_6">本章复习卡片</h2>
-<p>V25 一起训练为什么伤大脑、为什么不能冻住（见 <a href="../review.html">review.md</a>）</p><nav class="pager"><a href="08-pi0.html">← 第 8 章 · π0：大脑 + 小脑，动作专家（action expert）</a><span></span></nav>
+<p>V25 一起训练为什么伤大脑、为什么不能冻住（见 <a href="../review.html">review.md</a>）</p>
+<h2 id="_7">附录 · 延伸阅读</h2>
+<blockquote>
+<p>留给以后深入学习用，不影响本章主线。★ 是建议先读的。</p>
+</blockquote>
+<h3 id="_8">推荐阅读</h3>
+<table>
+<thead>
+<tr>
+<th>读什么</th>
+<th>读哪里</th>
+<th>读它为了什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>★ Knowledge Insulating VLA（Driess 等，2025）</td>
+<td><code>knowledge-insulation-2505.23705.txt</code> §1 引言 L40–L115；§5 L286–L374（式 4–6）</td>
+<td>梯度干扰的问题和三项措施、stop-gradient 的写法</td>
+</tr>
+<tr>
+<td>★ π0.5（Physical Intelligence，2025）</td>
+<td><code>pi05-2504.16054.txt</code> §IV L285–L345（架构与式 (1)），图 4 与数据源 L419–L451，后训练 L486–L506</td>
+<td>五路数据、两段训练、先想后做</td>
+</tr>
+<tr>
+<td>KI 论文 §6 实验</td>
+<td>同上 L390–L510；图 6 L476–L480</td>
+<td>π0 要多 7.5 倍步数、听指令实验</td>
+</tr>
+<tr>
+<td>π0.5 §V 实验</td>
+<td><code>pi05-2504.16054.txt</code> L590–L699</td>
+<td>训练家庭数量和网络数据对泛化的影响</td>
+</tr>
+<tr>
+<td>FAST（第 7 章）</td>
+<td><code>fast-tokenizer-2501.09747.txt</code> L206–L245</td>
+<td>大脑念的 FAST 动作词从哪来</td>
+</tr>
+<tr>
+<td>RT-2</td>
+<td><code>rt2-2307.15818.txt</code> L140–L146</td>
+<td>网络知识怎么迁移到机器人（共训思路的源头）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_9">数学原理</h3>
+<ul>
+<li><strong>反向传播与梯度</strong>：误差沿计算图倒着传，每个参与计算的参数都收到"往哪改"的信号；路径断了（stop-gradient）就收不到。</li>
+<li><strong>stop-gradient</strong>：<span class="arithmatex">\(\mathrm{sg}(x)\)</span> 前向等于 <span class="arithmatex">\(x\)</span>，反向导数为 0。</li>
+<li><strong>多任务损失加权</strong>：总损失 = 交叉熵 + α × flow matching；α 决定两个目标的相对分量（π0.5 后训练 α = 10，KI 因两部分改的是不同权重取 α = 1）。</li>
+<li><strong>概率的链式分解</strong>：<span class="arithmatex">\(p(a, \hat\ell) = p(a \mid \hat\ell)\,p(\hat\ell)\)</span>，把一个联合分布拆成"先想"和"再做"两步。</li>
+</ul>
+<h3 id="_10">公式清单</h3>
+<table>
+<thead>
+<tr>
+<th>公式</th>
+<th>意思</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(P_{ab} \propto \exp(Q_a\,\mathrm{sg}(K_b)^\top)\)</span>，<span class="arithmatex">\(E_a = P_{ab}\,\mathrm{sg}(V_b) + P_{aa}V_a\)</span></td>
+<td>小脑读大脑的 K、V，但梯度不回传（KI 式 5–6）</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(L = \text{交叉熵（文字 + FAST 词）} + \alpha\,\lVert \omega - a - f_\theta(a^{\tau,\omega}) \rVert^2\)</span></td>
+<td>念词损失 + flow matching 损失（KI 式 4 / π0.5 式 1）</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\pi_\theta(a, \hat\ell \mid o, \ell) = \pi_\theta(a \mid o, \hat\ell)\,\pi_\theta(\hat\ell \mid o, \ell)\)</span></td>
+<td>先写子任务，再按子任务出动作</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_11">代码对照</h3>
+<p>本章无代码对照：讲的是训练配方和梯度流向，后续在 V-M3（flow 头）里用小模型演示 stop-gradient。</p><nav class="pager"><a href="08-pi0.html">← 第 8 章 · π0：大脑 + 小脑，动作专家（action expert）</a><a href="10-hierarchy.html">第 10 章 · 慢想快做：分层系统 →</a></nav>
 </main>
 <footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a></footer>
 </body></html>

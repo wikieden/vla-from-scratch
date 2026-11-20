@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>隐动作</title><link rel="stylesheet" href="anim.css"></head>
+<body><main>
+<h1>第 11 章 · 隐动作：从两帧画面里猜"发生了什么"</h1>
+<p class="sub">配套讲义：<a href="../lessons/11-latent-actions.html">第 11 章 · 没有动作标签：隐动作与世界模型</a>。依据 Genie <code>genie-2402.15391.txt</code> 第 186–200 行（码本只有 |A| = 8 个）、LAPA <code>lapa-2410.11758.txt</code> 第 215–256 行。这里把"画面"简化成一个小球的位置，把动作简化成 8 个方向，是示意。</p>
+<div class="panel"><svg id="sv" viewBox="0 0 680 330"></svg></div>
+<div class="stats">
+<div class="stat"><div class="l">第几对画面</div><div class="v" id="s0">0</div></div>
+<div class="stat"><div class="l">编码器猜的变化</div><div class="v" id="s1">—</div></div>
+<div class="stat"><div class="l">选中的码（隐动作）</div><div class="v" id="s2">—</div></div>
+<div class="stat"><div class="l">解码器还原误差</div><div class="v" id="s3">—</div></div>
+</div>
+<div class="row"><button id="play">▶ 播放</button><button id="step">→ 单步</button><button id="reset">↺ 换一段视频</button></div>
+<p class="note">看点：① 左边是视频里相邻的两帧（灰 = 这一帧，橙 = 下一帧）。没有人告诉我们"发生了什么动作"。② 编码器看两帧，猜出变化（青色箭头），再从 8 个码里挑最近的一个：这就是<strong>隐动作</strong>（逆动力学）。③ 解码器只拿"这一帧 + 码"，去还原下一帧（紫色虚线圈，世界模型）。码只有 8 个，逼着它只记"最要紧的变化"。④ 最后一行：整段视频被标成一串码，VLA 就能像念词一样学它。</p>
+</main>
+<script src="anim.js"></script>
+<script>
+const sv=$('sv');const C=[];const names=['→','↗','↑','↖','←','↙','↓','↘'];
+for(let i=0;i<8;i++){const a=i*Math.PI/4;C.push([Math.cos(a),Math.sin(a)])}
+el('rect',{x:20,y:20,width:220,height:220,rx:8,fill:'var(--bg)',stroke:'var(--line)'},sv);txt('相邻两帧',{x:20,y:14,class:'m'},sv);
+const S=(x,y)=>[130+x*20,130-y*20];
+const p0=el('circle',{r:10,fill:'var(--muted)'},sv),p1=el('circle',{r:10,fill:'var(--warm)'},sv),rec=el('circle',{r:13,fill:'none',stroke:'var(--purple)','stroke-width':2,'stroke-dasharray':'4 3'},sv);
+el('defs',{},sv).innerHTML='<marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="context-stroke"/></marker>';
+const enc=el('line',{stroke:'var(--teal)','stroke-width':3,'marker-end':'url(#ah)'},sv);
+// codebook
+txt('码本：只有 8 个隐动作',{x:300,y:40},sv);
+const cb=C.map((c,i)=>{const cx=330+i*42,cy=80;const g=el('g',{},sv);el('rect',{x:cx-17,y:cy-17,width:34,height:34,rx:6,fill:'var(--accent-bg)',stroke:'var(--line)'},g);txt(names[i],{x:cx,y:cy+6,'text-anchor':'middle'},g);txt('z'+i,{x:cx,y:cy+32,'text-anchor':'middle',class:'m'},g);return g.firstChild});
+txt('编码器（逆动力学）：看两帧 → 猜变化 → 挑最近的码',{x:300,y:150,class:'m'},sv);
+txt('解码器（世界模型）：这一帧 + 码 → 还原下一帧',{x:300,y:172,class:'m'},sv);
+txt('整段视频被标成：',{x:20,y:275},sv);const seq=txt('',{x:140,y:275,style:'font-size:18px;letter-spacing:4px'},sv);
+txt('（没有任何真实动作标签，全是模型自己猜的码）',{x:20,y:300,class:'m'},sv);
+let t,traj,pos,codes;
+function reset(sd){seed(sd);t=0;pos=[0,0];codes=[];traj=[];const pref=[0,1,2,0,6,7,0,1,4,5];for(let i=0;i<10;i++){const k=pref[i]%8;const st=1.3+0.5*rnd();traj.push([C[k][0]*st+0.35*gauss(),C[k][1]*st+0.35*gauss()])}draw(null)}
+function draw(r){seq.textContent=codes.map(i=>names[i]).join(' ');
+  if(!r){[p0,p1,rec].forEach(c=>c.setAttribute('opacity',0));enc.setAttribute('opacity',0);cb.forEach(b=>b.setAttribute('stroke','var(--line)'));['s1','s2','s3'].forEach(i=>$(i).textContent='—');$('s0').textContent=t;return}
+  const [a,b,k,rp]=r;[p0,p1,rec].forEach(c=>c.setAttribute('opacity',1));
+  let q=S(...a);p0.setAttribute('cx',q[0]);p0.setAttribute('cy',q[1]);q=S(...b);p1.setAttribute('cx',q[0]);p1.setAttribute('cy',q[1]);q=S(...rp);rec.setAttribute('cx',q[0]);rec.setAttribute('cy',q[1]);
+  const qa=S(...a),qb=S(...b);enc.setAttribute('x1',qa[0]);enc.setAttribute('y1',qa[1]);enc.setAttribute('x2',qb[0]);enc.setAttribute('y2',qb[1]);enc.setAttribute('opacity',1);
+  cb.forEach((bx,i)=>{bx.setAttribute('stroke',i===k?'var(--teal)':'var(--line)');bx.setAttribute('stroke-width',i===k?3:1)});
+  const d=[b[0]-a[0],b[1]-a[1]];$('s0').textContent=t;$('s1').textContent='('+d[0].toFixed(1)+', '+d[1].toFixed(1)+')';$('s2').textContent='z'+k+' '+names[k];
+  $('s3').textContent=Math.hypot(rp[0]-b[0],rp[1]-b[1]).toFixed(2)}
+function next(){if(t>=traj.length)return false;let a=pos.slice();if(Math.abs(a[0])>3||Math.abs(a[1])>3)a=[0,0];
+  const d=traj[t],b=[a[0]+d[0],a[1]+d[1]];let k=0,best=-1e9;C.forEach((c,i)=>{const s=c[0]*d[0]+c[1]*d[1];if(s>best){best=s;k=i}});
+  const L=1.55;const rp=[a[0]+C[k][0]*L,a[1]+C[k][1]*L];codes.push(k);pos=b;t++;draw([a,b,k,rp]);return true}
+setupPlayer({captureSeed:2,reset,next},900);
+</script><a href="https://wikieden.github.io/ai-books/" style="position:fixed;right:12px;bottom:12px;z-index:99;padding:4px 10px;border-radius:14px;background:rgba(127,127,127,.18);color:inherit;font:13px/1.6 system-ui,sans-serif;text-decoration:none">← 全部讲义书</a>
+</body></html>

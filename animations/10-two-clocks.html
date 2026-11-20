@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>慢想快做两只钟</title><link rel="stylesheet" href="anim.css"></head>
+<body><main>
+<h1>第 10 章 · 慢想快做：高层 1 秒想一次，低层每秒 50 个动作</h1>
+<p class="sub">配套讲义：<a href="../lessons/10-hierarchy.html">第 10 章 · 慢想快做：分层系统</a>。依据 Hi Robot <code>hi-robot-2502.19417.txt</code> 第 370–396 行：高层每过 1 秒、或用户插话时重新想一次。任务和子任务是编的例子。</p>
+<div class="panel"><svg id="sv" viewBox="0 0 680 330"></svg></div>
+<div class="stats">
+<div class="stat"><div class="l">时间</div><div class="v" id="s0">0.0 s</div></div>
+<div class="stat"><div class="l">高层想了几次</div><div class="v" id="s1">0</div></div>
+<div class="stat"><div class="l">低层出了几个动作</div><div class="v" id="s2">0</div></div>
+<div class="stat"><div class="l">当前子任务</div><div class="v" id="s3" style="font-size:15px">—</div></div>
+</div>
+<div class="row"><button id="play">▶ 播放</button><button id="step">→ 单步</button><button id="reset">↺ 重来</button></div>
+<p class="note">看点：① 上面一条是高层（System 2，慢想）：每过 1 秒想一次，写出一句子任务。② 下面一条是低层（System 1，快做）：每秒 50 个动作，一直不停。③ 第 4.3 秒用户插话"别动那个碗"：高层不等满 1 秒，马上重新想，子任务立刻改掉。</p>
+</main>
+<script src="anim.js"></script>
+<script>
+const sv=$('sv');const X0=60,W=580,T=8,PX=s=>X0+s/T*W;
+txt('总指令："收拾桌子"',{x:X0,y:22},sv);
+txt('高层',{x:10,y:85},sv);txt('慢想',{x:10,y:101,class:'m'},sv);
+txt('低层',{x:10,y:205},sv);txt('快做',{x:10,y:221,class:'m'},sv);
+el('line',{x1:X0,y1:150,x2:X0+W,y2:150,stroke:'var(--line)'},sv);
+for(let s=0;s<=T;s++){el('line',{x1:PX(s),y1:146,x2:PX(s),y2:154,stroke:'var(--muted)'},sv);txt(s+'s',{x:PX(s),y:170,'text-anchor':'middle',class:'m'},sv)}
+const hi=el('g',{},sv),lo=el('g',{},sv),cur=el('line',{x1:X0,y1:40,x2:X0,y2:260,stroke:'var(--warm)','stroke-width':1.5},sv);
+const user=el('g',{opacity:0},sv);el('rect',{x:PX(4.3)-70,y:270,width:140,height:28,rx:6,fill:'var(--accent-bg)',stroke:'var(--bad)'},user);txt('用户："别动那个碗"',{x:PX(4.3),y:289,'text-anchor':'middle',style:'fill:var(--bad)'},user);
+el('path',{d:`M${PX(4.3)} 270 L${PX(4.3)} 118`,stroke:'var(--bad)','stroke-width':1.5,'stroke-dasharray':'4 3',fill:'none'},user);
+const plan=[[0,'拿起杯子'],[1,'拿起杯子'],[2,'把杯子放进水槽'],[3,'拿起盘子'],[4,'拿起盘子'],[4.3,'先放下，绕开碗'],[5.3,'拿起叉子'],[6.3,'把叉子放进水槽'],[7.3,'擦桌子']];
+let t,k,hiN,loN,sub;const DT=0.1;
+function reset(){t=0;k=0;hiN=0;loN=0;sub='—';clear(hi);clear(lo);user.setAttribute('opacity',0);draw()}
+function draw(){cur.setAttribute('x1',PX(t));cur.setAttribute('x2',PX(t));$('s0').textContent=t.toFixed(1)+' s';$('s1').textContent=hiN;$('s2').textContent=loN;$('s3').textContent=sub}
+function next(){if(t>=T-1e-9)return false;
+  while(k<plan.length&&plan[k][0]<=t+1e-9){const [s,lab]=plan[k];const isU=Math.abs(s-4.3)<1e-6;if(isU)user.setAttribute('opacity',1);
+    el('circle',{cx:PX(s),cy:92,r:7,fill:isU?'var(--bad)':'var(--amber)'},hi);
+    const y=k%2?60:126;txt(lab,{x:PX(s)+2,y,class:'m',style:'font-size:11px'+(isU?';fill:var(--bad)':'')},hi);sub=lab;hiN++;k++}
+  for(let i=0;i<5;i++){const s=t+i*0.02;el('rect',{x:PX(s),y:196,width:W/T*0.02*0.8,height:22,fill:'var(--teal)',opacity:.75},lo)}
+  loN+=5;t=Math.round((t+DT)*10)/10;draw();return true}
+setupPlayer({captureSeed:1,reset,next},100);
+</script><a href="https://wikieden.github.io/ai-books/" style="position:fixed;right:12px;bottom:12px;z-index:99;padding:4px 10px;border-radius:14px;background:rgba(127,127,127,.18);color:inherit;font:13px/1.6 system-ui,sans-serif;text-decoration:none">← 全部讲义书</a>
+</body></html>

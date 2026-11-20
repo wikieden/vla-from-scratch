@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第 14 章 · 主流 VLA 模型全景：架构、关键改进、优劣势 · VLA 从零到 π0</title>
+<style>
+:root{--bg:#fbfbfa;--fg:#1f2328;--mute:#5d6470;--line:#e3e5e8;--card:#fff;--acc:#2f6fdf;--code:#f2f3f5;--quote:#f4f6fa}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}}
+:root[data-theme="dark"]{--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 -apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",sans-serif}
+a{color:var(--acc)}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+header.top .in{max-width:860px;margin:0 auto;padding:10px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:14px}
+header.top .brand{font-weight:600;color:var(--fg);text-decoration:none;margin-right:auto}
+header.top a{text-decoration:none}
+main{max-width:860px;margin:0 auto;padding:24px 16px 72px;overflow-wrap:anywhere}
+h1{font-size:28px;line-height:1.35;margin:8px 0 16px} h2{font-size:22px;margin:40px 0 12px;padding-top:8px;border-top:1px solid var(--line)} h3{font-size:18px;margin:28px 0 8px}
+img{max-width:100%;height:auto;border-radius:8px;border:1px solid var(--line);background:#fff}
+blockquote{margin:16px 0;padding:10px 16px;background:var(--quote);border-left:3px solid var(--acc);border-radius:4px;color:var(--mute)}
+blockquote p{margin:4px 0}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font-size:.9em}
+pre{background:var(--code);padding:12px 14px;border-radius:8px;overflow-x:auto} pre code{padding:0;background:none}
+table{border-collapse:collapse;display:block;overflow-x:auto;max-width:100%;margin:12px 0;font-size:15px}
+th,td{border:1px solid var(--line);padding:6px 10px;vertical-align:top} th{background:var(--code)}
+details{border:1px solid var(--line);border-radius:8px;padding:6px 12px;margin:8px 0;background:var(--card)}
+details[open]{padding-bottom:10px} summary{cursor:pointer;color:var(--acc);font-weight:500}
+mjx-container{overflow-x:auto;overflow-y:hidden;max-width:100%}
+.btn{display:inline-block;margin:4px 8px 4px 0;padding:6px 14px;border:1px solid var(--acc);border-radius:999px;text-decoration:none;font-size:14px}
+.pager{display:flex;justify-content:space-between;gap:12px;margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0}
+.card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;color:inherit;text-decoration:none}
+.card:hover{border-color:var(--acc)} .card img{border:0;border-bottom:1px solid var(--line);border-radius:0;aspect-ratio:16/10;object-fit:contain;width:100%}
+.card .no{color:var(--mute);font-size:13px;padding:8px 12px 0} .card .t{padding:0 12px 12px;font-weight:500;line-height:1.5}
+.lead{font-size:17px;color:var(--mute)}
+footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-size:13px}
+</style>
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"],["$$","$$"]],processEscapes:true,processEnvironments:true}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+</head><body>
+<header class="top"><div class="in">
+<a class="brand" href="../index.html">VLA 从零到 π0</a>
+<a href="../lessons/index.html">讲义目录</a>
+<a href="../animations/index.html">动画</a>
+<a href="../review.html">复习卡片</a>
+<a href="../lessons/appendix-glossary.html">缩写表</a>
+<a href="https://wikieden.github.io/ai-books/">← 全部讲义书</a>
+</div></header>
+<main>
+<h1 id="14-vla">第 14 章 · 主流 VLA 模型全景：架构、关键改进、优劣势</h1><p><a class="btn" href="../animations/14-vla-landscape.html">▶ 打开本章可交互动画</a></p>
+<blockquote>
+<p>本章回答：学完前 13 章，回头看今天的主流 VLA：它们各自是什么架构？比前一代改进了什么？各有什么长处和短板？遇到一个新模型，怎么快速看懂它？<br />
+讲解日期：2026-11-20 · 上一章：<a href="../lessons/13-rtc.html">第 13 章 实时执行：RTC</a> · 下一章：—（全书完）<br />
+对应原文：<code>materials/text/papers/</code> 下各模型论文（每节标出文件和行号）；部署与选型的细节见面试资料 03 模型 / 框架 / 评测（核实于 2026-10-27，带 ⚠️ 的是二手数字）<br />
+本章缩写：OXE = Open X-Embodiment（开放 / 跨 / 本体数据集）；OFT = Optimized Fine-Tuning（优化 / 微调）；RDT = Robotics Diffusion Transformer（机器人 / 扩散 / Transformer）；DiT = Diffusion Transformer；CogACT = Cognition + Action（认知 + 动作）；JEPA = Joint-Embedding Predictive Architecture（联合 / 嵌入 / 预测 / 架构）；WAM = World Action Model（世界 / 动作 / 模型）；LIBERO = 一个机器人操作仿真基准；KI = Knowledge Insulation（知识 / 隔离）。全表见 <a href="../lessons/appendix-glossary.html">appendix-glossary.md</a></p>
+</blockquote>
+<h2 id="_1">讲解</h2>
+<h3 id="1-vla2026-11-20">第 1 步：看懂任何一个 VLA，只问三个问题（2026-11-20）</h3>
+<p><strong>类比：看一辆新车。</strong> 不用记每辆车的所有参数，只看三件事：发动机是什么（动作怎么出）、变速箱怎么接（大脑和小脑怎么连）、在什么路上跑过（数据和训练）。</p>
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>选项</th>
+<th>讲在哪章</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① <strong>动作怎么出</strong></td>
+<td>离散 token（念词）/ 连续回归（一次出完）/ 扩散或 flow 头（从噪声推出）/ 视频或隐动作（先想象再做）</td>
+<td>第 6、7、8、11 章</td>
+</tr>
+<tr>
+<td>② <strong>大脑和小脑怎么连</strong></td>
+<td>同一个模型念词 / 两套权重共享 attention（读 K、V）/ 小脑用 cross-attention 读大脑某一层的特征 / 云端大脑 + 本地小脑</td>
+<td>第 8、10 章</td>
+</tr>
+<tr>
+<td>③ <strong>数据和训练</strong></td>
+<td>只有机器人示范 / 多本体混合 / 加网络图文共训 / 加无标签视频 / 加自己上场的经验（RL）</td>
+<td>第 2、9、11、12 章</td>
+</tr>
+</tbody>
+</table>
+<p>再加两个工程问题：<strong>多快</strong>（几 Hz、延迟多少，第 3、13 章）、<strong>开不开源</strong>。</p>
+<p><strong>一句话</strong>：动作怎么出、大脑小脑怎么连、吃了什么数据，三问看懂一个 VLA。</p>
+<h3 id="2-2026-11-20">第 2 步：按"动作怎么出"把主流模型排一排（2026-11-20）</h3>
+<p>下面每个模型一张卡片：架构、比前一代改进了什么、优点、缺点。时间按 arXiv 编号。</p>
+<h4 id="a-vla-2023">A. 前 VLA 时代：小模型策略（2023）</h4>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>架构</th>
+<th>关键改进</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ACT</strong>（2304.13705）</td>
+<td>CVAE + Transformer，一次出一段 chunk</td>
+<td>动作分块，复合误差变小（第 3 章）</td>
+<td>小、快、少样本（几十条示范）就能做精细双臂任务</td>
+<td>不懂语言，一个任务一个模型</td>
+</tr>
+<tr>
+<td><strong>Diffusion Policy</strong>（2303.04137）</td>
+<td>扩散模型出动作 chunk</td>
+<td>能表示多峰，不会"平均撞墙"（第 4 章）</td>
+<td>多峰、平滑</td>
+<td>单任务；去噪步数多时慢</td>
+</tr>
+</tbody>
+</table>
+<h4 id="b-token-vla20232024">B. 把动作当词：离散 token VLA（2023–2024）</h4>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>架构</th>
+<th>关键改进</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>RT-2</strong>（2307.15818）</td>
+<td>大 VLM 直接输出动作词</td>
+<td>第一次证明网络知识能迁移到机器人：动作本领来自机器人数据，语义来自网络（L140–L146）</td>
+<td>听得懂新物体、新说法</td>
+<td>闭源；逐词念，慢</td>
+</tr>
+<tr>
+<td><strong>OpenVLA</strong>（2406.09246）</td>
+<td>7B：视觉编码器 + Llama 2；动作每维切 256 格</td>
+<td>第一个强的开源 VLA，OXE 上 97 万条示范（L38–L39、L53–L54）</td>
+<td>全开源，研究基座</td>
+<td>一个字一个字念，约 6 Hz ⚠️；50 步 chunk 要 350 个词（第 6 章）</td>
+</tr>
+<tr>
+<td><strong>π0-FAST / FAST</strong>（2501.09747）</td>
+<td>动作先 DCT 压缩再 BPE 成词</td>
+<td>词少了、相邻词不再几乎一样（第 7 章）</td>
+<td>训练快，能用在高频灵巧任务上</td>
+<td>推理仍是自回归，慢</td>
+</tr>
+</tbody>
+</table>
+<h4 id="c-openvla2025">C. 修 OpenVLA：连续回归（2025）</h4>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>架构</th>
+<th>关键改进</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>OpenVLA-OFT</strong>（2502.19645）</td>
+<td>OpenVLA 主干，改成<strong>并行解码</strong> + 动作分块 + 连续 <strong>L1 回归</strong></td>
+<td>LIBERO 从 76.5% 提到 97.1%（L31）；ALOHA 双臂上比 Diffusion Policy、ACT 高最多 15 个百分点（L34–L37）；吞吐快几十倍（L92）</td>
+<td>证明"微调配方比换主干更要紧"；代码清晰</td>
+<td>L1 回归只出一个答案，本质上不表示多峰（第 4 章）；7B 仍大</td>
+</tr>
+</tbody>
+</table>
+<h4 id="d-vlm-flow2024">D. 主流：VLM 大脑 + 连续动作头（扩散 / flow，2024 下半年起）</h4>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>架构</th>
+<th>关键改进</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Octo</strong>（2405.12213）</td>
+<td>Transformer 主干 + <strong>扩散头</strong>；27M / 93M 两个尺寸</td>
+<td>开源通用策略，OXE 80 万条轨迹（L59–L60、L85、L121）</td>
+<td>小、能在消费级显卡上几小时微调到新本体</td>
+<td>不是从 VLM 来的，语言和常识弱</td>
+</tr>
+<tr>
+<td><strong>RDT-1B</strong>（2410.07864）</td>
+<td>1.2B 扩散 Transformer；<strong>物理可解释的统一动作空间</strong></td>
+<td>不同机器人的动作填进同一套有物理含义的槽位，便于跨本体；双臂（摘要）</td>
+<td>双臂强；1–5 条示范学新技能（摘要自报）</td>
+<td>主要面向平行夹爪双臂</td>
+</tr>
+<tr>
+<td><strong>π0</strong>（2410.24164）</td>
+<td>PaliGemma 3B 大脑 + 300M <strong>flow 动作专家</strong>，共享 attention</td>
+<td>连续、多峰、50 步 chunk，约 73 ms（第 8 章）</td>
+<td>高灵巧任务（叠衣服）；openpi 开源</td>
+<td>一起训练会冲掉大脑常识、训练慢（第 9 章）</td>
+</tr>
+<tr>
+<td><strong>CogACT</strong>（2411.19650）</td>
+<td>VLM 输出"认知特征" → 专门的<strong>扩散动作模块</strong></td>
+<td>把动作建模交给专门模块，而不是简单量化成词；动作模块做大有收益（摘要、图 1）</td>
+<td>在 SIMPLER 和真机上比 OpenVLA 强</td>
+<td>两个模块串联，结构更复杂</td>
+</tr>
+<tr>
+<td><strong>GR00T N1</strong>（2503.14734）</td>
+<td>System 2：Eagle-2 VLM（10 Hz）；System 1：DiT flow 头（120 Hz），读 VLM <strong>第 12 层</strong></td>
+<td>双系统 + 每个本体自己的状态 / 动作编解码器 + 数据金字塔（第 10 章）</td>
+<td>人形、跨本体；2.2B，出 16 步 63.9 ms</td>
+<td>绑定 NVIDIA 生态 ⚠️</td>
+</tr>
+<tr>
+<td><strong>SmolVLA</strong>（2506.01844）</td>
+<td>小 VLM（只用前一半层 ⚠️）+ flow 动作专家；异步推理</td>
+<td>一张 GPU 能训，消费级 GPU 甚至 CPU 能跑，性能接近大 10 倍的 VLA（L30–L35）</td>
+<td>便宜、全开源，LeRobot 原生，入门真机最好</td>
+<td>只用社区数据，绝对能力有上限</td>
+</tr>
+</tbody>
+</table>
+<h4 id="e-2025">E. 配方之争：怎么训练得更好（2025）</h4>
+<table>
+<thead>
+<tr>
+<th>模型 / 方法</th>
+<th>改的是什么</th>
+<th>关键改进</th>
+<th>讲在</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>π0.5</strong>（2504.16054）</td>
+<td>数据和训练流程</td>
+<td>五路数据共训（97.6% 不是目标场景）+ 先 FAST 后小脑 + 先写子任务再出动作；在没去过的家里干活</td>
+<td>第 9 章</td>
+</tr>
+<tr>
+<td><strong>Knowledge Insulation</strong>（2505.23705）</td>
+<td>梯度流向</td>
+<td>大脑念 FAST 词 + 图文共训 + 小脑 stop-gradient；π0 要多 7.5 倍步数</td>
+<td>第 9 章</td>
+</tr>
+<tr>
+<td><strong>Hi Robot</strong>（2502.19417）</td>
+<td>分层</td>
+<td>高层 VLM 写原子指令、接住用户插话；合成数据训高层</td>
+<td>第 10 章</td>
+</tr>
+<tr>
+<td><strong>Gemini Robotics</strong>（2503.20020）</td>
+<td>部署</td>
+<td>Gemini 2.0 基础的大模型放云端，本地动作解码器；约 250 ms 延迟、有效 50 Hz（L829–L838）</td>
+<td>第 10 章</td>
+</tr>
+<tr>
+<td><strong>RTC</strong>（2506.07339）</td>
+<td>推理</td>
+<td>冻结 + 软遮罩补全，不用重训，延迟 300 ms 也能流畅</td>
+<td>第 13 章</td>
+</tr>
+<tr>
+<td>**π<em>0.6 / Recap</em>*（2511.14759）</td>
+<td>后训练</td>
+<td>价值函数 + 优势标签，从自己的经验和人的纠正里学；吞吐翻倍、失败率减半</td>
+<td>第 12 章</td>
+</tr>
+</tbody>
+</table>
+<h4 id="f-20252026">F. 下一站：视频、隐动作、世界动作模型（2025–2026）</h4>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>架构</th>
+<th>关键改进</th>
+<th>讲在</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>LAPA</strong>（2410.11758）/ <strong>UniVLA</strong>（2505.06111）</td>
+<td>从视频学隐动作码，再微调成真实动作</td>
+<td>不要动作标签也能预训练；UniVLA 只用 OpenVLA 1/20 的预训练算力（L74–L75）</td>
+<td>第 11 章</td>
+</tr>
+<tr>
+<td><strong>VLA-JEPA</strong>（2602.10098）</td>
+<td>在<strong>隐空间</strong>预测未来状态，目标编码器的信息只当监督、不当输入</td>
+<td>避开"在像素上学隐动作会被镜头晃动、背景变化带偏"和信息泄漏的问题（L17–L24）</td>
+<td>第 11 章延伸</td>
+</tr>
+<tr>
+<td><strong>GR-2</strong>（2410.06158）</td>
+<td>先在 3800 万段视频上做视频生成预训练，再学动作</td>
+<td>视频里的世界动态迁移到策略（L20–L27）</td>
+<td>第 11 章</td>
+</tr>
+<tr>
+<td><strong>GR00T 2</strong>（NVIDIA 白皮书，2026-11）</td>
+<td>世界-动作模型（WAM）：从视频 DiT 初始化，一个 2B Transformer 同时去噪未来视频和动作</td>
+<td>用大量人类视频 + 遥操作；代码权重计划 2026-12 ⚠️</td>
+<td>见 gr00t2 专题</td>
+</tr>
+</tbody>
+</table>
+<p><strong>一句话</strong>：动作头从"念词"走到"从噪声推出"，再走到"和未来画面一起推出"。</p>
+<h3 id="3-2026-11-20">第 3 步：演进的主线和优劣势总表（2026-11-20）</h3>
+<p><strong>五条主线</strong>（每条对应前面的章）：</p>
+<table>
+<thead>
+<tr>
+<th>主线</th>
+<th>解决的问题</th>
+<th>代表</th>
+<th>章</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>一次出一段</td>
+<td>复合误差、高频控制</td>
+<td>ACT → 所有现代 VLA</td>
+<td>3</td>
+</tr>
+<tr>
+<td>能表示多峰</td>
+<td>平均撞墙</td>
+<td>Diffusion Policy → π0 / RDT / GR00T</td>
+<td>4、8</td>
+</tr>
+<tr>
+<td>借 VLM 的常识</td>
+<td>新物体、新指令</td>
+<td>RT-2 → OpenVLA → π0.5</td>
+<td>5、6、9</td>
+</tr>
+<tr>
+<td>又快又不丢常识</td>
+<td>逐词慢 / 小脑冲坏大脑</td>
+<td>FAST、OFT、动作专家、KI、RTC</td>
+<td>7、8、9、13</td>
+</tr>
+<tr>
+<td>数据从哪来</td>
+<td>遥操作贵</td>
+<td>共训、隐动作、视频 / 世界模型、RL</td>
+<td>9、11、12</td>
+</tr>
+</tbody>
+</table>
+<p><strong>四类动作头的优劣势</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>动作头</th>
+<th>优点</th>
+<th>缺点</th>
+<th>代表</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>离散 token</td>
+<td>和 VLM 训练方式一致，能和文字一起共训，训练快（FAST）</td>
+<td>推理逐词，慢；分箱有精度损失</td>
+<td>RT-2、OpenVLA、π0-FAST</td>
+</tr>
+<tr>
+<td>连续回归（L1）</td>
+<td>一次出完，最快，最简单</td>
+<td>只给一个答案，多峰会被平均</td>
+<td>OpenVLA-OFT</td>
+</tr>
+<tr>
+<td>扩散 / flow 头</td>
+<td>多峰、连续、平滑，几十毫秒出一段</td>
+<td>训练比念词慢；新加的头会干扰大脑（要 KI）</td>
+<td>π0、GR00T、SmolVLA、RDT、CogACT</td>
+</tr>
+<tr>
+<td>视频 / 隐动作 / WAM</td>
+<td>能吃没有动作标签的视频，学到世界怎么变</td>
+<td>生成视频推理贵；隐动作还要映射回真实动作</td>
+<td>LAPA、UniVLA、GR-2、GR00T 2</td>
+</tr>
+</tbody>
+</table>
+<p><strong>怎么选</strong>：按任务、本体、算力和开源程度选，详细决策树和真机迁移清单见面试资料 03 §3–§4。简单记：
+- 入门、单卡、自己的舵机臂 → SmolVLA + LeRobot；
+- 双臂灵巧、要真机效果 → π0 / π0.5（openpi）；
+- 人形、NVIDIA 生态 → GR00T；
+- 研究 VLA 训练本身、读源码 → OpenVLA / OFT；
+- 结构化、高精度、高节拍的工业任务 → 先别用 VLA，用经典视觉定位 + 运动规划。</p>
+<p><strong>一句话</strong>：没有一个模型全赢；看清它在三个问题上的选择，就知道它强在哪、弱在哪。</p>
+<h3 id="vla">动画演示：VLA 全景地图</h3>
+<p><img alt="主流 VLA 全景：动作怎么出，一路怎么变" src="../animations/14-vla-landscape.gif" /></p>
+<p>可交互版：<a href="../animations/14-vla-landscape.html">animations/14-vla-landscape.html</a>（可播放、单步、重来）。</p>
+<p><strong>怎么看</strong>：</p>
+<ol>
+<li>横轴是时间（按 arXiv 编号），纵轴是第 1 步的问题 ①"动作怎么出"。</li>
+<li>每一步亮出一个模型，下方写它的关键改进（第 2 步的卡片）。</li>
+<li>看点的分布：2023 年在上两行和第三行左边；2024 下半年起第三行（扩散 / flow）最密；2025 年后第四行（视频 / 隐动作）开始出现（第 3 步的主线）。Gemini Robotics 的动作解码器细节没公开，所以没放进图里。</li>
+</ol>
+<h2 id="_2">练习与作答记录</h2>
+<p><strong>题 1</strong>（第 1 步）：用"三个问题"描述 GR00T N1：动作怎么出？大脑和小脑怎么连？数据有什么特点？</p>
+<p><strong>作答</strong>：（待作答）</p>
+<p><strong>题 2</strong>（第 2 步）：OpenVLA-OFT 和 π0 都能一次出一段连续动作。它们的动作头有什么本质区别？遇到"左绕右绕都对"的场景，谁更稳？为什么？</p>
+<p><strong>作答</strong>：（待作答）</p>
+<p><strong>题 3</strong>（第 3 步）：给你一台单臂舵机机器人、一张 4090、想做"把桌上的东西按指令收进盒子"，你选哪个模型起步？说出理由和它的一个短板。</p>
+<p><strong>作答</strong>：（待作答）</p>
+<h2 id="_3">口诀</h2>
+<blockquote>
+<p>看车看三样：发动机、变速箱、跑过的路。<br />
+念词有常识但慢，回归最快但不分峰，flow 多峰又顺，视频吃得最多。<br />
+没有全赢的模型，只有对得上的选择。</p>
+</blockquote>
+<h2 id="_4">本章复习卡片</h2>
+<p>练习做完后，按答错、卡住的地方补上。</p>
+<h2 id="_5">附录 · 延伸阅读</h2>
+<blockquote>
+<p>留给以后深入学习用，不影响本章主线。★ 是建议先读的。</p>
+</blockquote>
+<h3 id="_6">推荐阅读</h3>
+<table>
+<thead>
+<tr>
+<th>读什么</th>
+<th>读哪里</th>
+<th>读它为了什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>★ 面试资料 03 模型 / 框架 / 评测</td>
+<td><code>../interview/03-models-frameworks-benchmarks.md</code></td>
+<td>每个模型的开源情况、硬件需求、真机迁移难度、选型决策树</td>
+</tr>
+<tr>
+<td>★ 面试资料 02 技术路线</td>
+<td><code>../interview/02-technical-routes.md</code></td>
+<td>模仿学习 → VLA → RL → 世界模型的路线图</td>
+</tr>
+<tr>
+<td>面试资料 05、07</td>
+<td><code>../interview/05-world-models-wam.md</code>、<code>07-agentic-vla-wam-survey.md</code></td>
+<td>WAM 和 Agentic VLA 的最新进展</td>
+</tr>
+<tr>
+<td>VLA 综述（2025）</td>
+<td><code>survey-vla-2025-2505.04769.txt</code></td>
+<td>更全的模型清单和分类</td>
+</tr>
+<tr>
+<td>高效 VLA 综述</td>
+<td><code>survey-efficient-vla-2510.24795.txt</code></td>
+<td>推理加速、压缩、小模型</td>
+</tr>
+<tr>
+<td>Anatomy of VLA</td>
+<td><code>anatomy-of-vla-2512.11362.txt</code></td>
+<td>拆解 VLA 的各个设计选择</td>
+</tr>
+<tr>
+<td>各模型原文</td>
+<td>第 2 步表格里的 arXiv 编号，对应 <code>materials/text/papers/</code> 下同名文件</td>
+<td>回查数字和细节</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_7">数学原理</h3>
+<p>本章是综述，不引入新数学。四类动作头分别对应：交叉熵（离散 token，第 6 章）、L1 / L2 回归（第 4 章）、扩散与 flow matching（第 8 章）、向量量化与视频生成（第 11 章）。</p>
+<h3 id="_8">公式清单</h3>
+<table>
+<thead>
+<tr>
+<th>公式</th>
+<th>意思</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(-\log p_\theta(\text{动作词}_i \mid \text{前面的词}, o, \ell)\)</span></td>
+<td>离散 token 头：念对下一个词</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\lVert \hat a - a \rVert_1\)</span></td>
+<td>连续回归头（OFT）：一次出完，和真动作的绝对差</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\lVert v_\theta(A^\tau, o) - (A - \epsilon) \rVert^2\)</span></td>
+<td>flow 头（π0 / GR00T / SmolVLA）：猜对速度</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\mathrm{Dec}(x_t, z_t) \approx x_{t+H}\)</span></td>
+<td>隐动作 / 世界模型：从码还原未来</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_9">代码对照</h3>
+<p>本章无代码对照：开源代码的位置见面试资料 03 的"本地代码"一节（openpi、lerobot、openvla-oft）。</p><nav class="pager"><a href="13-rtc.html">← 第 13 章 · 实时执行：RTC，边想下一段，边把这一段走完</a><span></span></nav>
+</main>
+<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a></footer>
+</body></html>
