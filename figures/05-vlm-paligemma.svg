@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="220" viewBox="0 0 880 220">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="16.0" y="26.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="17" fill="#1f2937" text-anchor="start" font-weight="bold">PaliGemma 的三个零件：眼睛、视神经、大脑</text>
+<text x="16.0" y="210.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#6b7280" text-anchor="start" font-weight="normal">SigLIP-So400m（约 4 亿参数）→ 一层线性投影 → Gemma-2B（paligemma L18、L87–L95）。前缀（图 + 指令）互相全看，回答只能往前看。</text>
+<rect x="30.0" y="70.0" width="170.0" height="80.0" rx="8" fill="#ffffff" stroke="#9ca3af" stroke-width="1.4" opacity="1"/>
+<text x="115.0" y="106.3" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="13.5" fill="#1f2937" text-anchor="middle" font-weight="bold">相机图</text>
+<text x="115.0" y="123.8" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#4b5563" text-anchor="middle" font-weight="normal">224 × 224</text>
+<rect x="250.0" y="70.0" width="170.0" height="80.0" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.4" opacity="1"/>
+<text x="335.0" y="106.3" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="13.5" fill="#1f2937" text-anchor="middle" font-weight="bold">① SigLIP</text>
+<text x="335.0" y="123.8" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#4b5563" text-anchor="middle" font-weight="normal">眼睛：切 256 块</text>
+<rect x="470.0" y="70.0" width="150.0" height="80.0" rx="8" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.4" opacity="1"/>
+<text x="545.0" y="98.5" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="13.5" fill="#1f2937" text-anchor="middle" font-weight="bold">② 线性投影</text>
+<text x="545.0" y="116.1" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#4b5563" text-anchor="middle" font-weight="normal">视神经：</text>
+<text x="545.0" y="131.6" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#4b5563" text-anchor="middle" font-weight="normal">换成 Gemma 的长度</text>
+<rect x="670.0" y="70.0" width="180.0" height="80.0" rx="8" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<text x="760.0" y="106.3" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="13.5" fill="#1f2937" text-anchor="middle" font-weight="bold">③ Gemma-2B</text>
+<text x="760.0" y="123.8" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#4b5563" text-anchor="middle" font-weight="normal">大脑：读字 + 思考</text>
+<line x1="200.0" y1="110.0" x2="250.0" y2="110.0" stroke="#4b5563" stroke-width="1.6"/>
+<polygon points="250.0,110.0 242.1,114.2 242.1,105.8" fill="#4b5563" stroke="#4b5563" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" opacity="1"/>
+<line x1="420.0" y1="110.0" x2="470.0" y2="110.0" stroke="#4b5563" stroke-width="1.6"/>
+<polygon points="470.0,110.0 462.1,114.2 462.1,105.8" fill="#4b5563" stroke="#4b5563" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" opacity="1"/>
+<line x1="620.0" y1="110.0" x2="670.0" y2="110.0" stroke="#4b5563" stroke-width="1.6"/>
+<polygon points="670.0,110.0 662.1,114.2 662.1,105.8" fill="#4b5563" stroke="#4b5563" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" opacity="1"/>
+</svg>

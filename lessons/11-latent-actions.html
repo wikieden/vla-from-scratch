@@ -68,8 +68,11 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <a href="https://wikieden.github.io/ai-books/">← 全部讲义书</a>
 <span class="prefs" title="字号与主题"><button type="button" data-fs-step="-1" aria-label="字号变小">A−</button><button type="button" data-fs-step="1" aria-label="字号变大">A+</button><select id="ab-theme" aria-label="主题色"><option value="">跟随系统</option><option value="light">浅色</option><option value="dark">深色</option><option value="sepia">米黄护眼</option><option value="green">豆沙绿护眼</option><option value="navy">夜蓝</option></select></span>
 </div></header>
-<div class="layout"><nav class="side" aria-label="章节"><div class="h">VLA 从零到 π0</div><a href="index.html">讲义目录</a><a href="01-what-is-a-policy.html"><span class="n">1</span>机器人策略是什么</a><a href="02-behavior-cloning.html"><span class="n">2</span>行为克隆：照着人类示范抄作业</a><a href="03-action-chunking.html"><span class="n">3</span>动作分块（action chunking）：看一眼，规划一整段</a><a href="04-multimodality.html"><span class="n">4</span>多峰（multimodality）：同一个情况，两种都对的做法</a><a href="05-vlm.html"><span class="n">5</span>VLM：图片切块和文字一起排队进 Transformer</a><a href="06-action-tokens.html"><span class="n">6</span>动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="07-fast.html"><span class="n">7</span>FAST：先压缩，再变词</a><a href="08-pi0.html"><span class="n">8</span>π0：大脑 + 小脑，动作专家（action expert）</a><a href="09-knowledge-insulation.html"><span class="n">9</span>知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="10-hierarchy.html"><span class="n">10</span>慢想快做：分层系统</a><a href="11-latent-actions.html" class="cur"><span class="n">11</span>没有动作标签：隐动作与世界模型</a><a href="12-rl-recap.html"><span class="n">12</span>RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="13-rtc.html"><span class="n">13</span>实时执行：RTC，边想下一段，边把这一段走完</a><a href="14-vla-landscape.html"><span class="n">14</span>主流 VLA 模型全景：架构、关键改进、优劣势</a><a href="appendix-glossary.html">附录 · 缩写与术语表</a><a href="appendix-symbols.html">附录 · 公式符号怎么读</a></nav><main>
-<h1 id="11">第 11 章 · 没有动作标签：隐动作与世界模型</h1><div class="run"><a class="btn" href="../animations/11-latent-action.html">▶ 打开本章可交互动画</a></div>
+<div class="layout"><nav class="side" aria-label="章节"><div class="h">VLA 从零到 π0</div><a href="index.html">讲义目录</a><a href="01-what-is-a-policy.html"><span class="n">1</span>机器人策略是什么</a><a href="02-behavior-cloning.html"><span class="n">2</span>行为克隆：照着人类示范抄作业</a><a href="03-action-chunking.html"><span class="n">3</span>动作分块（action chunking）：看一眼，规划一整段</a><a href="04-multimodality.html"><span class="n">4</span>多峰（multimodality）：同一个情况，两种都对的做法</a><a href="05-vlm.html"><span class="n">5</span>VLM：图片切块和文字一起排队进 Transformer</a><a href="06-action-tokens.html"><span class="n">6</span>动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="07-fast.html"><span class="n">7</span>FAST：先压缩，再变词</a><a href="08-pi0.html"><span class="n">8</span>π0：大脑 + 小脑，动作专家（action expert）</a><a href="09-knowledge-insulation.html"><span class="n">9</span>知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="10-hierarchy.html"><span class="n">10</span>慢想快做：分层系统</a><a href="11-latent-actions.html" class="cur"><span class="n">11</span>没有动作标签：隐动作与世界模型</a><a href="12-rl-recap.html"><span class="n">12</span>RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="13-rtc.html"><span class="n">13</span>实时执行：RTC，边想下一段，边把这一段走完</a><a href="14-vla-landscape.html"><span class="n">14</span>主流 VLA 模型全景：架构、关键改进、优劣势</a><a href="15-oft.html"><span class="n">15</span>OpenVLA-OFT：一次吐完所有动作，直接回归连续值</a><a href="16-cross-embodiment.html"><span class="n">16</span>跨本体：不同的机器人，怎么排进同一张动作表</a><a href="17-online-rl.html"><span class="n">17</span>在线 RL：SimpleVLA-RL，只看成没成，也能把 17% 练到 92%</a><a href="18-fast-inference.html"><span class="n">18</span>跑得快：异步推理、少看几眼、压小权重</a><a href="19-evaluation.html"><span class="n">19</span>评测：97.1% 和 96.4%，到底谁更强</a><a href="20-latent-world-model.html"><span class="n">20</span>潜空间世界模型：VLA-JEPA，看视频学&quot;世界怎么变&quot;，但别偷看答案</a><a href="21-open-models-2026.html"><span class="n">21</span>2026 开源 VLA：读一份 config，选一个能微调的模型</a><a href="appendix-glossary.html">附录 · 缩写与术语表</a><a href="appendix-symbols.html">附录 · 公式符号怎么读</a></nav><main>
+<h1 id="11">第 11 章 · 没有动作标签：隐动作与世界模型</h1><div class="run"><a class="btn" href="../animations/11-latent-action.html">▶ 打开本章可交互动画</a><a class="btn" href="https://colab.research.google.com/github/wikieden/vla-from-scratch/blob/main/code/notebooks/ch11_latent_actions.ipynb" target="_blank" rel="noopener">在 Colab 运行本章代码</a><a class="btn" href="../code/notebooks/ch11_latent_actions.ipynb" download>下载 notebook</a><details><summary>本地运行</summary><pre><code>git clone https://github.com/wikieden/vla-from-scratch
+cd vla-from-scratch/code/notebooks
+pip install jupyterlab torch numpy
+jupyter lab ch11_latent_actions.ipynb</code></pre><p>也可以下载后直接用 VS Code 打开 .ipynb 运行。需要 GPU 的章节在 Colab 里选「代码执行程序 → 更改运行时类型 → GPU」。</p></details></div>
 <blockquote>
 <p>本章回答：机器人示范要靠人遥操作，又贵又少；网上的视频多得是，却没有动作标签。怎么让 VLA 从没有动作的视频里学东西？<br />
 讲解日期：2026-11-20 · 上一章：<a href="../lessons/10-hierarchy.html">第 10 章 慢想快做</a> · 下一章：<a href="../lessons/12-rl-recap.html">第 12 章 RL 后训练：Recap</a><br />
@@ -137,6 +140,8 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <p><strong>数字例子</strong>（动画里同一个玩具设定，数是编的）：画面简化成一个小球的位置。这一帧在 (0, 0)，下一帧在 (1.6, −2.0)。编码器算出变化 (1.6, −2.0)，在 8 个方向里最接近"↘"，于是选码 z7。解码器只知道"↘、走一步"，还原到大约 (1.1, −1.1)，有误差，但方向对了。</p>
 <p>LAPA 的一个发现（L1026–L1028，附录）：训练好以后，编码器就是一个逆动力学模型，解码器就是一个世界模型。</p>
 <p><strong>一句话</strong>：隐动作 = 模型自己从前后两帧里总结出来的"动作词"，码本小，逼它只记最要紧的变化。</p>
+<p><img alt="从两帧里猜变化，选 8 个码之一" src="../figures/11-latent-actions-vq.png" /></p>
+<p><em>图 11-1 · 变化 (1.6, −2.0) 最接近 ↘，解码器只凭这一帧 + 码还原。</em></p>
 <h3 id="3-vlalapa-2026-11-20">第 3 步：把隐动作用进 VLA，LAPA 三段式（2026-11-20）</h3>
 <p><strong>类比：先学"翻炒、倒油"这些说法，再学自己手腕该怎么动。</strong></p>
 <p>LAPA 分三段（摘要 L28–L33，§3.2 L249–L256）：</p>
@@ -174,6 +179,8 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 - 用语言指令帮忙，把"跟任务有关的动作"和"无关的变化"分开。</p>
 <p>结果：比 OpenVLA 强，预训练算力不到它的 <strong>1/20</strong>，下游数据只要 <strong>1/10</strong>（L74–L75）。</p>
 <p><strong>一句话</strong>：先用视频学"动作词"，再用少量机器人数据学"词 → 关节"。</p>
+<p><img alt="LAPA 三段式" src="../figures/11-latent-actions-lapa.png" /></p>
+<p><em>图 11-2 · 学码 → 隐动作预训练 → 用少量机器人数据微调。</em></p>
 <h3 id="4-2026-11-20">第 4 步：另一条路，先想象视频，再反推动作（2026-11-20）</h3>
 <p><strong>类比：先在脑子里过一遍"做完是什么样子"，再照着去做。</strong></p>
 <table>
@@ -256,7 +263,7 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 要么记代号，要么想画面。</p>
 </blockquote>
 <h2 id="_5">本章复习卡片</h2>
-<p>练习做完后，按答错、卡住的地方补上。</p>
+<p><a href="../review.html">V29</a>（隐动作玩具例子：z7、还原到 (1.1, −1.1)）、<a href="../review.html">V30</a>（LAPA、UniVLA、GR-2 的关键数字）。练习做完后，按答错、卡住的地方再补。</p>
 <h2 id="_6">附录 · 延伸阅读</h2>
 <blockquote>
 <p>留给以后深入学习用，不影响本章主线。★ 是建议先读的。</p>
@@ -341,8 +348,51 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 </tr>
 </tbody>
 </table>
-<h3 id="_10">代码对照</h3>
-<p>本章无代码对照：后续可在 V-M2（tokenizer）里用小例子演示向量量化。</p><nav class="pager"><a href="10-hierarchy.html">← 第 10 章 · 慢想快做：分层系统</a><a href="12-rl-recap.html">第 12 章 · RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot; →</a></nav>
+<h3 id="_10">代码对照：把本章的数字用代码算一遍</h3>
+<blockquote>
+<p>纯 Python + NumPy，不需要 GPU。代码在仓库本地 <code>vla-deep-dive/solutions/chapter-code/ch11_latent_actions.py</code>，配套测试 <code>tests/test_ch11.py</code>：</p>
+<p><code>bash  
+cd vla-deep-dive/solutions/chapter-code  
+uv run python ch11_latent_actions.py  
+uv run pytest tests/test_ch11.py</code></p>
+</blockquote>
+<p><strong>讲义 ↔ 代码</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>讲义</th>
+<th>写法</th>
+<th>跑出来</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第 2 步</td>
+<td><code>encode((0, 0), (1.6, −2.0))</code></td>
+<td>z7 ↘</td>
+</tr>
+<tr>
+<td>第 2 步</td>
+<td><code>decode((0, 0), 7)</code></td>
+<td>(1.1, −1.1)，误差约 1.03</td>
+</tr>
+<tr>
+<td>第 3 步</td>
+<td><code>LAPA</code></td>
+<td>高 6.22%、效率 30 倍以上</td>
+</tr>
+</tbody>
+</table>
+<p><strong>代码里才看得到的 2 件事</strong>：</p>
+<ol>
+<li>编码器用的是"方向最接近"（余弦），不看距离长短；所以走远走近都会选同一个码，解码器只能还原一个固定步长 1.55。</li>
+<li>码本 8 个方向是手写的；真实 VQ-VAE 的码本是学出来的向量。</li>
+</ol>
+<p><strong>自己改一改</strong>（不影响练习答案）：</p>
+<ul>
+<li>把码本改成 16 个方向，看还原误差变小多少。</li>
+<li>把 <code>STEP</code> 改成 2.56（这次变化的真实长度），看误差剩多少。</li>
+</ul><nav class="pager"><a href="10-hierarchy.html">← 第 10 章 · 慢想快做：分层系统</a><a href="12-rl-recap.html">第 12 章 · RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot; →</a></nav>
 </main></div>
 <footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a></footer>
 <script>(function(){var d=document.documentElement,K=["s","m","l","xl"];

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>一组轨迹的优势</title><link rel="stylesheet" href="anim.css">
+<style>svg text.cap{font-size:15px;font-weight:500}svg text.num{font-size:16px;font-weight:600}</style></head>
+<body><main>
+<h1>第 17 章 · 一组轨迹，谁加分谁减分</h1>
+<p class="sub">配套讲义：<a href="../lessons/17-online-rl.html">第 17 章 · 在线 RL：SimpleVLA-RL，只看成没成，也能把 17% 练到 92%</a>。二值奖励：成功 1、失败 0。优势 = (R − 组平均)/组标准差。全成功或全失败的组优势全 0（白跑）；白跑概率 p^G + (1 − p)^G。</p>
+<div class="panel"><svg id="sv" viewBox="0 0 680 360"></svg></div>
+<div class="row"><button id="play">▶ 播放</button><button id="step">→ 单步</button><button id="reset">↺ 从头开始</button></div>
+<div class="row"><label for="p">单条成功率 p</label><input type="range" id="p" min="0" max="1" step="0.05" value="0.375"><span id="pv">0.375</span><label for="g">组大小 G</label><input type="range" id="g" min="2" max="16" step="1" value="8"><span id="gv">8</span><label><input type="checkbox" id="ds"> 动态采样</label></div>
+<p class="note">看点：① 每行一组 G 条轨迹，绿 = 成功、灰 = 失败；② 全同的组标红（没梯度）；③ 右边是这组成功轨迹的优势；④ 底部白跑比例和公式对照；⑤ 播放：p = 0.1 → 0.375 → 0.9 → 0.9 + 动态采样 → G = 16。</p>
+</main>
+<script src="anim.js"></script>
+<script>
+const sv=$('sv');
+function R(x,y,w,h,col,op){return el('rect',{x,y,width:Math.max(w,1),height:h,rx:4,fill:col,opacity:op??.7},sv)}
+function T(s,x,y,a,c){return txt(s,{x,y,'text-anchor':a||'start',class:c||'m'},sv)}
+function cap(s){T(s,340,26,'middle','cap')}
+const GET=ids=>ids.map(i=>{const e=$(i);return e.type==='checkbox'?+e.checked:+e.value});
+function SET(ids,v){ids.forEach((i,k)=>{const e=$(i);if(e.type==='checkbox')e.checked=!!v[k];else e.value=v[k];const o=$(i+'v');if(o)o.textContent=(+v[k]).toString()})}
+const IDS=['p','g','ds'],F=[[0.1,8,0],[0.375,8,0],[0.9,8,0],[0.9,8,1],[0.9,16,1]];
+function render(p,g,ds){seed(7);const rows=[];let tries=0;while(rows.length<6&&tries<200){tries++;const r=[];for(let i=0;i<g;i++)r.push(rnd()<p?1:0);const s=r.reduce((a,b)=>a+b,0),same=s===0||s===g;if(ds&&same)continue;rows.push([r,s,same])}
+ const waste=p**g+(1-p)**g;cap(`p = ${(+p).toFixed(2)}、G = ${g}：一组白跑的概率 ${(waste*100).toFixed(1)}%${ds?'（已扔掉白跑的组）':''}`);
+ const w=Math.min(24,420/g);rows.forEach(([r,s,same],k)=>{const y=50+k*40;r.forEach((v,i)=>R(40+i*(w+3),y,w,26,v?'var(--good)':'var(--line)',v?.8:.5));
+  if(same){T('全同：没梯度',40+g*(w+3)+10,y+18,'start');R(36,y-3,g*(w+3)+2,32,'var(--bad)',.12)}else{const m=s/g,sd=Math.sqrt(m*(1-m));T(`成功 +${((1-m)/sd).toFixed(2)} / 失败 ${(-m/sd).toFixed(2)}`,40+g*(w+3)+10,y+18,'start')}});
+ T(`公式：p^G + (1 − p)^G = ${(waste*100).toFixed(1)}%`,40,320,'start','num')}
+let k=0,custom=null;
+function draw(){clear(sv);const v=custom||F[k];SET(IDS,v);render(...v)}
+function reset(){k=0;custom=null;draw()}
+function next(){if(custom!==null){custom=null;draw();return true}if(k>=F.length-1)return false;k++;draw();return true}
+IDS.forEach(i=>{const e=$(i);const f=()=>{ANIM.stop();custom=GET(IDS);draw()};e.oninput=f;e.onchange=f});
+setupPlayer({captureSeed:1,reset,next},1500);
+</script><a href="https://wikieden.github.io/ai-books/" style="position:fixed;right:12px;bottom:12px;z-index:99;padding:4px 10px;border-radius:14px;background:rgba(127,127,127,.18);color:inherit;font:13px/1.6 system-ui,sans-serif;text-decoration:none">← 全部讲义书</a>
+</body></html>

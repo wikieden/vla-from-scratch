@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="300" viewBox="0 0 900 300">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="16.0" y="26.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="17" fill="#1f2937" text-anchor="start" font-weight="bold">各家的统一动作空间：格子越细，越能装人形和灵巧手</text>
+<text x="16.0" y="290.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#6b7280" text-anchor="start" font-weight="normal">X-VLA 20（ee6d）、Wall-OSS-0.5 26、LingBot-VLA 2.0 55、RDT 128。LingBot 的 55 格按部位分组（config L108–L119）。</text>
+<text x="150.0" y="82.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="12" fill="#1f2937" text-anchor="end" font-weight="normal">X-VLA</text>
+<rect x="160.0" y="62.0" width="104.0" height="30.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<text x="270.0" y="82.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="12" fill="#2563eb" text-anchor="start" font-weight="bold">20</text>
+<text x="150.0" y="128.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="12" fill="#1f2937" text-anchor="end" font-weight="normal">Wall-OSS-0.5</text>
+<rect x="160.0" y="108.0" width="135.2" height="30.0" rx="3" fill="#ccfbf1" stroke="#0d9488" stroke-width="1.4" opacity="1"/>
+<text x="301.2" y="128.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="12" fill="#0d9488" text-anchor="start" font-weight="bold">26</text>
+<text x="150.0" y="174.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="12" fill="#1f2937" text-anchor="end" font-weight="normal">LingBot-VLA 2.0</text>
+<rect x="160.0" y="154.0" width="71.8" height="30.0" rx="2" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<text x="196.4" y="199.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="9" fill="#2563eb" text-anchor="middle" font-weight="normal">arm</text>
+<rect x="232.8" y="154.0" width="71.8" height="30.0" rx="2" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.4" opacity="1"/>
+<text x="269.2" y="199.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="9" fill="#7c3aed" text-anchor="middle" font-weight="normal">end</text>
+<rect x="305.6" y="154.0" width="9.4" height="30.0" rx="2" fill="#ccfbf1" stroke="#0d9488" stroke-width="1.4" opacity="1"/>
+<rect x="316.0" y="154.0" width="61.4" height="30.0" rx="2" fill="#ffedd5" stroke="#ea580c" stroke-width="1.4" opacity="1"/>
+<text x="347.2" y="199.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="9" fill="#ea580c" text-anchor="middle" font-weight="normal">hand</text>
+<rect x="378.4" y="154.0" width="19.8" height="30.0" rx="2" fill="#dcfce7" stroke="#16a34a" stroke-width="1.4" opacity="1"/>
+<text x="388.8" y="199.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="9" fill="#16a34a" text-anchor="middle" font-weight="normal">waist</text>
+<rect x="399.2" y="154.0" width="9.4" height="30.0" rx="2" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.4" opacity="1"/>
+<rect x="409.6" y="154.0" width="14.6" height="30.0" rx="2" fill="#fee2e2" stroke="#dc2626" stroke-width="1.4" opacity="1"/>
+<rect x="425.2" y="154.0" width="19.8" height="30.0" rx="2" fill="#ffffff" stroke="#9ca3af" stroke-width="1.4" opacity="1"/>
+<text x="435.6" y="199.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="9" fill="#9ca3af" text-anchor="middle" font-weight="normal">reserved</text>
+<text x="452.0" y="174.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="12" fill="#7c3aed" text-anchor="start" font-weight="bold">55</text>
+<text x="150.0" y="220.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="12" fill="#1f2937" text-anchor="end" font-weight="normal">RDT-1B</text>
+<rect x="160.0" y="200.0" width="665.6" height="30.0" rx="3" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.4" opacity="1"/>
+<text x="831.6" y="220.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="12" fill="#6b7280" text-anchor="start" font-weight="bold">128</text>
+</svg>

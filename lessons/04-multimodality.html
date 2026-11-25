@@ -68,11 +68,15 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <a href="https://wikieden.github.io/ai-books/">← 全部讲义书</a>
 <span class="prefs" title="字号与主题"><button type="button" data-fs-step="-1" aria-label="字号变小">A−</button><button type="button" data-fs-step="1" aria-label="字号变大">A+</button><select id="ab-theme" aria-label="主题色"><option value="">跟随系统</option><option value="light">浅色</option><option value="dark">深色</option><option value="sepia">米黄护眼</option><option value="green">豆沙绿护眼</option><option value="navy">夜蓝</option></select></span>
 </div></header>
-<div class="layout"><nav class="side" aria-label="章节"><div class="h">VLA 从零到 π0</div><a href="index.html">讲义目录</a><a href="01-what-is-a-policy.html"><span class="n">1</span>机器人策略是什么</a><a href="02-behavior-cloning.html"><span class="n">2</span>行为克隆：照着人类示范抄作业</a><a href="03-action-chunking.html"><span class="n">3</span>动作分块（action chunking）：看一眼，规划一整段</a><a href="04-multimodality.html" class="cur"><span class="n">4</span>多峰（multimodality）：同一个情况，两种都对的做法</a><a href="05-vlm.html"><span class="n">5</span>VLM：图片切块和文字一起排队进 Transformer</a><a href="06-action-tokens.html"><span class="n">6</span>动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="07-fast.html"><span class="n">7</span>FAST：先压缩，再变词</a><a href="08-pi0.html"><span class="n">8</span>π0：大脑 + 小脑，动作专家（action expert）</a><a href="09-knowledge-insulation.html"><span class="n">9</span>知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="10-hierarchy.html"><span class="n">10</span>慢想快做：分层系统</a><a href="11-latent-actions.html"><span class="n">11</span>没有动作标签：隐动作与世界模型</a><a href="12-rl-recap.html"><span class="n">12</span>RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="13-rtc.html"><span class="n">13</span>实时执行：RTC，边想下一段，边把这一段走完</a><a href="14-vla-landscape.html"><span class="n">14</span>主流 VLA 模型全景：架构、关键改进、优劣势</a><a href="appendix-glossary.html">附录 · 缩写与术语表</a><a href="appendix-symbols.html">附录 · 公式符号怎么读</a></nav><main>
-<h1 id="4-multimodality">第 4 章 · 多峰（multimodality）：同一个情况，两种都对的做法</h1><div class="run"><a class="btn" href="../animations/04-multimodality.html">▶ 打开本章可交互动画</a></div>
+<div class="layout"><nav class="side" aria-label="章节"><div class="h">VLA 从零到 π0</div><a href="index.html">讲义目录</a><a href="01-what-is-a-policy.html"><span class="n">1</span>机器人策略是什么</a><a href="02-behavior-cloning.html"><span class="n">2</span>行为克隆：照着人类示范抄作业</a><a href="03-action-chunking.html"><span class="n">3</span>动作分块（action chunking）：看一眼，规划一整段</a><a href="04-multimodality.html" class="cur"><span class="n">4</span>多峰（multimodality）：同一个情况，两种都对的做法</a><a href="05-vlm.html"><span class="n">5</span>VLM：图片切块和文字一起排队进 Transformer</a><a href="06-action-tokens.html"><span class="n">6</span>动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="07-fast.html"><span class="n">7</span>FAST：先压缩，再变词</a><a href="08-pi0.html"><span class="n">8</span>π0：大脑 + 小脑，动作专家（action expert）</a><a href="09-knowledge-insulation.html"><span class="n">9</span>知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="10-hierarchy.html"><span class="n">10</span>慢想快做：分层系统</a><a href="11-latent-actions.html"><span class="n">11</span>没有动作标签：隐动作与世界模型</a><a href="12-rl-recap.html"><span class="n">12</span>RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="13-rtc.html"><span class="n">13</span>实时执行：RTC，边想下一段，边把这一段走完</a><a href="14-vla-landscape.html"><span class="n">14</span>主流 VLA 模型全景：架构、关键改进、优劣势</a><a href="15-oft.html"><span class="n">15</span>OpenVLA-OFT：一次吐完所有动作，直接回归连续值</a><a href="16-cross-embodiment.html"><span class="n">16</span>跨本体：不同的机器人，怎么排进同一张动作表</a><a href="17-online-rl.html"><span class="n">17</span>在线 RL：SimpleVLA-RL，只看成没成，也能把 17% 练到 92%</a><a href="18-fast-inference.html"><span class="n">18</span>跑得快：异步推理、少看几眼、压小权重</a><a href="19-evaluation.html"><span class="n">19</span>评测：97.1% 和 96.4%，到底谁更强</a><a href="20-latent-world-model.html"><span class="n">20</span>潜空间世界模型：VLA-JEPA，看视频学&quot;世界怎么变&quot;，但别偷看答案</a><a href="21-open-models-2026.html"><span class="n">21</span>2026 开源 VLA：读一份 config，选一个能微调的模型</a><a href="appendix-glossary.html">附录 · 缩写与术语表</a><a href="appendix-symbols.html">附录 · 公式符号怎么读</a></nav><main>
+<h1 id="4-multimodality">第 4 章 · 多峰（multimodality）：同一个情况，两种都对的做法</h1><div class="run"><a class="btn" href="../animations/04-multimodality.html">▶ 打开本章可交互动画</a><a class="btn" href="https://colab.research.google.com/github/wikieden/vla-from-scratch/blob/main/code/notebooks/ch04_multimodality.ipynb" target="_blank" rel="noopener">在 Colab 运行本章代码</a><a class="btn" href="../code/notebooks/ch04_multimodality.ipynb" download>下载 notebook</a><details><summary>本地运行</summary><pre><code>git clone https://github.com/wikieden/vla-from-scratch
+cd vla-from-scratch/code/notebooks
+pip install jupyterlab torch numpy
+jupyter lab ch04_multimodality.ipynb</code></pre><p>也可以下载后直接用 VS Code 打开 .ipynb 运行。需要 GPU 的章节在 Colab 里选「代码执行程序 → 更改运行时类型 → GPU」。</p></details></div>
 <blockquote>
 <p>本章回答：为什么第 2 章那种"和标准答案比差多少"的训练方法，在机器人上会出怪招？为什么 Diffusion Policy、π0 要用生成模型来出动作？<br />
 讲解日期：2026-11-04 · 上一章：<a href="../lessons/03-action-chunking.html">第 3 章 动作分块</a> · 下一章：<a href="../lessons/05-vlm.html">第 5 章 VLM</a><br />
+对应原文：<code>materials/text/papers/diffusion-policy-2303.04137.txt</code> §4.1 L276 起（多峰）、L284–L292（从高斯噪声起步）、L316–L323（图 3：抽定一边）<br />
 本章缩写：L1 / L2 = 绝对值误差 / 平方误差；CVAE = Conditional Variational AutoEncoder（条件 / 变分 / 自编码器）；BeT = Behavior Transformer（行为 Transformer）；VLM = Vision-Language Model（视觉 / 语言 / 模型）；RT-1 = Robotics Transformer 1。全表见 <a href="../lessons/appendix-glossary.html">appendix-glossary.md</a></p>
 </blockquote>
 <h2 id="_1">讲解</h2>
@@ -87,6 +91,8 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <p>注意：这里的 multimodal 和"多模态"（图像 + 文字）是同一个英文词，但意思完全不同。这里说的是<strong>动作分布有多个峰</strong>。</p>
 </blockquote>
 <p><strong>原文出处</strong>：Diffusion Policy §4.1 "Model Multi-Modal Action Distributions"（<code>materials/text/papers/diffusion-policy-2303.04137.txt</code> 第 276 行起）；图 3 的 Push-T 例子是 <em>"the end-effector (blue) can either go left or right to push the block"</em>（第 316–317 行）。</p>
+<p><img alt="两座峰，平均落在山谷里" src="../figures/04-multimodality-bimodal.png" /></p>
+<p><em>图 4-1 · 左绕、右绕各一半：L2 平均成 0，正好撞上石头。</em></p>
 <h3 id="2">第 2 步：不求平均，改成"抽一个"</h3>
 <p><strong>解决思路</strong>：别让模型输出"一个最稳妥的答案"，而是让它学会<strong>整张分布图</strong>（哪里有山峰、每座山多高），用的时候从图上<strong>抽一个</strong>。抽到左边就往左绕，抽到右边就往右绕，永远不会抽到中间的山谷里。</p>
 <p><strong>白话类比：掷硬币选路</strong></p>
@@ -151,6 +157,8 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 </tr>
 </tbody>
 </table>
+<p><img alt="抽定一边别变心的三层机制" src="../figures/04-multimodality-commit.png" /></p>
+<p><em>图 4-2 · 段内不变心、画面提醒、接着旧计划想。</em></p>
 <h3 id="_2">动画演示：多峰：求平均会撞上，抽签要抽定</h3>
 <p><img alt="多峰：求平均会撞上，抽签要抽定" src="../animations/04-multimodality.gif" /></p>
 <p>可交互版：<a href="../animations/04-multimodality.html">animations/04-multimodality.html</a>（用浏览器打开，可播放、单步、换随机数重来）。</p>
@@ -180,7 +188,112 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 抽定一边别变心，一段之内、画面提醒、接着旧计划。</p>
 </blockquote>
 <h2 id="_5">本章复习卡片</h2>
-<p>V08 多峰与求平均的毛病、V09 换峰抖动与 mode commitment（见 <a href="../review.html">review.md</a>）</p><nav class="pager"><a href="03-action-chunking.html">← 第 3 章 · 动作分块（action chunking）：看一眼，规划一整段</a><a href="05-vlm.html">第 5 章 · VLM：图片切块和文字一起排队进 Transformer →</a></nav>
+<p>V08 多峰与求平均的毛病、V09 换峰抖动与 mode commitment（见 <a href="../review.html">review.md</a>）</p>
+<h2 id="_6">附录 · 延伸阅读</h2>
+<blockquote>
+<p>留给以后深入学习用，不影响本章主线。★ 是建议先读的。</p>
+</blockquote>
+<h3 id="_7">推荐阅读</h3>
+<table>
+<thead>
+<tr>
+<th>读什么</th>
+<th>读哪里</th>
+<th>读它为了什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>★ Diffusion Policy §4.1</td>
+<td><code>diffusion-policy-2303.04137.txt</code> L276–L323</td>
+<td>多峰、抽定一边</td>
+</tr>
+<tr>
+<td>ACT 的 CVAE</td>
+<td><code>act-aloha-2304.13705.txt</code></td>
+<td>另一种表示多峰的办法</td>
+</tr>
+<tr>
+<td><a href="../lessons/15-oft.html">第 15 章 OpenVLA-OFT</a></td>
+<td>L1 取中位数</td>
+<td>回归也不一定撞墙</td>
+</tr>
+<tr>
+<td>《数学与实验统计》第 8 章</td>
+<td>期望、MLE</td>
+<td>为什么 L2 学到的是平均</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_8">数学原理</h3>
+<ul>
+<li><strong>L2 的最优常数解是平均值</strong>：<span class="arithmatex">\(\arg\min_c \sum (a_i - c)^2 = \bar a\)</span>。</li>
+<li><strong>多峰分布</strong>：概率密度有几个局部最大值；平均值可能落在密度很低的地方。</li>
+</ul>
+<h3 id="_9">公式清单</h3>
+<table>
+<thead>
+<tr>
+<th>公式</th>
+<th>意思</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(\arg\min_c \sum_i (a_i - c)^2 = \frac{1}{n}\sum_i a_i\)</span></td>
+<td>L2 学到平均</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(a \sim p(a \mid o)\)</span></td>
+<td>生成模型：从分布里抽一个</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_10">代码对照：把本章的数字用代码算一遍</h3>
+<blockquote>
+<p>纯 Python + NumPy，不需要 GPU。代码在仓库本地 <code>vla-deep-dive/solutions/chapter-code/ch04_multimodality.py</code>，配套测试 <code>tests/test_ch04.py</code>：</p>
+<p><code>bash  
+cd vla-deep-dive/solutions/chapter-code  
+uv run python ch04_multimodality.py  
+uv run pytest tests/test_ch04.py</code></p>
+</blockquote>
+<p><strong>讲义 ↔ 代码</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>讲义</th>
+<th>写法</th>
+<th>跑出来</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第 1 步</td>
+<td><code>l2_answer([0.05, −0.05], [50, 50])</code></td>
+<td>0（撞墙）</td>
+</tr>
+<tr>
+<td>第 2 步</td>
+<td><code>sample_answer(...)</code></td>
+<td>只会抽到 ±0.05</td>
+</tr>
+<tr>
+<td>第 3 步</td>
+<td><code>switches(8, commit)</code></td>
+<td>独立抽签换峰 3 次；画面提醒 0 次</td>
+</tr>
+</tbody>
+</table>
+<p><strong>代码里才看得到的 2 件事</strong>：</p>
+<ol>
+<li><code>switches</code> 里"画面提醒"被简化成"永远选第一次那边"；真实模型里是分布变成只剩一座峰。</li>
+<li><code>sample_answer</code> 用固定种子，换种子结果会变，但永远不会是 0。</li>
+</ol>
+<p><strong>自己改一改</strong>（不影响练习答案）：</p>
+<ul>
+<li>把示范比例改成 70 / 30，看 <code>l2_answer</code> 输出多少。</li>
+<li>把重规划次数从 8 改成 20，看独立抽签平均换峰几次。</li>
+</ul><nav class="pager"><a href="03-action-chunking.html">← 第 3 章 · 动作分块（action chunking）：看一眼，规划一整段</a><a href="05-vlm.html">第 5 章 · VLM：图片切块和文字一起排队进 Transformer →</a></nav>
 </main></div>
 <footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a></footer>
 <script>(function(){var d=document.documentElement,K=["s","m","l","xl"];

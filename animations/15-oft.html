@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>逐词念与并行解码</title><link rel="stylesheet" href="anim.css">
+<style>svg text.cap{font-size:15px;font-weight:500}svg text.num{font-size:16px;font-weight:600}</style></head>
+<body><main>
+<h1>第 15 章 · 逐词念 vs 并行解码</h1>
+<p class="sub">配套讲义：<a href="../lessons/15-oft.html">第 15 章 · OpenVLA-OFT：一次吐完所有动作，直接回归连续值</a>。延迟按 OFT 表 II（A100）：逐词每个 token 约 0.2396/7 s；并行 K = 1 为 0.0629 s、K = 8 为 0.0735 s，其余 K 按线性插值估。吞吐 = K / 延迟。</p>
+<div class="panel"><svg id="sv" viewBox="0 0 680 360"></svg></div>
+<div class="row"><button id="play">▶ 播放</button><button id="step">→ 单步</button><button id="reset">↺ 从头开始</button></div>
+<div class="row"><label for="m">解码方式</label><select id="m"><option value="0">逐词（自回归）</option><option value="1">并行解码</option></select><label for="k">chunk 长度 K</label><input type="range" id="k" min="1" max="16" step="1" value="1"><span id="kv">1</span><label for="d">动作维数 D</label><input type="range" id="d" min="3" max="14" step="1" value="7"><span id="dv">7</span></div>
+<p class="note">看点：① 上排格子是 K × D 个动作数，逐词一格一格亮、并行一次全亮；② 中间是前向次数和延迟；③ 右边是吞吐；④ 播放：逐词 K = 1 → 并行 K = 1 → 并行 K = 8 → 并行 K = 16 → 逐词 K = 8。</p>
+</main>
+<script src="anim.js"></script>
+<script>
+const sv=$('sv');
+function R(x,y,w,h,col,op){return el('rect',{x,y,width:Math.max(w,1),height:h,rx:4,fill:col,opacity:op??.7},sv)}
+function T(s,x,y,a,c){return txt(s,{x,y,'text-anchor':a||'start',class:c||'m'},sv)}
+function cap(s){T(s,340,26,'middle','cap')}
+const GET=ids=>ids.map(i=>{const e=$(i);return e.type==='checkbox'?+e.checked:+e.value});
+function SET(ids,v){ids.forEach((i,k)=>{const e=$(i);if(e.type==='checkbox')e.checked=!!v[k];else e.value=v[k];const o=$(i+'v');if(o)o.textContent=(+v[k]).toString()})}
+const IDS=['m','k','d'],F=[[0,1,7],[1,1,7],[1,8,7],[1,16,7],[0,8,7]];
+function render(m,k,d){const n=k*d,tok=0.2396/7,lat=m?0.0629+(0.0735-0.0629)*(k-1)/7:tok*n,passes=m?1:n,thr=k/lat;
+ cap(`${m?'并行':'逐词'}：${passes} 次前向，延迟 ${lat.toFixed(3)} s，吞吐 ${thr.toFixed(1)} Hz`);
+ const w=Math.min(26,560/Math.max(d,1)),h=Math.min(14,150/k);
+ for(let i=0;i<k;i++)for(let j=0;j<d;j++){const idx=i*d+j,lit=m?1:(idx<Math.min(n,40));R(60+j*(w+3),50+i*(h+2),w,h,lit?(m?'var(--accent)':'var(--warm)'):'var(--line)',lit?.8:.4)}
+ T(`前向 ${passes} 次`,470,90,'start','num');T(`延迟 ${lat.toFixed(3)} s`,470,125,'start','num');
+ const sc=v=>Math.min(v,250)/250*180;R(470,160,sc(thr),26,'var(--good)');T(`${thr.toFixed(1)} 动作/秒`,470,215,'start','num');
+ T('（逐词时只画前 40 格的点亮）',60,330)}
+let k=0,custom=null;
+function draw(){clear(sv);const v=custom||F[k];SET(IDS,v);render(...v)}
+function reset(){k=0;custom=null;draw()}
+function next(){if(custom!==null){custom=null;draw();return true}if(k>=F.length-1)return false;k++;draw();return true}
+IDS.forEach(i=>{const e=$(i);const f=()=>{ANIM.stop();custom=GET(IDS);draw()};e.oninput=f;e.onchange=f});
+setupPlayer({captureSeed:1,reset,next},1500);
+</script><a href="https://wikieden.github.io/ai-books/" style="position:fixed;right:12px;bottom:12px;z-index:99;padding:4px 10px;border-radius:14px;background:rgba(127,127,127,.18);color:inherit;font:13px/1.6 system-ui,sans-serif;text-decoration:none">← 全部讲义书</a>
+</body></html>

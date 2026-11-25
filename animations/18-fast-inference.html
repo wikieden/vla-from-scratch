@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>动作队列与阈值 g</title><link rel="stylesheet" href="anim.css">
+<style>svg text.cap{font-size:15px;font-weight:500}svg text.num{font-size:16px;font-weight:600}</style></head>
+<body><main>
+<h1>第 18 章 · 队列剩到 g 就开始想</h1>
+<p class="sub">配套讲义：<a href="../lessons/18-fast-inference.html">第 18 章 · 跑得快：异步推理、少看几眼、压小权重</a>。控制周期 Δt = 1/30 s；一段 n 步；推理往返 E[ℓ]。同一时间只有一次推理在路上。不断粮的最小 g = (E[ℓ]/Δt)/n。</p>
+<div class="panel"><svg id="sv" viewBox="0 0 680 360"></svg></div>
+<div class="row"><button id="play">▶ 播放</button><button id="step">→ 单步</button><button id="reset">↺ 从头开始</button></div>
+<div class="row"><label for="g">阈值 g</label><input type="range" id="g" min="0" max="1" step="0.02" value="0"><span id="gv">0</span><label for="l">往返 s</label><input type="range" id="l" min="0.05" max="1" step="0.05" value="0.3"><span id="lv">0.3</span><label for="n">chunk n</label><input type="range" id="n" min="10" max="100" step="5" value="50"><span id="nv">50</span></div>
+<p class="note">看点：① 蓝线是队列里剩几个动作；② 红色是队列空、机器人停着；③ 虚线是最小 g 对应的队列长度；④ 右上角是 10 秒内停了多久、前向几次；⑤ 播放：g = 0 → 0.18 → 0.7 → 1 → 往返 0.8 s。</p>
+</main>
+<script src="anim.js"></script>
+<script>
+const sv=$('sv');
+function R(x,y,w,h,col,op){return el('rect',{x,y,width:Math.max(w,1),height:h,rx:4,fill:col,opacity:op??.7},sv)}
+function T(s,x,y,a,c){return txt(s,{x,y,'text-anchor':a||'start',class:c||'m'},sv)}
+function cap(s){T(s,340,26,'middle','cap')}
+const GET=ids=>ids.map(i=>{const e=$(i);return e.type==='checkbox'?+e.checked:+e.value});
+function SET(ids,v){ids.forEach((i,k)=>{const e=$(i);if(e.type==='checkbox')e.checked=!!v[k];else e.value=v[k];const o=$(i+'v');if(o)o.textContent=(+v[k]).toString()})}
+const IDS=['g','l','n'],F=[[0,0.3,50],[0.18,0.3,50],[0.7,0.3,50],[1,0.3,50],[0.7,0.8,50]];
+function render(g,l,n){const dt=1/30,lag=Math.ceil(+(l/dt).toFixed(9)),steps=300;let q=n,arr=null,ex=0,idle=0,calls=0;const pts=[],idl=[];
+ for(let s=0;s<steps;s++){if(arr!==null&&s>=arr){q=n-ex;arr=null}if(arr===null&&(q===0||q/n<=g)){arr=s+lag;ex=0;calls++}if(q>0){q--;ex++}else{idle++;idl.push(s)}pts.push(q)}
+ const gmin=(l/dt)/n;cap(`10 秒内停了 ${(idle*dt).toFixed(2)} s，前向 ${calls} 次；最小 g = ${gmin.toFixed(2)}`);
+ const X=s=>40+s*2,Y=v=>300-v/n*220;el('line',{x1:40,y1:300,x2:640,y2:300,stroke:'var(--line)'},sv);
+ idl.forEach(s=>R(X(s),294,2,6,'var(--bad)',.9));
+ el('polyline',{points:pts.map((v,s)=>`${X(s)},${Y(v)}`).join(' '),fill:'none',stroke:'var(--accent)','stroke-width':2},sv);
+ const ym=Y(Math.min(gmin,1)*n);el('line',{x1:40,y1:ym,x2:640,y2:ym,stroke:'var(--warm)','stroke-dasharray':'5 4'},sv);T('最小 g',644,ym+4,'start')}
+let k=0,custom=null;
+function draw(){clear(sv);const v=custom||F[k];SET(IDS,v);render(...v)}
+function reset(){k=0;custom=null;draw()}
+function next(){if(custom!==null){custom=null;draw();return true}if(k>=F.length-1)return false;k++;draw();return true}
+IDS.forEach(i=>{const e=$(i);const f=()=>{ANIM.stop();custom=GET(IDS);draw()};e.oninput=f;e.onchange=f});
+setupPlayer({captureSeed:1,reset,next},1500);
+</script><a href="https://wikieden.github.io/ai-books/" style="position:fixed;right:12px;bottom:12px;z-index:99;padding:4px 10px;border-radius:14px;background:rgba(127,127,127,.18);color:inherit;font:13px/1.6 system-ui,sans-serif;text-decoration:none">← 全部讲义书</a>
+</body></html>

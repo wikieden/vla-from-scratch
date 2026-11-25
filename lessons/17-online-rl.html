@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第 17 章 · 在线 RL：SimpleVLA-RL，只看成没成，也能把 17% 练到 92% · VLA 从零到 π0</title>
+<script>(function(){try{var d=document.documentElement,t=localStorage.getItem("ab-theme"),f=localStorage.getItem("ab-fs");if(t)d.dataset.theme=t;if(f)d.dataset.fs=f}catch(e){}})();</script>
+<style>:root{--bg:#fbfbfa;--fg:#1f2328;--mute:#5d6470;--line:#e3e5e8;--card:#fff;--acc:#2f6fdf;--code:#f2f3f5;--quote:#f4f6fa;--fs:16px}
+@media (prefers-color-scheme:dark){:root:not([data-theme]){--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}}
+:root[data-theme="light"]{--bg:#fbfbfa;--fg:#1f2328;--mute:#5d6470;--line:#e3e5e8;--card:#fff;--acc:#2f6fdf;--code:#f2f3f5;--quote:#f4f6fa}
+:root[data-theme="dark"]{--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}
+:root[data-theme="sepia"]{--bg:#f6efe1;--fg:#3b3127;--mute:#7a6a58;--line:#e2d6bf;--card:#fbf6ec;--acc:#a0522d;--code:#ece2cd;--quote:#efe5d2}
+:root[data-theme="green"]{--bg:#e3eddf;--fg:#22301f;--mute:#566650;--line:#c9d8c3;--card:#eef5eb;--acc:#2e7d4f;--code:#d6e4d0;--quote:#dae7d5}
+:root[data-theme="navy"]{--bg:#0f1a2b;--fg:#dde6f3;--mute:#93a4bd;--line:#23324a;--card:#15233a;--acc:#6cc4ff;--code:#1a2a44;--quote:#16243b}
+:root[data-fs="s"]{--fs:15px}
+:root[data-fs="m"]{--fs:16px}
+:root[data-fs="l"]{--fs:18px}
+:root[data-fs="xl"]{--fs:20px}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:var(--fs)/1.75 -apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",sans-serif}
+a{color:var(--acc)}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+header.top .in{max-width:860px;margin:0 auto;padding:10px 16px;display:flex;gap:6px 16px;align-items:center;flex-wrap:wrap;font-size:14px}
+header.top .brand{font-weight:600;color:var(--fg);text-decoration:none;margin-right:auto}
+header.top a{text-decoration:none}
+.prefs{display:inline-flex;gap:4px;align-items:center}
+.prefs button,.prefs select,#nav-toggle{font:inherit;font-size:13px;color:var(--fg);background:var(--card);border:1px solid var(--line);border-radius:6px;padding:2px 8px;cursor:pointer}
+main{max-width:860px;margin:0 auto;padding:24px 16px 72px;overflow-wrap:anywhere}
+h1{font-size:1.75em;line-height:1.35;margin:8px 0 16px} h2{font-size:1.375em;margin:40px 0 12px;padding-top:8px;border-top:1px solid var(--line)} h3{font-size:1.125em;margin:28px 0 8px}
+.layout{display:grid;grid-template-columns:260px minmax(0,1fr);max-width:1180px;margin:0 auto}
+.layout main{margin:0;max-width:880px}
+nav.side{position:sticky;top:49px;align-self:start;max-height:calc(100vh - 49px);overflow-y:auto;padding:20px 8px 40px 16px;border-right:1px solid var(--line);font-size:14px;line-height:1.5}
+nav.side .h{font-weight:600;color:var(--mute);margin:4px 8px 8px;font-size:13px}
+nav.side a{display:block;padding:5px 8px;border-radius:6px;color:var(--fg);text-decoration:none}
+nav.side a:hover{background:var(--code)} nav.side a.cur{background:var(--quote);color:var(--acc);font-weight:600}
+nav.side a .n{color:var(--mute);margin-right:6px;font-variant-numeric:tabular-nums}
+#nav-toggle{display:none}
+@media (max-width:960px){.layout{display:block} nav.side{display:none;position:fixed;z-index:6;top:49px;left:0;bottom:0;width:min(300px,85vw);max-height:none;background:var(--bg);box-shadow:2px 0 12px rgba(0,0,0,.2)} nav.side.open{display:block} #nav-toggle{display:inline-block}}
+.run{display:flex;flex-wrap:wrap;align-items:center;gap:4px 0;margin:4px 0 12px}
+.run details{flex-basis:100%;margin:6px 0 0;font-size:.94em}
+img{max-width:100%;height:auto;border-radius:8px;border:1px solid var(--line);background:#fff}
+blockquote{margin:16px 0;padding:10px 16px;background:var(--quote);border-left:3px solid var(--acc);border-radius:4px;color:var(--mute)}
+blockquote p{margin:4px 0}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font-size:.9em}
+pre{background:var(--code);padding:12px 14px;border-radius:8px;overflow-x:auto} pre code{padding:0;background:none}
+table{border-collapse:collapse;display:block;overflow-x:auto;max-width:100%;margin:12px 0;font-size:.94em}
+th,td{border:1px solid var(--line);padding:6px 10px;vertical-align:top} th{background:var(--code)}
+details{border:1px solid var(--line);border-radius:8px;padding:6px 12px;margin:8px 0;background:var(--card)}
+details[open]{padding-bottom:10px} summary{cursor:pointer;color:var(--acc);font-weight:500}
+mjx-container{overflow-x:auto;overflow-y:hidden;max-width:100%}
+.btn{display:inline-block;margin:4px 8px 4px 0;padding:6px 14px;border:1px solid var(--acc);border-radius:999px;text-decoration:none;font-size:14px}
+.pager{display:flex;justify-content:space-between;gap:12px;margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0}
+.card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;color:inherit;text-decoration:none}
+.card:hover{border-color:var(--acc)} .card img{border:0;border-bottom:1px solid var(--line);border-radius:0;aspect-ratio:16/10;object-fit:contain;width:100%}
+.card .no{color:var(--mute);font-size:13px;padding:8px 12px 0} .card .t{padding:0 12px 12px;font-weight:500;line-height:1.5}
+.lead{font-size:1.06em;color:var(--mute)}
+footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-size:13px}
+</style>
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"],["$$","$$"]],processEscapes:true,processEnvironments:true}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+</head><body>
+<header class="top"><div class="in">
+<button type="button" id="nav-toggle" aria-label="打开章节列表">☰ 章节</button><a class="brand" href="../index.html">VLA 从零到 π0</a>
+<a href="../lessons/index.html">讲义目录</a>
+<a href="../animations/index.html">动画</a>
+<a href="../review.html">复习卡片</a>
+<a href="../lessons/appendix-glossary.html">缩写表</a>
+<a href="https://wikieden.github.io/ai-books/glossary.html">全局词汇</a>
+<a href="https://wikieden.github.io/ai-books/">← 全部讲义书</a>
+<span class="prefs" title="字号与主题"><button type="button" data-fs-step="-1" aria-label="字号变小">A−</button><button type="button" data-fs-step="1" aria-label="字号变大">A+</button><select id="ab-theme" aria-label="主题色"><option value="">跟随系统</option><option value="light">浅色</option><option value="dark">深色</option><option value="sepia">米黄护眼</option><option value="green">豆沙绿护眼</option><option value="navy">夜蓝</option></select></span>
+</div></header>
+<div class="layout"><nav class="side" aria-label="章节"><div class="h">VLA 从零到 π0</div><a href="index.html">讲义目录</a><a href="01-what-is-a-policy.html"><span class="n">1</span>机器人策略是什么</a><a href="02-behavior-cloning.html"><span class="n">2</span>行为克隆：照着人类示范抄作业</a><a href="03-action-chunking.html"><span class="n">3</span>动作分块（action chunking）：看一眼，规划一整段</a><a href="04-multimodality.html"><span class="n">4</span>多峰（multimodality）：同一个情况，两种都对的做法</a><a href="05-vlm.html"><span class="n">5</span>VLM：图片切块和文字一起排队进 Transformer</a><a href="06-action-tokens.html"><span class="n">6</span>动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="07-fast.html"><span class="n">7</span>FAST：先压缩，再变词</a><a href="08-pi0.html"><span class="n">8</span>π0：大脑 + 小脑，动作专家（action expert）</a><a href="09-knowledge-insulation.html"><span class="n">9</span>知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="10-hierarchy.html"><span class="n">10</span>慢想快做：分层系统</a><a href="11-latent-actions.html"><span class="n">11</span>没有动作标签：隐动作与世界模型</a><a href="12-rl-recap.html"><span class="n">12</span>RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="13-rtc.html"><span class="n">13</span>实时执行：RTC，边想下一段，边把这一段走完</a><a href="14-vla-landscape.html"><span class="n">14</span>主流 VLA 模型全景：架构、关键改进、优劣势</a><a href="15-oft.html"><span class="n">15</span>OpenVLA-OFT：一次吐完所有动作，直接回归连续值</a><a href="16-cross-embodiment.html"><span class="n">16</span>跨本体：不同的机器人，怎么排进同一张动作表</a><a href="17-online-rl.html" class="cur"><span class="n">17</span>在线 RL：SimpleVLA-RL，只看成没成，也能把 17% 练到 92%</a><a href="18-fast-inference.html"><span class="n">18</span>跑得快：异步推理、少看几眼、压小权重</a><a href="19-evaluation.html"><span class="n">19</span>评测：97.1% 和 96.4%，到底谁更强</a><a href="20-latent-world-model.html"><span class="n">20</span>潜空间世界模型：VLA-JEPA，看视频学&quot;世界怎么变&quot;，但别偷看答案</a><a href="21-open-models-2026.html"><span class="n">21</span>2026 开源 VLA：读一份 config，选一个能微调的模型</a><a href="appendix-glossary.html">附录 · 缩写与术语表</a><a href="appendix-symbols.html">附录 · 公式符号怎么读</a></nav><main>
+<h1 id="17-rlsimplevla-rl-17-92">第 17 章 · 在线 RL：SimpleVLA-RL，只看成没成，也能把 17% 练到 92%</h1><div class="run"><a class="btn" href="../animations/17-online-rl.html">▶ 打开本章可交互动画</a><a class="btn" href="https://colab.research.google.com/github/wikieden/vla-from-scratch/blob/main/code/notebooks/ch17_online_rl.ipynb" target="_blank" rel="noopener">在 Colab 运行本章代码</a><a class="btn" href="../code/notebooks/ch17_online_rl.ipynb" download>下载 notebook</a><details><summary>本地运行</summary><pre><code>git clone https://github.com/wikieden/vla-from-scratch
+cd vla-from-scratch/code/notebooks
+pip install jupyterlab torch numpy
+jupyter lab ch17_online_rl.ipynb</code></pre><p>也可以下载后直接用 VS Code 打开 .ipynb 运行。需要 GPU 的章节在 Colab 里选「代码执行程序 → 更改运行时类型 → GPU」。</p></details></div>
+<blockquote>
+<p>本章回答：第 12 章的 Recap 是拿已经录好的数据打"比平时好 / 差"的标签。能不能让 VLA 在仿真里自己一遍遍试、只告诉它"成了 / 没成"，就练出来？GRPO 不要价值网络，优势是怎么算的？为什么一组全成功或全失败的轨迹要扔掉？<br />
+讲解日期：2026-11-24 · 上一章：<a href="../lessons/16-cross-embodiment.html">第 16 章 跨本体</a> · 下一章：<a href="../lessons/18-fast-inference.html">第 18 章 跑得快</a><br />
+对应原文：<code>materials/text/papers/simplevla-rl-2509.09674.txt</code>（下称 SVR）摘要 L25–L35；§2.3 GRPO L275–L300（式 7、8）；§3.1 rollout L340–L360；§3.2 二值奖励 L395–L412；§3.3 三个探索技巧 L429–L455；骨干 L582–L595；表 2 L548–L557；表 5 L712–L736；§6.1 pushcut L875–L910<br />
+本章缩写：RL = Reinforcement Learning（强化 / 学习）；GRPO = Group Relative Policy Optimization（组 / 相对 / 策略 / 优化）；PPO = Proximal Policy Optimization（近端 / 策略 / 优化）；SFT = Supervised Fine-Tuning（监督 / 微调）；KL = Kullback–Leibler（散度，两个分布差多少）；veRL = Volcano Engine Reinforcement Learning（火山引擎的 LLM 强化学习框架）；SR = Success Rate（成功率）。全表见 <a href="../lessons/appendix-glossary.html">appendix-glossary.md</a></p>
+</blockquote>
+<h2 id="_1">讲解</h2>
+<h3 id="1-2026-11-24">第 1 步：为什么在仿真里自己试（2026-11-24）</h3>
+<p><strong>类比：学骑自行车。</strong> 看再多别人骑车的录像（SFT），第一次上车还是会摔；真正学会是自己骑、摔了再骑。没人告诉你每一下车把该转几度，只知道"这次骑到头了没有"。</p>
+<p><strong>SFT 的天花板</strong>：第 2 章的行为克隆只能抄示范。示范少时，长任务几乎学不会。SVR 表 5（L712–L736，LIBERO，OpenVLA-OFT 骨干）：</p>
+<table>
+<thead>
+<tr>
+<th>每个任务几条示范</th>
+<th style="text-align: right;">只做 SFT</th>
+<th style="text-align: right;">SFT + SimpleVLA-RL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1 条（One-Trajectory）</td>
+<td style="text-align: right;">平均 48.9%；LIBERO-Long 17.3%</td>
+<td style="text-align: right;">平均 <strong>96.9%</strong>；LIBERO-Long <strong>91.7%</strong></td>
+</tr>
+<tr>
+<td>全部 500 条（Full-Trajectory）</td>
+<td style="text-align: right;">平均 91.0%</td>
+<td style="text-align: right;">平均 <strong>99.1%</strong></td>
+</tr>
+</tbody>
+</table>
+<p>（摘要和贡献列表里写的是 17.1%（L196），表 5 是 17.3%，以表为准。）</p>
+<p>一条示范 + RL 的 96.9%，已经超过 500 条示范只做 SFT 的 91.0%。</p>
+<p><strong>和第 12 章 Recap 的区别</strong>：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Recap（第 12 章）</th>
+<th>SimpleVLA-RL（本章）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>数据从哪来</td>
+<td>录好的数据 + 真机上跑出来的数据，离线打标签</td>
+<td>仿真里<strong>当场</strong>一遍遍跑（在线）</td>
+</tr>
+<tr>
+<td>奖励</td>
+<td>价值函数估出"比平时好多少"</td>
+<td>只有 <strong>成功 = 1、失败 = 0</strong></td>
+</tr>
+<tr>
+<td>要不要价值网络</td>
+<td>要</td>
+<td><strong>不要</strong>（GRPO 用组内比较代替）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>一句话</strong>：示范少的时候，让模型自己试、只看成没成，比多抄示范更有用。</p>
+<h3 id="2-grpo2026-11-24">第 2 步：只看成没成，组内比较算优势（GRPO）（2026-11-24）</h3>
+<p><strong>类比：同一道题让 8 个学生做，按"比全班平均好多少"打分。</strong> 不需要一个老师先估计"这题本来该得几分"，直接拿同组的人比。</p>
+<p><strong>怎么做</strong>（SVR §3，L331–L337）：</p>
+<ol>
+<li>同一个初始场景，让模型（温度采样）跑 <span class="arithmatex">\(G\)</span> 条轨迹；</li>
+<li>每条轨迹只得一个分：成功 <span class="arithmatex">\(R = 1\)</span>，失败 <span class="arithmatex">\(R = 0\)</span>（L397–L408）；这个分<strong>平均分给轨迹里的每个动作 token</strong>；</li>
+<li>组内标准化，算出每条轨迹的优势（式 8，L292–L296）：</li>
+</ol>
+<div class="arithmatex">\[\hat A_i = \frac{R_i - \mathrm{mean}(\{R_j\}_{j=1}^{G})}{\mathrm{std}(\{R_j\}_{j=1}^{G})}\]</div>
+<ol start="4">
+<li>用 PPO 式的裁剪目标更新（式 7）：成功轨迹里的 token 概率往上推，失败的往下压，每次推的幅度被 <span class="arithmatex">\([1-\epsilon, 1+\epsilon]\)</span> 限住。</li>
+</ol>
+<p><strong>例</strong>：<span class="arithmatex">\(G = 8\)</span>，成功 3 条。平均 <span class="arithmatex">\(3/8 = 0.375\)</span>；这里用总体标准差 <span class="arithmatex">\(\sqrt{0.375 \times 0.625} \approx 0.484\)</span>：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align: right;">R</th>
+<th style="text-align: right;"><span class="arithmatex">\(\hat A\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>成功的 3 条</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><span class="arithmatex">\((1 - 0.375)/0.484 \approx +1.29\)</span></td>
+</tr>
+<tr>
+<td>失败的 5 条</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"><span class="arithmatex">\((0 - 0.375)/0.484 \approx -0.77\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>成功得少时，每条成功轨迹的优势更大：稀有的成功更值得学。</p>
+<p><strong>为什么必须是"词"</strong>（L340–L357）：PPO / GRPO 需要每个动作的<strong>概率</strong>。第 15 章 OFT 的 L1 头直接吐一个数，没有概率可算；所以 SVR 把 OFT 的输出改回 LLaMA 的词表头（离散动作 token + 交叉熵），只保留并行解码和动作分块（L586–L592）。</p>
+<p><img alt="一组 8 条轨迹：成功得正优势，失败得负优势" src="../figures/17-online-rl-group.png" /></p>
+<p><em>图 17-1 · 同一个场景跑 8 次，按组内平均打分；不需要价值网络。</em></p>
+<p><strong>一句话</strong>：同题多做几遍，比组内平均好就加分，差就减分。</p>
+<h3 id="3-2026-11-24">第 3 步：三个让它多探索的小技巧（2026-11-24）</h3>
+<p><strong>问题</strong>：二值奖励下，一组 8 条<strong>全成功</strong>或<strong>全失败</strong>时，所有 <span class="arithmatex">\(R_i\)</span> 一样，分子全是 0，优势全是 0，这一组白跑了（L432–L436）。</p>
+<p><strong>一组白跑的概率</strong>：每条成功率 <span class="arithmatex">\(p\)</span>、各条独立时：</p>
+<div class="arithmatex">\[P(\text{全同}) = p^{G} + (1 - p)^{G}\]</div>
+<p><strong>例</strong>：<span class="arithmatex">\(G = 8\)</span>。模型已经很强（<span class="arithmatex">\(p = 0.9\)</span>）或还很弱（<span class="arithmatex">\(p = 0.1\)</span>）时，<span class="arithmatex">\(P \approx 0.43\)</span>：将近一半的组没有梯度。</p>
+<p><strong>三个技巧</strong>（L429–L455，图 3）：</p>
+<table>
+<thead>
+<tr>
+<th>技巧</th>
+<th>做法</th>
+<th>为什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>动态采样（Dynamic Sampling）</td>
+<td>扔掉全成功 / 全失败的组，继续采，直到这一批全是"有成有败"的组</td>
+<td>每一组都有梯度</td>
+</tr>
+<tr>
+<td>放宽上界（Clip Higher）</td>
+<td>裁剪区间从 <span class="arithmatex">\([0.8, 1.2]\)</span> 改成 <span class="arithmatex">\([0.8, 1.28]\)</span></td>
+<td>原来低概率的好动作，每次能多涨一点（0.10 最多涨到 0.128，而不是 0.12）</td>
+</tr>
+<tr>
+<td>提高采样温度</td>
+<td>温度从 1.0 提到 1.6</td>
+<td>分布更平，更常试不常见的动作</td>
+</tr>
+</tbody>
+</table>
+<p><strong>温度的例子</strong>（logit 是编的）：三个候选动作 logit 为 <span class="arithmatex">\([2, 1, 0]\)</span>：</p>
+<table>
+<thead>
+<tr>
+<th>温度</th>
+<th>三个动作的概率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.0</td>
+<td>0.665 / 0.245 / 0.090</td>
+</tr>
+<tr>
+<td>1.6</td>
+<td>0.549 / 0.294 / 0.157</td>
+</tr>
+</tbody>
+</table>
+<p>第三个动作被试到的机会翻了快一倍。</p>
+<p><strong>场景代码</strong>：SVR 给的 rollout 函数（Listing 1，L362–L389，veRL 改写版；<code>+</code> 行是相对 LLM 版新加的，这里去掉标记、加中文注释）：</p>
+<pre><code class="language-python">def rollout(policy, dataset, number_sample=8, max_steps=None):
+    rollout_dataset = []
+    for batch in dataset:
+        batch = batch.repeat(number_sample)                    # 同一场景复制 G = 8 份
+        envs = env_process_pool.submit(batch.initialize)       # 并行开 8 个仿真环境
+        states = env_process_pool.submit(envs.setup)
+        for t in range(max_steps):
+            actions = policy.generate(states, temperature=1.0) # 对动作 token 温度采样（§3.3 再提到 1.6）
+            rollout_dataset.append({f&quot;{e.name}_step_{t}&quot;: (s, a) for e, s, a in zip(envs, states, actions)})
+            states, dones = env_process_pool.submit(envs.step, actions)   # 和 LLM 不同：每步都和环境交互
+            active = [(e, s) for e, s, d in zip(envs, states, dones) if not d]
+            if not active:                                     # 全部结束就停
+                break
+            envs, states = zip(*active)
+    return rollout_dataset
+</code></pre>
+<p>之后每条轨迹按"成没成"拿 0 或 1（第 2 步），再算组内优势。</p>
+<p><strong>一句话</strong>：全同的组没梯度要扔掉；放宽上界、升温，让好但罕见的动作有机会冒头。</p>
+<h3 id="4-pushcutrl-2026-11-24">第 4 步：pushcut，RL 学出了示范里没有的招（2026-11-24）</h3>
+<p><strong>类比：考试里发现了更快的解法。</strong> 老师只教了一种解法，学生做多了自己发现一条捷径；只要答案对，就得分。</p>
+<p><strong>原文</strong>（§6.1，L891–L910）：RoboTwin 2.0 的"把罐子移到锅旁边"任务里，所有示范都是<strong>抓—移—放</strong>。RL 训练后，模型自己发现：<strong>不抓，直接把罐子推过去</strong>，更快、成功率也高。作者叫它 pushcut（push-driven shortcut，推出来的捷径），类比 DeepSeek-R1 的"顿悟时刻"。</p>
+<p><strong>为什么 SFT 学不出来</strong>：SFT 只会抄示范里出现过的动作分布（第 2 章）；RL 的目标是"成功"，只要推也能成功，推的那些 token 就会被加分。</p>
+<p><strong>两面性</strong>：奖励只看"成没成"，模型就会找一切能成的办法。推罐子在仿真里没问题，真机上可能把东西推翻；奖励没写进去的约束（别碰倒、别太用力），模型不会自己遵守。这和<a href="https://wikieden.github.io/rl-from-scratch/lessons/index.html">《从零学强化学习》</a>讲的"奖励写什么就学什么"是同一件事。</p>
+<p><img alt="示范：抓—移—放；RL 后：直接推" src="../figures/17-online-rl-pushcut.png" /></p>
+<p><em>图 17-2 · pushcut：同样到达目标，RL 找到了示范里没有的路线。</em></p>
+<p><strong>一句话</strong>：只看结果，模型会自己找捷径；捷径好不好，取决于奖励有没有把规矩写进去。</p>
+<h3 id="_2">动画演示：一组轨迹，谁加分谁减分</h3>
+<p><img alt="一组轨迹的优势与白跑的组" src="../animations/17-online-rl.gif" /></p>
+<p>可交互版：<a href="../animations/17-online-rl.html">animations/17-online-rl.html</a>（滑块：单条成功率 p 0–1、组大小 G 2–16；勾选：动态采样）。</p>
+<p><strong>怎么看</strong>：</p>
+<ol>
+<li>每行是一组 G 条轨迹，绿 = 成功、灰 = 失败，右边是这组的优势（第 2 步）；</li>
+<li>全同的组标红，表示"没梯度"；底部统计白跑的比例，和 <span class="arithmatex">\(p^G + (1-p)^G\)</span> 对照（第 3 步）；</li>
+<li>打开动态采样，红色的组被扔掉、补采新的；</li>
+<li>播放：p = 0.1 → 0.375 → 0.9 → 0.9 + 动态采样 → G 改成 16。</li>
+</ol>
+<h2 id="_3">练习与作答记录</h2>
+<p><strong>题 1</strong>（第 2 步）：<span class="arithmatex">\(G = 8\)</span>，成功 2 条。成功轨迹和失败轨迹的优势各是多少（用总体标准差）？和第 2 步"成功 3 条"比，成功轨迹的优势变大还是变小？</p>
+<blockquote>
+<p>作答记录：（待作答）</p>
+</blockquote>
+<p><strong>题 2</strong>（第 3 步）：单条成功率 <span class="arithmatex">\(p = 0.7\)</span>。组大小 <span class="arithmatex">\(G = 4\)</span> 和 <span class="arithmatex">\(G = 16\)</span> 时，一组全同（没梯度）的概率各是多少？组大一点有什么好处、什么代价？</p>
+<blockquote>
+<p>作答记录：（待作答）</p>
+</blockquote>
+<p><strong>题 3</strong>（第 2、4 步）：为什么 SimpleVLA-RL 不直接用第 15 章 OFT 的 L1 回归头？如果一定要对连续动作头做 RL，你觉得缺的是什么？</p>
+<blockquote>
+<p>作答记录：（待作答）</p>
+</blockquote>
+<h2 id="_4">口诀</h2>
+<blockquote>
+<p>看录像学不会骑车，自己骑、只问到头没；<br />
+同题八人做，比平均好加分，差的减分；<br />
+全对全错没得比，扔掉再采；放宽上界、升温多试；<br />
+只看结果会抄近道，规矩要写进奖励。</p>
+</blockquote>
+<h2 id="_5">本章复习卡片</h2>
+<p><a href="../review.html">V41</a>（GRPO 优势 <span class="arithmatex">\((R_i - \text{mean})/\text{std}\)</span>，二值奖励，1 条示范 48.9% → 96.9%）、<a href="../review.html">V42</a>（全同组概率 <span class="arithmatex">\(p^G + (1-p)^G\)</span>；动态采样、Clip Higher 0.28、温度 1.6；pushcut）。练习做完后，按答错、卡住的地方再补。</p>
+<h2 id="_6">附录 · 延伸阅读</h2>
+<blockquote>
+<p>留给以后深入学习用，不影响本章主线。★ 是建议先读的。</p>
+</blockquote>
+<h3 id="_7">推荐阅读</h3>
+<table>
+<thead>
+<tr>
+<th>读什么</th>
+<th>读哪里</th>
+<th>读它为了什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>★ SimpleVLA-RL（Li 等，2025）</td>
+<td><code>simplevla-rl-2509.09674.txt</code> §2.3、§3、表 5、§6.1</td>
+<td>本章原文</td>
+</tr>
+<tr>
+<td><a href="../lessons/12-rl-recap.html">第 12 章 RL 后训练 Recap</a></td>
+<td>优势条件化</td>
+<td>离线 vs 在线的对照</td>
+</tr>
+<tr>
+<td><a href="https://wikieden.github.io/rl-from-scratch/lessons/23-ppo.html">《从零学强化学习》第 23 章 PPO</a></td>
+<td>裁剪目标</td>
+<td>式 7 的来历</td>
+</tr>
+<tr>
+<td><a href="https://wikieden.github.io/rl-from-scratch/lessons/21-baseline.html">《从零学强化学习》第 21 章 基线</a></td>
+<td>减去基线降方差</td>
+<td>组平均就是一个基线</td>
+</tr>
+<tr>
+<td><a href="https://wikieden.github.io/ai-infra-from-constraints/lessons/60-rl-system.html">《从约束推导 AI Infra》第 60 章 RL 系统</a></td>
+<td>rollout 和训练怎么排</td>
+<td>在线 RL 的系统开销</td>
+</tr>
+<tr>
+<td>DAPO（Yu 等，2025）</td>
+<td>动态采样、Clip Higher，本地无原文</td>
+<td>两个技巧的出处</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_8">数学原理</h3>
+<ul>
+<li><strong>基线</strong>：策略梯度里减去任何不依赖动作的数都不改变期望，只降方差；组平均就是一个现成的基线。</li>
+<li><strong>标准化</strong>：再除以标准差，让不同难度的场景梯度尺度差不多。</li>
+<li><strong>全同概率</strong>：独立的 G 次伯努利试验全为 1 或全为 0，概率 <span class="arithmatex">\(p^G + (1-p)^G\)</span>。</li>
+<li><strong>温度</strong>：<span class="arithmatex">\(\mathrm{softmax}(z/T)\)</span>，T &gt; 1 分布变平，T &lt; 1 变尖。</li>
+</ul>
+<h3 id="_9">公式清单</h3>
+<table>
+<thead>
+<tr>
+<th>公式</th>
+<th>意思</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(R_i \in \{0, 1\}\)</span></td>
+<td>二值结果奖励</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\hat A_i = (R_i - \mathrm{mean}\,R)/\mathrm{std}\,R\)</span></td>
+<td>组内相对优势（式 8）</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\min(r\hat A,\ \mathrm{clip}(r, 1-\epsilon_l, 1+\epsilon_h)\hat A)\)</span></td>
+<td>PPO 式裁剪，SVR 取 <span class="arithmatex">\(\epsilon_l = 0.2\)</span>、<span class="arithmatex">\(\epsilon_h = 0.28\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(P(\text{全同}) = p^G + (1-p)^G\)</span></td>
+<td>一组白跑的概率</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\mathrm{softmax}(z/T)\)</span></td>
+<td>温度采样</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_10">代码对照：把本章的数字用代码算一遍</h3>
+<blockquote>
+<p>纯 Python。代码在仓库本地 <code>vla-deep-dive/solutions/chapter-code/ch17_online_rl.py</code>，配套测试 <code>tests/test_ch17.py</code>：</p>
+<p><code>bash  
+cd vla-deep-dive/solutions/chapter-code  
+uv run python ch17_online_rl.py  
+uv run pytest tests/test_ch17.py</code></p>
+</blockquote>
+<p><strong>讲义 ↔ 代码</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>讲义</th>
+<th>写法</th>
+<th>跑出来</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第 1 步</td>
+<td><code>TABLE5</code></td>
+<td>48.9 → 96.9；91.0 → 99.1</td>
+</tr>
+<tr>
+<td>第 2 步</td>
+<td><code>group_advantages(rewards)</code></td>
+<td>3/8 成功：+1.29 / −0.77</td>
+</tr>
+<tr>
+<td>第 3 步</td>
+<td><code>p_all_same(p, g)</code></td>
+<td>p = 0.9、G = 8：0.43</td>
+</tr>
+<tr>
+<td>第 3 步</td>
+<td><code>clip_ratio_ceiling(0.10, 0.28)</code>、<code>softmax_t([2, 1, 0], 1.6)</code></td>
+<td>0.128；0.549 / 0.294 / 0.157</td>
+</tr>
+</tbody>
+</table>
+<p><strong>代码里才看得到的 3 件事</strong>：</p>
+<ol>
+<li><code>group_advantages</code> 在全同时返回全 0，而不是除以 0 报错；真实实现（veRL）会在分母上加一个很小的数。</li>
+<li>这里用总体标准差（除以 G）；<code>torch.std</code> 默认除以 G − 1，数会稍大一点，结论不变。</li>
+<li>二值奖励"平均分给每个 token"，所以同一条轨迹里所有 token 的优势相同；长轨迹和短轨迹在式 7 里先按长度平均再按组平均。</li>
+</ol>
+<p><strong>自己改一改</strong>（不影响练习答案）：</p>
+<ul>
+<li>用 <code>random</code> 模拟 1000 组，验证 <code>p_all_same</code> 的公式。</li>
+<li>把 <code>softmax_t</code> 的温度从 0.5 扫到 2.0，画出第三个动作的概率。</li>
+<li>给 <code>group_advantages</code> 换成"成功 = 1、失败 = −1"，看优势有没有变。</li>
+</ul><nav class="pager"><a href="16-cross-embodiment.html">← 第 16 章 · 跨本体：不同的机器人，怎么排进同一张动作表</a><a href="18-fast-inference.html">第 18 章 · 跑得快：异步推理、少看几眼、压小权重 →</a></nav>
+</main></div>
+<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a></footer>
+<script>(function(){var d=document.documentElement,K=["s","m","l","xl"];
+function save(k,v){try{v?localStorage.setItem(k,v):localStorage.removeItem(k)}catch(e){}}
+var s=document.getElementById("ab-theme");if(s){s.value=d.dataset.theme||"";s.onchange=function(){if(s.value)d.dataset.theme=s.value;else delete d.dataset.theme;save("ab-theme",s.value)}}
+document.querySelectorAll("[data-fs-step]").forEach(function(b){b.onclick=function(){var i=K.indexOf(d.dataset.fs||"m")+(+b.dataset.fsStep);i=Math.max(0,Math.min(K.length-1,i));d.dataset.fs=K[i];save("ab-fs",K[i])}});
+var nb=document.getElementById("nav-toggle"),side=document.querySelector("nav.side");if(nb&&side){nb.onclick=function(){side.classList.toggle("open")}}
+var cur=side&&side.querySelector(".cur");if(cur)cur.scrollIntoView({block:"center"});
+})();</script>
+</body></html>

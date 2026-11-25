@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="250" viewBox="0 0 900 250">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="16.0" y="26.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="17" fill="#1f2937" text-anchor="start" font-weight="bold">π0.5：五路数据、两段训练</text>
+<text x="16.0" y="240.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#6b7280" text-anchor="start" font-weight="normal">预训练 280k 步（动作全用 FAST 词）→ 后训练 80k 步（加随机初始化的小脑，flow matching；加 VI、去掉 CE）。97.6% 的预训练样本不是目标场景。</text>
+<rect x="30.0" y="62.0" width="156.0" height="56.0" rx="8" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<text x="108.0" y="86.4" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="14" fill="#1f2937" text-anchor="middle" font-weight="bold">MM</text>
+<text x="108.0" y="104.6" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#4b5563" text-anchor="middle" font-weight="normal">家里的移动双臂</text>
+<rect x="202.0" y="62.0" width="156.0" height="56.0" rx="8" fill="#ccfbf1" stroke="#0d9488" stroke-width="1.4" opacity="1"/>
+<text x="280.0" y="86.4" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="14" fill="#1f2937" text-anchor="middle" font-weight="bold">ME</text>
+<text x="280.0" y="104.6" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#4b5563" text-anchor="middle" font-weight="normal">多环境固定臂</text>
+<rect x="374.0" y="62.0" width="156.0" height="56.0" rx="8" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.4" opacity="1"/>
+<text x="452.0" y="86.4" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="14" fill="#1f2937" text-anchor="middle" font-weight="bold">CE</text>
+<text x="452.0" y="104.6" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#4b5563" text-anchor="middle" font-weight="normal">跨本体实验室数据</text>
+<rect x="546.0" y="62.0" width="156.0" height="56.0" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.4" opacity="1"/>
+<text x="624.0" y="86.4" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="14" fill="#1f2937" text-anchor="middle" font-weight="bold">HL</text>
+<text x="624.0" y="104.6" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#4b5563" text-anchor="middle" font-weight="normal">高层子任务标注</text>
+<rect x="718.0" y="62.0" width="156.0" height="56.0" rx="8" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.4" opacity="1"/>
+<text x="796.0" y="86.4" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="14" fill="#1f2937" text-anchor="middle" font-weight="bold">WD</text>
+<text x="796.0" y="104.6" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#4b5563" text-anchor="middle" font-weight="normal">网络图文</text>
+<rect x="30.0" y="150.0" width="610.0" height="40.0" rx="4" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.4" opacity="1"/>
+<text x="335.0" y="175.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="12.5" fill="#7c3aed" text-anchor="middle" font-weight="bold">预训练 280k 步：只念 FAST 词</text>
+<rect x="640.0" y="150.0" width="230.0" height="40.0" rx="4" fill="#ccfbf1" stroke="#0d9488" stroke-width="1.4" opacity="1"/>
+<text x="755.0" y="175.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="12.5" fill="#0d9488" text-anchor="middle" font-weight="bold">后训练 80k 步：加小脑</text>
+</svg>

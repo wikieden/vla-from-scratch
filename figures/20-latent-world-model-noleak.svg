@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="320" viewBox="0 0 900 320">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="16.0" y="26.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="17" fill="#1f2937" text-anchor="start" font-weight="bold">VLA-JEPA：未来帧只走右边那条路，变成答案；VLM 永远看不到它</text>
+<text x="16.0" y="310.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#6b7280" text-anchor="start" font-weight="normal">式 2、3、5。sg = stop-gradient：冻住的 V-JEPA2 编码器只给答案，不被更新。推理时右边整条路和世界模型都不用。</text>
+<rect x="30.0" y="70.0" width="150.0" height="56.0" rx="8" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<text x="105.0" y="102.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="13.5" fill="#1f2937" text-anchor="middle" font-weight="bold">当前画面 + 指令</text>
+<rect x="230.0" y="70.0" width="150.0" height="56.0" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.4" opacity="1"/>
+<text x="305.0" y="94.3" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="13.5" fill="#1f2937" text-anchor="middle" font-weight="bold">VLM（Qwen3-VL）</text>
+<text x="305.0" y="111.8" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#4b5563" text-anchor="middle" font-weight="normal">输出隐动作 z</text>
+<rect x="440.0" y="70.0" width="160.0" height="56.0" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.4" opacity="1"/>
+<text x="520.0" y="94.3" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="13.5" fill="#1f2937" text-anchor="middle" font-weight="bold">世界模型</text>
+<text x="520.0" y="111.8" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#4b5563" text-anchor="middle" font-weight="normal">预测未来状态 ŝ</text>
+<rect x="660.0" y="150.0" width="200.0" height="60.0" rx="8" fill="#ffedd5" stroke="#ea580c" stroke-width="1.4" opacity="1"/>
+<text x="760.0" y="176.3" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="13.5" fill="#1f2937" text-anchor="middle" font-weight="bold">潜空间损失</text>
+<text x="760.0" y="193.8" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#4b5563" text-anchor="middle" font-weight="normal">‖ŝ − sg(F(未来帧))‖</text>
+<rect x="30.0" y="230.0" width="150.0" height="56.0" rx="8" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.4" opacity="1"/>
+<text x="105.0" y="262.1" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="13.5" fill="#1f2937" text-anchor="middle" font-weight="bold">未来帧</text>
+<rect x="440.0" y="230.0" width="160.0" height="56.0" rx="8" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.4" opacity="1"/>
+<text x="520.0" y="254.3" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="13.5" fill="#1f2937" text-anchor="middle" font-weight="bold">冻住的编码器 F</text>
+<text x="520.0" y="271.8" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#4b5563" text-anchor="middle" font-weight="normal">V-JEPA2（sg）</text>
+<rect x="230.0" y="160.0" width="150.0" height="50.0" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="1.4" opacity="1"/>
+<text x="305.0" y="181.3" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="13.5" fill="#1f2937" text-anchor="middle" font-weight="bold">flow 动作头</text>
+<text x="305.0" y="198.8" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#4b5563" text-anchor="middle" font-weight="normal">推理时只用它</text>
+<line x1="180.0" y1="98.0" x2="230.0" y2="98.0" stroke="#4b5563" stroke-width="1.6"/>
+<polygon points="230.0,98.0 222.1,102.2 222.1,93.8" fill="#4b5563" stroke="#4b5563" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" opacity="1"/>
+<line x1="380.0" y1="98.0" x2="440.0" y2="98.0" stroke="#4b5563" stroke-width="1.6"/>
+<polygon points="440.0,98.0 432.1,102.2 432.1,93.8" fill="#4b5563" stroke="#4b5563" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" opacity="1"/>
+<rect x="402.7" y="81.5" width="14.7" height="16.5" rx="3" fill="#ffffff" stroke="none" stroke-width="1.4" opacity="0.9"/>
+<text x="410.0" y="93.5" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#4b5563" text-anchor="middle" font-weight="normal">z</text>
+<line x1="600.0" y1="98.0" x2="700.0" y2="150.0" stroke="#7c3aed" stroke-width="1.6"/>
+<polygon points="700.0,150.0 691.0,150.1 694.9,142.6" fill="#7c3aed" stroke="#7c3aed" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" opacity="1"/>
+<line x1="180.0" y1="258.0" x2="440.0" y2="258.0" stroke="#6b7280" stroke-width="1.6"/>
+<polygon points="440.0,258.0 432.1,262.2 432.1,253.8" fill="#6b7280" stroke="#6b7280" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" opacity="1"/>
+<rect x="283.0" y="241.5" width="54.0" height="16.5" rx="3" fill="#ffffff" stroke="none" stroke-width="1.4" opacity="0.9"/>
+<text x="310.0" y="253.5" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#6b7280" text-anchor="middle" font-weight="normal">只当答案</text>
+<line x1="600.0" y1="258.0" x2="700.0" y2="210.0" stroke="#6b7280" stroke-width="1.6"/>
+<polygon points="700.0,210.0 694.7,217.2 691.0,209.6" fill="#6b7280" stroke="#6b7280" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" opacity="1"/>
+<line x1="305.0" y1="126.0" x2="305.0" y2="160.0" stroke="#16a34a" stroke-width="1.6"/>
+<polygon points="305.0,160.0 300.8,152.1 309.2,152.1" fill="#16a34a" stroke="#16a34a" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" opacity="1"/>
+<line x1="30.0" y1="205.0" x2="180.0" y2="205.0" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="5 4"/>
+<rect x="55.2" y="188.0" width="99.5" height="16.0" rx="3" fill="#ffffff" stroke="none" stroke-width="1.4" opacity="0.9"/>
+<text x="105.0" y="199.5" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11" fill="#dc2626" text-anchor="middle" font-weight="normal">VLM 看不到未来帧</text>
+</svg>

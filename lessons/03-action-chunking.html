@@ -68,11 +68,15 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <a href="https://wikieden.github.io/ai-books/">← 全部讲义书</a>
 <span class="prefs" title="字号与主题"><button type="button" data-fs-step="-1" aria-label="字号变小">A−</button><button type="button" data-fs-step="1" aria-label="字号变大">A+</button><select id="ab-theme" aria-label="主题色"><option value="">跟随系统</option><option value="light">浅色</option><option value="dark">深色</option><option value="sepia">米黄护眼</option><option value="green">豆沙绿护眼</option><option value="navy">夜蓝</option></select></span>
 </div></header>
-<div class="layout"><nav class="side" aria-label="章节"><div class="h">VLA 从零到 π0</div><a href="index.html">讲义目录</a><a href="01-what-is-a-policy.html"><span class="n">1</span>机器人策略是什么</a><a href="02-behavior-cloning.html"><span class="n">2</span>行为克隆：照着人类示范抄作业</a><a href="03-action-chunking.html" class="cur"><span class="n">3</span>动作分块（action chunking）：看一眼，规划一整段</a><a href="04-multimodality.html"><span class="n">4</span>多峰（multimodality）：同一个情况，两种都对的做法</a><a href="05-vlm.html"><span class="n">5</span>VLM：图片切块和文字一起排队进 Transformer</a><a href="06-action-tokens.html"><span class="n">6</span>动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="07-fast.html"><span class="n">7</span>FAST：先压缩，再变词</a><a href="08-pi0.html"><span class="n">8</span>π0：大脑 + 小脑，动作专家（action expert）</a><a href="09-knowledge-insulation.html"><span class="n">9</span>知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="10-hierarchy.html"><span class="n">10</span>慢想快做：分层系统</a><a href="11-latent-actions.html"><span class="n">11</span>没有动作标签：隐动作与世界模型</a><a href="12-rl-recap.html"><span class="n">12</span>RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="13-rtc.html"><span class="n">13</span>实时执行：RTC，边想下一段，边把这一段走完</a><a href="14-vla-landscape.html"><span class="n">14</span>主流 VLA 模型全景：架构、关键改进、优劣势</a><a href="appendix-glossary.html">附录 · 缩写与术语表</a><a href="appendix-symbols.html">附录 · 公式符号怎么读</a></nav><main>
-<h1 id="3-action-chunking">第 3 章 · 动作分块（action chunking）：看一眼，规划一整段</h1><div class="run"><a class="btn" href="../animations/03-receding-horizon.html">▶ 打开本章可交互动画</a></div>
+<div class="layout"><nav class="side" aria-label="章节"><div class="h">VLA 从零到 π0</div><a href="index.html">讲义目录</a><a href="01-what-is-a-policy.html"><span class="n">1</span>机器人策略是什么</a><a href="02-behavior-cloning.html"><span class="n">2</span>行为克隆：照着人类示范抄作业</a><a href="03-action-chunking.html" class="cur"><span class="n">3</span>动作分块（action chunking）：看一眼，规划一整段</a><a href="04-multimodality.html"><span class="n">4</span>多峰（multimodality）：同一个情况，两种都对的做法</a><a href="05-vlm.html"><span class="n">5</span>VLM：图片切块和文字一起排队进 Transformer</a><a href="06-action-tokens.html"><span class="n">6</span>动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="07-fast.html"><span class="n">7</span>FAST：先压缩，再变词</a><a href="08-pi0.html"><span class="n">8</span>π0：大脑 + 小脑，动作专家（action expert）</a><a href="09-knowledge-insulation.html"><span class="n">9</span>知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="10-hierarchy.html"><span class="n">10</span>慢想快做：分层系统</a><a href="11-latent-actions.html"><span class="n">11</span>没有动作标签：隐动作与世界模型</a><a href="12-rl-recap.html"><span class="n">12</span>RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="13-rtc.html"><span class="n">13</span>实时执行：RTC，边想下一段，边把这一段走完</a><a href="14-vla-landscape.html"><span class="n">14</span>主流 VLA 模型全景：架构、关键改进、优劣势</a><a href="15-oft.html"><span class="n">15</span>OpenVLA-OFT：一次吐完所有动作，直接回归连续值</a><a href="16-cross-embodiment.html"><span class="n">16</span>跨本体：不同的机器人，怎么排进同一张动作表</a><a href="17-online-rl.html"><span class="n">17</span>在线 RL：SimpleVLA-RL，只看成没成，也能把 17% 练到 92%</a><a href="18-fast-inference.html"><span class="n">18</span>跑得快：异步推理、少看几眼、压小权重</a><a href="19-evaluation.html"><span class="n">19</span>评测：97.1% 和 96.4%，到底谁更强</a><a href="20-latent-world-model.html"><span class="n">20</span>潜空间世界模型：VLA-JEPA，看视频学&quot;世界怎么变&quot;，但别偷看答案</a><a href="21-open-models-2026.html"><span class="n">21</span>2026 开源 VLA：读一份 config，选一个能微调的模型</a><a href="appendix-glossary.html">附录 · 缩写与术语表</a><a href="appendix-symbols.html">附录 · 公式符号怎么读</a></nav><main>
+<h1 id="3-action-chunking">第 3 章 · 动作分块（action chunking）：看一眼，规划一整段</h1><div class="run"><a class="btn" href="../animations/03-receding-horizon.html">▶ 打开本章可交互动画</a><a class="btn" href="https://colab.research.google.com/github/wikieden/vla-from-scratch/blob/main/code/notebooks/ch03_action_chunking.ipynb" target="_blank" rel="noopener">在 Colab 运行本章代码</a><a class="btn" href="../code/notebooks/ch03_action_chunking.ipynb" download>下载 notebook</a><details><summary>本地运行</summary><pre><code>git clone https://github.com/wikieden/vla-from-scratch
+cd vla-from-scratch/code/notebooks
+pip install jupyterlab torch numpy
+jupyter lab ch03_action_chunking.ipynb</code></pre><p>也可以下载后直接用 VS Code 打开 .ipynb 运行。需要 GPU 的章节在 Colab 里选「代码执行程序 → 更改运行时类型 → GPU」。</p></details></div>
 <blockquote>
 <p>本章回答：为什么现代 VLA 一次输出一整段动作，而不是一步一个？<br />
 讲解日期：2026-11-04 · 上一章：<a href="../lessons/02-behavior-cloning.html">第 2 章 行为克隆</a> · 下一章：<a href="../lessons/04-multimodality.html">第 4 章 多峰</a><br />
+对应原文：<code>materials/text/papers/act-aloha-2304.13705.txt</code> L250–L251（有效步数缩小 k 倍）、L290–L303（接缝跳变、时间集成）；<code>diffusion-policy-2303.04137.txt</code> L95、L115–L120、L230–L232（<span class="arithmatex">\(T_p\)</span> / <span class="arithmatex">\(T_a\)</span>）；<code>smolvla-2506.01844.txt</code> L118、L319<br />
 本章缩写：ACT = Action Chunking with Transformers；<span class="arithmatex">\(T_p\)</span> / <span class="arithmatex">\(T_a\)</span> = prediction / action execution horizon（预测长度 / 执行长度）；RTC = Real-Time Chunking（实时 / 分块）；SmolVLA = Small VLA（小号 VLA）。全表见 <a href="../lessons/appendix-glossary.html">appendix-glossary.md</a></p>
 </blockquote>
 <h2 id="_1">讲解</h2>
@@ -109,6 +113,8 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <p>另一个好处：人示范时动作本来就是连贯的一整段（比如一次停顿、一次犹豫），一次预测一整段更容易学到这种连贯性。</p>
 <p><strong>现在的 VLA 都这么做</strong></p>
 <p>π0 每次输出 H = 50 个动作向量，控制频率最高 50 Hz（<code>pi0-2410.24164.txt</code> 中 "H = 50 for our tasks" 和 "up to 50 Hz"）。</p>
+<p><img alt="一步一想 500 次，chunk 只要 10 次" src="../figures/03-action-chunking-decisions.png" /></p>
+<p><em>图 3-1 · 10 秒、50 Hz：每根竖线是一次"看一眼、想一下"。</em></p>
 <h3 id="2">第 2 步：代价是"闭着眼走一段"</h3>
 <p>分块有个副作用：走 chunk 的这 k 步里，机器人<strong>不再看</strong>新画面，等于闭着眼照计划走完。</p>
 <p><strong>白话类比</strong>：你看一眼纸，闭上眼写完整个"永"字。写到一半有人把纸挪了 1 厘米，你不会察觉，后半个字就写歪了。</p>
@@ -172,6 +178,17 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <li>每秒重看 10 次，意味着模型<strong>每次推理必须在 0.1 秒内算完</strong>，否则来不及。大模型（π0 有 30 多亿参数）算得慢怎么办，是第 13 章 RTC 要解决的问题。</li>
 </ol>
 <p>ACT 走得更极端：<strong>每一步都重新想</strong>，于是同一个时刻会有好几个旧计划和新计划都给出了动作，再把它们加权平均（temporal ensembling，<code>act-aloha-2304.13705.txt</code> 第 293–303 行），动作更平滑。</p>
+<p><img alt="想 50 步，只走 5 步就重新看" src="../figures/03-action-chunking-receding.png" /></p>
+<p><em>图 3-2 · 滚动重规划：每次只用前 5 步，其余 45 步是备用计划。</em></p>
+<p><strong>场景代码</strong>：LeRobot 里 ACT 的配置（<code>materials/code/lerobot/repo/src/lerobot/policies/act/configuration_act.py</code> L45–L85），三个字段正好对应本章三步：</p>
+<pre><code class="language-python">from lerobot.policies.act.configuration_act import ACTConfig
+
+cfg = ACTConfig(
+    chunk_size=100,                # 每次想多少步（T_p）；默认 100
+    n_action_steps=100,            # 想完真正走多少步（T_a）；改小就是滚动重规划
+    temporal_ensemble_coeff=None,  # 设成数值就打开 ACT 的时间集成（此时 n_action_steps 必须是 1）
+)
+</code></pre>
 <h2 id="_2">公式</h2>
 <div class="arithmatex">\[[a_t,\ a_{t+1},\ \dots,\ a_{t+k-1}] = \pi(o_t,\ \ell)\]</div>
 <p>和第 1 章的 <span class="arithmatex">\(a_t = \pi(o_t, \ell)\)</span> 比，输入没变，输出从 1 个向量变成 k 个。</p>
@@ -208,7 +225,111 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 想得远，走得短：想 50 步、走 5 步，再看一眼。</p>
 </blockquote>
 <h2 id="_5">本章复习卡片</h2>
-<p>V05 动作分块的好处与代价、V06 滚动重规划 <span class="arithmatex">\(T_p\)</span> / <span class="arithmatex">\(T_a\)</span>、V07 没用上的 45 步有什么用（见 <a href="../review.html">review.md</a>）</p><nav class="pager"><a href="02-behavior-cloning.html">← 第 2 章 · 行为克隆：照着人类示范抄作业</a><a href="04-multimodality.html">第 4 章 · 多峰（multimodality）：同一个情况，两种都对的做法 →</a></nav>
+<p>V05 动作分块的好处与代价、V06 滚动重规划 <span class="arithmatex">\(T_p\)</span> / <span class="arithmatex">\(T_a\)</span>、V07 没用上的 45 步有什么用（见 <a href="../review.html">review.md</a>）</p>
+<h2 id="_6">附录 · 延伸阅读</h2>
+<blockquote>
+<p>留给以后深入学习用，不影响本章主线。★ 是建议先读的。</p>
+</blockquote>
+<h3 id="_7">推荐阅读</h3>
+<table>
+<thead>
+<tr>
+<th>读什么</th>
+<th>读哪里</th>
+<th>读它为了什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>★ ACT §3</td>
+<td><code>act-aloha-2304.13705.txt</code> L250–L303</td>
+<td>动作分块、时间集成</td>
+</tr>
+<tr>
+<td>★ Diffusion Policy §3</td>
+<td><code>diffusion-policy-2303.04137.txt</code> L95–L120、L230–L232</td>
+<td><span class="arithmatex">\(T_p\)</span> / <span class="arithmatex">\(T_a\)</span>、滚动重规划</td>
+</tr>
+<tr>
+<td>SmolVLA §3.3</td>
+<td><code>smolvla-2506.01844.txt</code> L300–L395</td>
+<td>异步推理（第 18 章展开）</td>
+</tr>
+<tr>
+<td><a href="../lessons/13-rtc.html">第 13 章 RTC</a></td>
+<td>推理慢时怎么接</td>
+<td>本章"两个细节"的后续</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_8">数学原理</h3>
+<ul>
+<li><strong>滚动时域控制</strong>：每次规划一长段，只执行前一小段，再根据新观测重新规划。</li>
+<li><strong>有效步数</strong>：需要做决定的次数 = 总步数 / k。</li>
+</ul>
+<h3 id="_9">公式清单</h3>
+<table>
+<thead>
+<tr>
+<th>公式</th>
+<th>意思</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\([a_t, \dots, a_{t+k-1}] = \pi(o_t, \ell)\)</span></td>
+<td>一次输出 k 个动作</td>
+</tr>
+<tr>
+<td>决定次数 <span class="arithmatex">\(= \lceil T \cdot f / k \rceil\)</span></td>
+<td>T 秒、f Hz、每次 k 步</td>
+</tr>
+<tr>
+<td>发现变化最慢要 <span class="arithmatex">\(T_a / f\)</span> 秒</td>
+<td>执行长度决定反应速度</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_10">代码对照：把本章的数字用代码算一遍</h3>
+<blockquote>
+<p>纯 Python + NumPy，不需要 GPU。代码在仓库本地 <code>vla-deep-dive/solutions/chapter-code/ch03_action_chunking.py</code>，配套测试 <code>tests/test_ch03.py</code>：</p>
+<p><code>bash  
+cd vla-deep-dive/solutions/chapter-code  
+uv run python ch03_action_chunking.py  
+uv run pytest tests/test_ch03.py</code></p>
+</blockquote>
+<p><strong>讲义 ↔ 代码</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>讲义</th>
+<th>写法</th>
+<th>跑出来</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第 1 步</td>
+<td><code>decisions(10, 50, k)</code></td>
+<td>k = 1：500 次；k = 50：10 次</td>
+</tr>
+<tr>
+<td>第 3 步</td>
+<td><code>reaction_delay(0.44, T_a, 50)</code></td>
+<td>T_a = 50：0.56 s；T_a = 5：0.06 s</td>
+</tr>
+</tbody>
+</table>
+<p><strong>代码里才看得到的 2 件事</strong>：</p>
+<ol>
+<li><code>reaction_delay</code> 假设从 0 秒开始每 <span class="arithmatex">\(T_a/f\)</span> 秒重看一次；事件正好落在重看时刻上时延迟是 0。</li>
+<li>浮点数 0.44 / 0.1 不是正好 4.4，代码先 round 再取整，免得多算一个周期。</li>
+</ol>
+<p><strong>自己改一改</strong>（不影响练习答案）：</p>
+<ul>
+<li>把杯子被碰的时刻改成 0.95 秒，比较两种 <span class="arithmatex">\(T_a\)</span> 的延迟。</li>
+<li>算一算 30 Hz、k = 16 时 10 秒任务要做几次决定。</li>
+</ul><nav class="pager"><a href="02-behavior-cloning.html">← 第 2 章 · 行为克隆：照着人类示范抄作业</a><a href="04-multimodality.html">第 4 章 · 多峰（multimodality）：同一个情况，两种都对的做法 →</a></nav>
 </main></div>
 <footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a></footer>
 <script>(function(){var d=document.documentElement,K=["s","m","l","xl"];

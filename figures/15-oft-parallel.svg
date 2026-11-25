@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="330" viewBox="0 0 900 330">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="16.0" y="26.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="17" fill="#1f2937" text-anchor="start" font-weight="bold">逐词念：7 次前向出 1 个动作；并行解码：1 次前向出 K × D 个</text>
+<text x="16.0" y="320.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#6b7280" text-anchor="start" font-weight="normal">延迟取自 OFT 表 II（A100）：逐词 0.2396 s；并行 K = 8 为 0.0735 s。吞吐 = K / 延迟：4.2 Hz → 108.8 Hz。</text>
+<rect x="16.0" y="50.0" width="420.0" height="236.0" rx="10" fill="#ffedd5" stroke="#ea580c" stroke-width="1.4" stroke-dasharray="5 4" opacity="0.55"/>
+<text x="26.0" y="68.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="12" fill="#ea580c" text-anchor="start" font-weight="bold">① OpenVLA：自回归，一个接一个</text>
+<rect x="40.0" y="84.0" width="44.0" height="20.0" rx="3" fill="#ffedd5" stroke="#ea580c" stroke-width="1.4" opacity="1"/>
+<text x="62.0" y="98.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11" fill="#1f2937" text-anchor="middle" font-weight="normal">a1</text>
+<rect x="92.0" y="110.0" width="44.0" height="20.0" rx="3" fill="#ffedd5" stroke="#ea580c" stroke-width="1.4" opacity="1"/>
+<text x="114.0" y="124.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11" fill="#1f2937" text-anchor="middle" font-weight="normal">a2</text>
+<line x1="84.0" y1="94.0" x2="92.0" y2="120.0" stroke="#6b7280" stroke-width="1.1"/>
+<polygon points="92.0,120.0 85.6,113.6 93.7,111.2" fill="#6b7280" stroke="#6b7280" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" opacity="1"/>
+<rect x="144.0" y="136.0" width="44.0" height="20.0" rx="3" fill="#ffedd5" stroke="#ea580c" stroke-width="1.4" opacity="1"/>
+<text x="166.0" y="150.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11" fill="#1f2937" text-anchor="middle" font-weight="normal">a3</text>
+<line x1="136.0" y1="120.0" x2="144.0" y2="146.0" stroke="#6b7280" stroke-width="1.1"/>
+<polygon points="144.0,146.0 137.6,139.6 145.7,137.2" fill="#6b7280" stroke="#6b7280" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" opacity="1"/>
+<rect x="196.0" y="162.0" width="44.0" height="20.0" rx="3" fill="#ffedd5" stroke="#ea580c" stroke-width="1.4" opacity="1"/>
+<text x="218.0" y="176.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11" fill="#1f2937" text-anchor="middle" font-weight="normal">a4</text>
+<line x1="188.0" y1="146.0" x2="196.0" y2="172.0" stroke="#6b7280" stroke-width="1.1"/>
+<polygon points="196.0,172.0 189.6,165.6 197.7,163.2" fill="#6b7280" stroke="#6b7280" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" opacity="1"/>
+<rect x="248.0" y="188.0" width="44.0" height="20.0" rx="3" fill="#ffedd5" stroke="#ea580c" stroke-width="1.4" opacity="1"/>
+<text x="270.0" y="202.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11" fill="#1f2937" text-anchor="middle" font-weight="normal">a5</text>
+<line x1="240.0" y1="172.0" x2="248.0" y2="198.0" stroke="#6b7280" stroke-width="1.1"/>
+<polygon points="248.0,198.0 241.6,191.6 249.7,189.2" fill="#6b7280" stroke="#6b7280" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" opacity="1"/>
+<rect x="300.0" y="214.0" width="44.0" height="20.0" rx="3" fill="#ffedd5" stroke="#ea580c" stroke-width="1.4" opacity="1"/>
+<text x="322.0" y="228.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11" fill="#1f2937" text-anchor="middle" font-weight="normal">a6</text>
+<line x1="292.0" y1="198.0" x2="300.0" y2="224.0" stroke="#6b7280" stroke-width="1.1"/>
+<polygon points="300.0,224.0 293.6,217.6 301.7,215.2" fill="#6b7280" stroke="#6b7280" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" opacity="1"/>
+<rect x="352.0" y="240.0" width="44.0" height="20.0" rx="3" fill="#ffedd5" stroke="#ea580c" stroke-width="1.4" opacity="1"/>
+<text x="374.0" y="254.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11" fill="#1f2937" text-anchor="middle" font-weight="normal">a7</text>
+<line x1="344.0" y1="224.0" x2="352.0" y2="250.0" stroke="#6b7280" stroke-width="1.1"/>
+<polygon points="352.0,250.0 345.6,243.6 353.7,241.2" fill="#6b7280" stroke="#6b7280" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" opacity="1"/>
+<text x="226.0" y="278.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="12" fill="#ea580c" text-anchor="middle" font-weight="normal">第 i 个要等第 i − 1 个算完：7 次前向</text>
+<rect x="456.0" y="50.0" width="428.0" height="236.0" rx="10" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" stroke-dasharray="5 4" opacity="0.55"/>
+<text x="466.0" y="68.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="12" fill="#2563eb" text-anchor="start" font-weight="bold">② OFT：空位 + 双向注意力，一次填满</text>
+<rect x="486.0" y="82.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="532.0" y="82.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="578.0" y="82.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="624.0" y="82.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="670.0" y="82.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="716.0" y="82.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="762.0" y="82.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="486.0" y="104.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="532.0" y="104.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="578.0" y="104.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="624.0" y="104.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="670.0" y="104.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="716.0" y="104.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="762.0" y="104.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="486.0" y="126.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="532.0" y="126.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="578.0" y="126.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="624.0" y="126.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="670.0" y="126.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="716.0" y="126.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="762.0" y="126.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="486.0" y="148.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="532.0" y="148.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="578.0" y="148.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="624.0" y="148.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="670.0" y="148.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="716.0" y="148.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="762.0" y="148.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="486.0" y="170.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="532.0" y="170.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="578.0" y="170.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="624.0" y="170.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="670.0" y="170.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="716.0" y="170.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="762.0" y="170.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="486.0" y="192.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="532.0" y="192.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="578.0" y="192.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="624.0" y="192.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="670.0" y="192.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="716.0" y="192.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="762.0" y="192.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="486.0" y="214.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="532.0" y="214.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="578.0" y="214.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="624.0" y="214.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="670.0" y="214.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="716.0" y="214.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="762.0" y="214.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="486.0" y="236.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="532.0" y="236.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="578.0" y="236.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="624.0" y="236.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="670.0" y="236.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="716.0" y="236.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<rect x="762.0" y="236.0" width="40.0" height="16.0" rx="3" fill="#e0ecff" stroke="#2563eb" stroke-width="1.4" opacity="1"/>
+<text x="670.0" y="278.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="12" fill="#2563eb" text-anchor="middle" font-weight="normal">K = 8 步 × D = 7 维 = 56 个数，1 次前向</text>
+</svg>

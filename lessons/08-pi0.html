@@ -68,11 +68,15 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <a href="https://wikieden.github.io/ai-books/">← 全部讲义书</a>
 <span class="prefs" title="字号与主题"><button type="button" data-fs-step="-1" aria-label="字号变小">A−</button><button type="button" data-fs-step="1" aria-label="字号变大">A+</button><select id="ab-theme" aria-label="主题色"><option value="">跟随系统</option><option value="light">浅色</option><option value="dark">深色</option><option value="sepia">米黄护眼</option><option value="green">豆沙绿护眼</option><option value="navy">夜蓝</option></select></span>
 </div></header>
-<div class="layout"><nav class="side" aria-label="章节"><div class="h">VLA 从零到 π0</div><a href="index.html">讲义目录</a><a href="01-what-is-a-policy.html"><span class="n">1</span>机器人策略是什么</a><a href="02-behavior-cloning.html"><span class="n">2</span>行为克隆：照着人类示范抄作业</a><a href="03-action-chunking.html"><span class="n">3</span>动作分块（action chunking）：看一眼，规划一整段</a><a href="04-multimodality.html"><span class="n">4</span>多峰（multimodality）：同一个情况，两种都对的做法</a><a href="05-vlm.html"><span class="n">5</span>VLM：图片切块和文字一起排队进 Transformer</a><a href="06-action-tokens.html"><span class="n">6</span>动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="07-fast.html"><span class="n">7</span>FAST：先压缩，再变词</a><a href="08-pi0.html" class="cur"><span class="n">8</span>π0：大脑 + 小脑，动作专家（action expert）</a><a href="09-knowledge-insulation.html"><span class="n">9</span>知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="10-hierarchy.html"><span class="n">10</span>慢想快做：分层系统</a><a href="11-latent-actions.html"><span class="n">11</span>没有动作标签：隐动作与世界模型</a><a href="12-rl-recap.html"><span class="n">12</span>RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="13-rtc.html"><span class="n">13</span>实时执行：RTC，边想下一段，边把这一段走完</a><a href="14-vla-landscape.html"><span class="n">14</span>主流 VLA 模型全景：架构、关键改进、优劣势</a><a href="appendix-glossary.html">附录 · 缩写与术语表</a><a href="appendix-symbols.html">附录 · 公式符号怎么读</a></nav><main>
-<h1 id="8-0-action-expert">第 8 章 · π0：大脑 + 小脑，动作专家（action expert）</h1><div class="run"><a class="btn" href="../animations/08-pi0-inference.html">▶ 打开本章可交互动画</a></div>
+<div class="layout"><nav class="side" aria-label="章节"><div class="h">VLA 从零到 π0</div><a href="index.html">讲义目录</a><a href="01-what-is-a-policy.html"><span class="n">1</span>机器人策略是什么</a><a href="02-behavior-cloning.html"><span class="n">2</span>行为克隆：照着人类示范抄作业</a><a href="03-action-chunking.html"><span class="n">3</span>动作分块（action chunking）：看一眼，规划一整段</a><a href="04-multimodality.html"><span class="n">4</span>多峰（multimodality）：同一个情况，两种都对的做法</a><a href="05-vlm.html"><span class="n">5</span>VLM：图片切块和文字一起排队进 Transformer</a><a href="06-action-tokens.html"><span class="n">6</span>动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="07-fast.html"><span class="n">7</span>FAST：先压缩，再变词</a><a href="08-pi0.html" class="cur"><span class="n">8</span>π0：大脑 + 小脑，动作专家（action expert）</a><a href="09-knowledge-insulation.html"><span class="n">9</span>知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="10-hierarchy.html"><span class="n">10</span>慢想快做：分层系统</a><a href="11-latent-actions.html"><span class="n">11</span>没有动作标签：隐动作与世界模型</a><a href="12-rl-recap.html"><span class="n">12</span>RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="13-rtc.html"><span class="n">13</span>实时执行：RTC，边想下一段，边把这一段走完</a><a href="14-vla-landscape.html"><span class="n">14</span>主流 VLA 模型全景：架构、关键改进、优劣势</a><a href="15-oft.html"><span class="n">15</span>OpenVLA-OFT：一次吐完所有动作，直接回归连续值</a><a href="16-cross-embodiment.html"><span class="n">16</span>跨本体：不同的机器人，怎么排进同一张动作表</a><a href="17-online-rl.html"><span class="n">17</span>在线 RL：SimpleVLA-RL，只看成没成，也能把 17% 练到 92%</a><a href="18-fast-inference.html"><span class="n">18</span>跑得快：异步推理、少看几眼、压小权重</a><a href="19-evaluation.html"><span class="n">19</span>评测：97.1% 和 96.4%，到底谁更强</a><a href="20-latent-world-model.html"><span class="n">20</span>潜空间世界模型：VLA-JEPA，看视频学&quot;世界怎么变&quot;，但别偷看答案</a><a href="21-open-models-2026.html"><span class="n">21</span>2026 开源 VLA：读一份 config，选一个能微调的模型</a><a href="appendix-glossary.html">附录 · 缩写与术语表</a><a href="appendix-symbols.html">附录 · 公式符号怎么读</a></nav><main>
+<h1 id="8-0-action-expert">第 8 章 · π0：大脑 + 小脑，动作专家（action expert）</h1><div class="run"><a class="btn" href="../animations/08-pi0-inference.html">▶ 打开本章可交互动画</a><a class="btn" href="https://colab.research.google.com/github/wikieden/vla-from-scratch/blob/main/code/notebooks/ch08_pi0.ipynb" target="_blank" rel="noopener">在 Colab 运行本章代码</a><a class="btn" href="../code/notebooks/ch08_pi0.ipynb" download>下载 notebook</a><details><summary>本地运行</summary><pre><code>git clone https://github.com/wikieden/vla-from-scratch
+cd vla-from-scratch/code/notebooks
+pip install jupyterlab torch numpy
+jupyter lab ch08_pi0.ipynb</code></pre><p>也可以下载后直接用 VS Code 打开 .ipynb 运行。需要 GPU 的章节在 Colab 里选「代码执行程序 → 更改运行时类型 → GPU」。</p></details></div>
 <blockquote>
 <p>本章回答：π0 怎么做到不用"一个字一个字念"，又能输出连续、多峰、50 Hz 的动作？<br />
 讲解日期：2026-11-04 · 上一章：<a href="../lessons/07-fast.html">第 7 章 FAST</a> · 下一章：<a href="../lessons/09-knowledge-insulation.html">第 9 章 知识隔离与 π0.5</a><br />
+对应原文：<code>materials/text/papers/pi0-2410.24164.txt</code> §IV L221 起（大脑 + 动作专家、flow matching）、L278–L293（训练与推理）、附录 B L845–L935（三块注意力、动作专家、τ 抽样）、附录 D 表 I（推理耗时）<br />
 本章缩写：VLM = Vision-Language Model（视觉 / 语言 / 模型）；K/V = Key / Value（键 / 值）缓存；MoE = Mixture of Experts（专家 / 混合）；FAST = Frequency-space Action Sequence Tokenization；RTX 4090 = NVIDIA 显卡型号。全表见 <a href="../lessons/appendix-glossary.html">appendix-glossary.md</a></p>
 </blockquote>
 <h2 id="_1">讲解</h2>
@@ -141,6 +145,8 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 </tr>
 </tbody>
 </table>
+<p><img alt="一个 Transformer、两套权重" src="../figures/08-pi0-architecture.png" /></p>
+<p><em>图 8-1 · 大脑处理图 + 指令，小脑处理状态和带噪动作，只在 attention 里见面。</em></p>
 <h3 id="2-flow-matching">第 2 步：flow matching 怎么把噪声"推"成动作</h3>
 <p><strong>白话类比：雾里找路的导航</strong></p>
 <p>你站在浓雾里一个随机的位置（随机噪声），目的地是"一段好动作"。你看不见目的地，但身边有个导航员（小脑）。每走一小步，导航员看一眼当前位置和画面，告诉你"<strong>往这个方向、这么快</strong>"（速度 <span class="arithmatex">\(v\)</span>）。你照着走 0.1 的距离，再问一次。问 10 次，就走到了。</p>
@@ -158,6 +164,17 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <div class="arithmatex">\[A^{\tau+\delta} = A^\tau + \delta\, v_\theta(A^\tau, o),\quad \delta = 0.1\]</div>
 <p>走 10 步到 <span class="arithmatex">\(\tau = 1\)</span>。</p>
 <p><strong>和第 4 章的多峰接上</strong>：起点是随机的。不同的起点会被导航员领进不同的山峰（左绕 / 右绕），而不会停在中间的山谷。</p>
+<p><strong>场景代码</strong>：LeRobot 里 π0 推理的真实写法（<code>materials/code/lerobot/repo/src/lerobot/policies/pi0/modeling_pi0.py</code> L700–L723，节选）：前缀算一次存 K/V，再交给 Euler 积分走 10 步：</p>
+<pre><code class="language-python">_, past_key_values = self.paligemma_with_expert.forward(     # 大脑：前缀只算 1 次
+    attention_mask=prefix_att_2d_masks_4d, position_ids=prefix_position_ids,
+    past_key_values=None, inputs_embeds=[prefix_embs, None], use_cache=True,
+)
+return euler_integrate(                                       # 小脑：x_t ← x_t + dt · v_t，走 num_steps 步
+    lambda x_t, t: self.denoise_step(state=state, prefix_pad_masks=prefix_pad_masks,
+                                     past_key_values=past_key_values, x_t=x_t, timestep=t),
+    noise, num_steps,
+)
+</code></pre>
 <h3 id="0-10">动画演示：π0 推理：大脑算一次，小脑推 10 步</h3>
 <p><img alt="π0 推理：大脑算一次，小脑推 10 步" src="../animations/08-pi0-inference.gif" /></p>
 <p>可交互版：<a href="../animations/08-pi0-inference.html">animations/08-pi0-inference.html</a>（用浏览器打开，可播放、单步、换随机数重来）。</p>
@@ -491,6 +508,8 @@ $<span class="arithmatex">\(p(\tau) = \mathrm{Beta}\left(\frac{s - \tau}{s};\ 1.
 </tbody>
 </table>
 <p>（算法：令 x = (s − τ)/s，Beta(1.5, 1) 的累积是 <span class="arithmatex">\(x^{1.5}\)</span>。τ &lt; 0.5 ⇔ x &gt; 0.5，比例 = 1 − 0.5^{1.5} ≈ 0.65。）</p>
+<p><img alt="τ 偏向雾大的一端" src="../figures/08-pi0-tau.png" /></p>
+<p><em>图 8-2 · 十个格子里落进的比例：π0 左高右低，τ &gt; 0.999 不抽。</em></p>
 <h3 id="_2">动画演示：τ 抽样，多练雾大的地方</h3>
 <p><img alt="τ 抽样：多练雾大的地方" src="../animations/08c-tau-sampling.gif" /></p>
 <p>可交互版：<a href="../animations/08c-tau-sampling.html">animations/08c-tau-sampling.html</a>（可播放、单步、换随机数重来）。</p>
@@ -613,74 +632,67 @@ $<span class="arithmatex">\(p(\tau) = \mathrm{Beta}\left(\frac{s - \tau}{s};\ 1.
 <h2 id="_5">本章复习卡片</h2>
 <p>V16 π0 推理要跑几次、各多久、V18 flow matching 三个公式、V20 三块注意力、V21 PaliGemma 交给动作专家什么、V22 动作专家怎么看懂 K/V、V23 没见过的物体三档、V24 τ 小 = 雾大（见 <a href="../review.html">review.md</a>）</p>
 <h2 id="_6">附录 · 延伸阅读</h2>
-<p><strong>推荐阅读</strong>（★ 先读；行号指 <code>materials/text/papers/</code> 下的文本）</p>
+<blockquote>
+<p>留给以后深入学习用，不影响本章主线。★ 是建议先读的；行号指 <code>materials/text/papers/</code> 下的文本。</p>
+</blockquote>
+<h3 id="_7">推荐阅读</h3>
 <table>
 <thead>
 <tr>
-<th></th>
 <th>读什么</th>
-<th>位置</th>
-<th>读它为了</th>
+<th>读哪里</th>
+<th>读它为了什么</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>★</td>
-<td>π0 正文 §IV "The π0 Model"</td>
+<td>★ π0 正文 §IV "The π0 Model"</td>
 <td><code>pi0-2410.24164.txt</code> 第 221 行起</td>
 <td>大脑 + 动作专家、flow matching 训练与推理的原始描述（本章第 1–2 步）</td>
 </tr>
 <tr>
-<td>★</td>
-<td>π0 附录 B：输入嵌入、Attention mask、Action expert、τ 抽样</td>
+<td>★ π0 附录 B：输入嵌入、Attention mask、Action expert、τ 抽样</td>
 <td>同上第 845–935 行</td>
 <td>本章第 3–4 步、插问 1–2 的全部细节</td>
 </tr>
 <tr>
-<td></td>
 <td>π0 附录 D：推理耗时表 I</td>
 <td>同上第 909 行起（右栏 "D. Inference"）</td>
 <td>14 / 32 / 27 / 73 ms 的出处（第 1 步）</td>
 </tr>
 <tr>
-<td></td>
 <td>π0 §VI 新任务微调实验</td>
 <td>同上第 494–530 行</td>
 <td>新任务分档、微调数据量（插问 3）</td>
 </tr>
 <tr>
-<td>★</td>
-<td>Flow Matching（Lipman 等，2022）§3 Flow Matching、§4 条件路径</td>
+<td>★ Flow Matching（Lipman 等，2022）§3 Flow Matching、§4 条件路径</td>
 <td><code>flow-matching-2210.02747.txt</code> 第 122–352 行，OT 直线路径见第 327–352 行（式 20–23）</td>
 <td><span class="arithmatex">\(A^\tau\)</span> 直线混合和 <span class="arithmatex">\(u = A - \epsilon\)</span> 的数学来源</td>
 </tr>
 <tr>
-<td></td>
 <td>π0.5 §V 泛化实验与网络数据消融</td>
 <td><code>pi05-2504.16054.txt</code> 第 590–699 行</td>
 <td>没见过的物体靠什么（插问 3），接第 9 章</td>
 </tr>
 <tr>
-<td></td>
 <td>RT-2 §1 引言</td>
 <td><code>rt2-2307.15818.txt</code> 第 140–146 行</td>
 <td>"动作本领来自机器人数据，语义来自网络"</td>
 </tr>
 <tr>
-<td></td>
 <td>知识隔离（Knowledge Insulation）</td>
 <td><code>knowledge-insulation-2505.23705.txt</code> 第 80、105 行起</td>
 <td>第 9 章预习：梯度不从动作专家流回大脑</td>
 </tr>
 <tr>
-<td></td>
 <td>Transformer 讲义 第 2、4、9、13 章</td>
 <td><code>../../../transformer-deep-dive/notes/lessons/</code></td>
 <td>点积、加权平均、QKV、多头（插问 2 的前置）</td>
 </tr>
 </tbody>
 </table>
-<p><strong>本章用到的数学原理</strong></p>
+<h3 id="_8">数学原理</h3>
 <ul>
 <li><strong>线性插值</strong>：<span class="arithmatex">\(A^\tau = \tau A + (1-\tau)\epsilon\)</span>，两点之间按比例取中间点（Lipman 论文里叫 OT 直线路径）。</li>
 <li><strong>向量场 / 速度</strong>：<span class="arithmatex">\(u = A - \epsilon\)</span>，在直线路径上处处相同；网络 <span class="arithmatex">\(v_\theta\)</span> 学的是"站在这里该往哪走"。</li>
@@ -689,7 +701,7 @@ $<span class="arithmatex">\(p(\tau) = \mathrm{Beta}\left(\frac{s - \tau}{s};\ 1.
 <li><strong>Beta 分布</strong>：<span class="arithmatex">\(\mathrm{Beta}(x; 1.5, 1)\)</span> 的累积是 <span class="arithmatex">\(x^{1.5}\)</span>，用来算 τ 各段被抽到的比例。</li>
 <li><strong>点积 + softmax 注意力</strong>：两套权重投影到同一 head 维度后即可互相查询。</li>
 </ul>
-<p><strong>公式清单</strong></p>
+<h3 id="_9">公式清单</h3>
 <table>
 <thead>
 <tr>
@@ -723,7 +735,63 @@ $<span class="arithmatex">\(p(\tau) = \mathrm{Beta}\left(\frac{s - \tau}{s};\ 1.
 <td>块内双向、后看前；前两块 K/V 算 1 次缓存</td>
 </tr>
 </tbody>
-</table><nav class="pager"><a href="07-fast.html">← 第 7 章 · FAST：先压缩，再变词</a><a href="09-knowledge-insulation.html">第 9 章 · 知识隔离与 π0.5：别让小脑把大脑的常识冲掉 →</a></nav>
+</table>
+<h3 id="_10">代码对照：把本章的数字用代码算一遍</h3>
+<blockquote>
+<p>纯 Python + NumPy，不需要 GPU。代码在仓库本地 <code>vla-deep-dive/solutions/chapter-code/ch08_pi0.py</code>，配套测试 <code>tests/test_ch08.py</code>：</p>
+<p><code>bash  
+cd vla-deep-dive/solutions/chapter-code  
+uv run python ch08_pi0.py  
+uv run pytest tests/test_ch08.py</code></p>
+</blockquote>
+<p><strong>讲义 ↔ 代码</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>讲义</th>
+<th>写法</th>
+<th>跑出来</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第 1 步</td>
+<td><code>LATENCY_MS</code></td>
+<td>14 + 32 + 27 = 73 ms</td>
+</tr>
+<tr>
+<td>第 2 步</td>
+<td><code>mix(1, −1, 0.3)</code>、<code>euler_path(...)</code></td>
+<td>−0.4；每步走 0.2，10 步从 −1 到 +1</td>
+</tr>
+<tr>
+<td>第 3 步</td>
+<td><code>block_mask(3, 1, 3)</code></td>
+<td>前两块看不到动作 → K/V 可缓存</td>
+</tr>
+<tr>
+<td>插问 2</td>
+<td><code>attention_weights(q, ks)</code></td>
+<td>训练前杯子权重 0%，训练后 91%</td>
+</tr>
+<tr>
+<td>第 4 步</td>
+<td><code>tau_cdf(τ)</code></td>
+<td>[0, 0.1] 15%、[0, 0.5] 65%、[0.9, 1] 3%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>代码里才看得到的 3 件事</strong>：</p>
+<ol>
+<li>LeRobot 的 <code>euler_integrate</code> 默认约定是 <code>NOISE_AT_ONE</code>：噪声在 τ = 1、真动作在 τ = 0，和 π0 论文（τ = 0 是噪声）正好反过来；读源码时时间方向要倒过来看。</li>
+<li><code>tau_cdf</code> 用的是 Beta(1.5, 1) 的累积 <span class="arithmatex">\(x^{1.5}\)</span>，再把 x = (s − τ)/s 换回 τ；τ &gt; 0.999 时 x &lt; 0，被截到 0。</li>
+<li><code>attention_weights</code> 把 256 维压成 2 维，只为了能画出来；真实 head 维度的点积还要除以 √d。</li>
+</ol>
+<p><strong>自己改一改</strong>（不影响练习答案）：</p>
+<ul>
+<li>把 <code>euler_path</code> 的步数改成 5，看每步走多远、终点还对不对。</li>
+<li>把 Beta 的第一个参数从 1.5 改成 3，看 τ 小的那一端多抽多少。</li>
+</ul><nav class="pager"><a href="07-fast.html">← 第 7 章 · FAST：先压缩，再变词</a><a href="09-knowledge-insulation.html">第 9 章 · 知识隔离与 π0.5：别让小脑把大脑的常识冲掉 →</a></nav>
 </main></div>
 <footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a></footer>
 <script>(function(){var d=document.documentElement,K=["s","m","l","xl"];

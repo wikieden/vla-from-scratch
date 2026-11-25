@@ -362,8 +362,252 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 </ul>
 <p>口诀：计划先定阶段，想象跟着计划，动作跟着两者。</p>
 </details>
+<h2 id="_3">分层、隐动作、后训练与实时执行</h2>
+<h3 id="v27-hi-robotgr00t-n1gemini-robotics">V27 · Hi Robot、GR00T N1、Gemini Robotics 的高层和低层各多快？</h3>
+<p>来源：<a href="lessons/10-hierarchy.html">第 10 章 · 第 1 步</a> · 加入 2026-11-24 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<table>
+<thead>
+<tr>
+<th>系统</th>
+<th>高层</th>
+<th>低层</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hi Robot</td>
+<td>每 1 秒，或用户一插话就立刻重想</td>
+<td>VLA 出动作 chunk</td>
+</tr>
+<tr>
+<td>GR00T N1</td>
+<td>VLM 10 Hz</td>
+<td>DiT 120 Hz；出 16 步 chunk 用 63.9 ms</td>
+</tr>
+<tr>
+<td>Gemini Robotics</td>
+<td>云端大模型，响应 &lt; 160 ms</td>
+<td>本地动作解码器；端到端约 250 ms，靠 chunk 做到有效 50 Hz</td>
+</tr>
+</tbody>
+</table>
+<p>口诀：想得慢、做得快，两只钟各走各的。</p>
+</details>
+<h3 id="v28-8-43-50-hz">V28 · 8 秒任务，高层每秒想一次，第 4.3 秒用户插话。高层一共想几次？低层 50 Hz 出几个动作？</h3>
+<p>来源：<a href="lessons/10-hierarchy.html">第 10 章 · 第 1 步</a> · 加入 2026-11-24 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<p>高层 9 次：0、1、2、3、4 秒各一次，4.3 秒插话立刻想一次，之后从 4.3 秒重新计时：5.3、6.3、7.3。低层 50 × 8 = 400 个动作，不受插话影响。</p>
+<p>口诀：插话就重想，重想后重新计时。</p>
+</details>
+<h3 id="v29-0-0-16-20-8-155">V29 · 隐动作的玩具例子：小球从 (0, 0) 到 (1.6, −2.0)，码本 8 个方向、每个码走 1.55。选哪个码？还原到哪？</h3>
+<p>来源：<a href="lessons/11-latent-actions.html">第 11 章 · 第 2 步</a> · 加入 2026-11-24 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<p>变化方向最接近 ↘，选 z7；解码器只知道"这一帧 + ↘ 走一步"，还原到约 (1.1, −1.1)，和真实下一帧差约 1.03，方向对、长度不对。Genie 的真实码本只有 8 个码（L192–L195）。</p>
+<p>口诀：两帧之间起个名，名字只许 8 个。</p>
+</details>
+<h3 id="v30-lapaunivlagr-2">V30 · LAPA、UniVLA、GR-2 各报了什么关键数字？</h3>
+<p>来源：<a href="lessons/11-latent-actions.html">第 11 章 · 第 3–4 步</a> · 加入 2026-11-24 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<ul>
+<li>LAPA：比用真实动作标签训练的最强 VLA 高 6.22%，预训练效率高 30 倍以上（L118–L124）；</li>
+<li>UniVLA：预训练算力不到 OpenVLA 的 1/20，下游数据只要 1/10（L74–L75）；</li>
+<li>GR-2：先在 3800 万段视频、500 多亿 token 上做视频预测预训练（L20–L27）。</li>
+</ul>
+<p>口诀：先用视频学"世界怎么变"，再用少量机器人数据学"怎么动"。</p>
+</details>
+<h3 id="v31-recap-a">V31 · Recap 的优势 A 怎么算？把公式念出来。</h3>
+<p>来源：<a href="lessons/12-rl-recap.html">第 12 章 · 第 2 步</a> · 加入 2026-11-24 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<div class="arithmatex">\[A(o_t, a_t) = \sum_{t'=t}^{t+N-1} r_{t'} + V(o_{t+N}) - V(o_t)\]</div>
+<p>走了这 N 步实际得到的，加上走完后的价值，减去走之前的价值：比"照平时水平"多了多少。每步奖励 −1、价值 = −（还剩几步）时，讲义的例子：还剩 40 → 25，A = −10 − 25 + 40 = +5。</p>
+<p>口诀：实际走的加剩下的，减掉原来预计的。</p>
+</details>
+<h3 id="v32-06">V32 · π*0.6 的价值函数和标签有哪些细节？效果怎样？</h3>
+<p>来源：<a href="lessons/12-rl-recap.html">第 12 章 · 第 2–4 步</a> · 加入 2026-11-24 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<ul>
+<li>价值函数用一个比 VLA 小的 VLM，输出 201 个格子上的概率（分布式价值），按任务最大长度归一化到 (−1, 0)；</li>
+<li>门槛 <span class="arithmatex">\(\epsilon_\ell\)</span> 取这个任务所有优势的 30% 分位数；</li>
+<li>和图像生成的 CFG 同一个思路：同一个模型学有条件和无条件两种分布；</li>
+<li>效果：最难的任务上每小时完成数翻倍以上，失败率大约减半。</li>
+</ul>
+<p>口诀：价值看还要多久，门槛取三成分位。</p>
+</details>
+<h3 id="v33-rtc-5h-16d-4s-5">V33 · RTC 软遮罩（式 5）怎么写？H = 16、d = 4、s = 5 时各步权重是多少？</h3>
+<p>来源：<a href="lessons/13-rtc.html">第 13 章 · 第 3 步</a> · 加入 2026-11-24 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<div class="arithmatex">\[W_i = \begin{cases} 1 &amp; i &lt; d \\ c_i \frac{e^{c_i} - 1}{e - 1} &amp; d \le i &lt; H - s \\ 0 &amp; i \ge H - s \end{cases},\quad c_i = \frac{H - s - i}{H - s - d + 1}\]</div>
+<p>H = 16、d = 4、s = 5：第 0–3 步 1；第 4–10 步 0.712、0.488、0.316、0.189、0.099、0.041、0.010；第 11–15 步 0。</p>
+<p>口诀：前面冻住，中间指数降，最后放开。</p>
+</details>
+<h3 id="v34-rtc-chunk-dsh">V34 · RTC 里一段 chunk 分哪三个区？d、s、H 之间有什么约束？论文报了什么效果？</h3>
+<p>来源：<a href="lessons/13-rtc.html">第 13 章 · 第 2、4 步</a> · 加入 2026-11-24 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<p>冻结区（前 d 步，等于旧一段）、中间区（d 到 H − s，可改、权重递减）、新生成区（最后 s 步）。约束 <span class="arithmatex">\(d \le s \le H - d\)</span>（L213）。效果：12 个动态仿真任务、6 个真实双臂任务；推理延迟超过 300 ms 也能完成点火柴这种精细任务；所有真实任务完成速度都明显提高。</p>
+<p>口诀：冻、改、新，三段接一段。</p>
+</details>
+<h3 id="v35-vla">V35 · 看懂任何一个 VLA，问哪三个问题？再加哪两个工程问题？</h3>
+<p>来源：<a href="lessons/14-vla-landscape.html">第 14 章 · 第 1 步</a> · 加入 2026-11-24 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<p>① 动作怎么出（离散 token / 连续回归 / 扩散或 flow 头 / 视频或隐动作）；② 大脑和小脑怎么连（同一个模型念词 / 两套权重共享 attention / cross-attention 读某一层 / 云端大脑 + 本地小脑）；③ 数据和训练（机器人示范 / 多本体 / 网络图文共训 / 无标签视频 / RL）。工程问题：多快、开不开源。</p>
+<p>口诀：看车看发动机、变速箱、跑过什么路。</p>
+</details>
+<h3 id="v36-vla">V36 · VLA 演进的五条主线各解决什么问题？</h3>
+<p>来源：<a href="lessons/14-vla-landscape.html">第 14 章 · 第 3 步</a> · 加入 2026-11-24 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<table>
+<thead>
+<tr>
+<th>主线</th>
+<th>解决的问题</th>
+<th>代表</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>一次出一段</td>
+<td>复合误差、高频控制</td>
+<td>ACT → 所有现代 VLA</td>
+</tr>
+<tr>
+<td>能表示多峰</td>
+<td>平均撞墙</td>
+<td>Diffusion Policy → π0 / RDT / GR00T</td>
+</tr>
+<tr>
+<td>借 VLM 的常识</td>
+<td>新物体、新指令</td>
+<td>RT-2 → OpenVLA → π0.5</td>
+</tr>
+<tr>
+<td>又快又不丢常识</td>
+<td>逐词慢 / 小脑冲坏大脑</td>
+<td>FAST、OFT、动作专家、KI、RTC</td>
+</tr>
+<tr>
+<td>数据从哪来</td>
+<td>遥操作贵</td>
+<td>共训、隐动作、视频 / 世界模型、RL</td>
+</tr>
+</tbody>
+</table>
+<p>口诀：分块、多峰、常识、快、数据。</p>
+</details>
+<h2 id="rl">进阶：微调配方、跨本体、在线 RL、部署与评测</h2>
+<h3 id="v37-openvla-oft-ii">V37 · OpenVLA-OFT 的并行解码怎么做？表 II 里吞吐从多少涨到多少？</h3>
+<p>来源：<a href="lessons/15-oft.html">第 15 章 · 第 1 步</a> · 加入 2026-11-24 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<p>输入里放 K × D 个空的动作嵌入，把因果掩码换成双向注意力，一次前向填满所有空位。吞吐 = K / 延迟：OpenVLA 1 / 0.2396 s ≈ 4.2 Hz → 并行 15.9 Hz → 并行 + chunk（K = 8）8 / 0.0735 s ≈ 108.8 Hz，约 26 倍；chunk 只让延迟涨了 17%。</p>
+<p>口诀：念号码改成填空格，再一次填八步。</p>
+</details>
+<h3 id="v38-l1-l2-film-1">V38 · L1 和 L2 的最优常数解各是什么？FiLM 的公式是什么，为什么写成 1 + γ？</h3>
+<p>来源：<a href="lessons/15-oft.html">第 15 章 · 第 2–3 步</a> · 加入 2026-11-24 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<p>L2 → 平均值，L1 → 中位数：60% 左（+0.05）/ 40% 右（−0.05）时 L2 学出 +0.01，L1 学出 +0.05。五五开时 L1 两边一样好，不稳定。</p>
+<p><span class="arithmatex">\(\mathrm{FiLM}(F) = (1+\gamma)\odot F + \beta\)</span>，γ、β 由指令的平均嵌入投影出来，对所有图块共享。初始化时 γ、β ≈ 0，FiLM 就是恒等变换，不扰乱预训练好的视觉编码器。</p>
+<p>口诀：平方站山谷，绝对值站多数；眼镜一开始是透明的。</p>
+</details>
+<h3 id="v39-rdt-128-6">V39 · RDT 的 128 维统一动作空间怎么分？单臂、6 自由度臂怎么填？</h3>
+<p>来源：<a href="lessons/16-cross-embodiment.html">第 16 章 · 第 2 步</a> · 加入 2026-11-24 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<p>0–9 右臂关节位置、10–14 右夹爪、15–29 右侧速度、30–44 右末端位置 / 6D 姿态 / 速度、50–99 左臂同样布局、100–102 底盘速度，其余预留。单臂一律当右臂；6 自由度的臂只填 10 个关节格的前 6 格。6 自由度单臂 + 夹爪用 0–5、10 共 7 格；ALOHA 用 14 格。训练时只在填了数的格子上算损失。</p>
+<p>口诀：报税表每栏一义，没有的就空着。</p>
+</details>
+<h3 id="v40-x-vla-ee6d">V40 · X-VLA 的软提示有多少参数？它的 ee6d 动作是怎么排的？</h3>
+<p>来源：<a href="lessons/16-cross-embodiment.html">第 16 章 · 第 3 步</a> · 加入 2026-11-24 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<p>30 个域 × 32 个提示 × 1024 维 = 983,040 ≈ 0.98M，是一张 <code>nn.Embedding(30, 32·1024)</code> 查表，拼在输入序列末尾。ee6d 20 维：两只手各 xyz 3 + 6D 旋转 6 + 夹爪 1；损失里位置 × 500、旋转 × 10、夹爪用 BCE × 1。6D 旋转 = 旋转矩阵前两列，用 Gram–Schmidt 补出第三列。</p>
+<p>口诀：翻译员是同一个，纸条说明是哪国人。</p>
+</details>
+<h3 id="v41-grpo-simplevla-rl">V41 · GRPO 的优势怎么算？SimpleVLA-RL 的奖励是什么？</h3>
+<p>来源：<a href="lessons/17-online-rl.html">第 17 章 · 第 2 步</a> · 加入 2026-11-24 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<p>同一场景跑 G 条轨迹，成功 R = 1、失败 R = 0，这个分平均分给轨迹里每个动作 token；优势 <span class="arithmatex">\(\hat A_i = (R_i - \mathrm{mean}\,R)/\mathrm{std}\,R\)</span>，不需要价值网络。G = 8、成功 3 条：成功 ≈ +1.29、失败 ≈ −0.77（总体标准差）。效果：每任务 1 条示范时 LIBERO 平均 48.9% → 96.9%，LIBERO-Long 17.3% → 91.7%。</p>
+<p>口诀：同题八人做，比平均好加分。</p>
+</details>
+<h3 id="v42-simplevla-rl-pushcut">V42 · 为什么全成功或全失败的组要扔掉？SimpleVLA-RL 的三个探索技巧是什么？pushcut 是什么？</h3>
+<p>来源：<a href="lessons/17-online-rl.html">第 17 章 · 第 3–4 步</a> · 加入 2026-11-24 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<p>全同时分子全 0，优势全 0，没有梯度；一组全同的概率 <span class="arithmatex">\(p^G + (1-p)^G\)</span>，G = 8、p = 0.9 时约 0.43。技巧：动态采样（扔掉全同组再采）、Clip Higher（上界 1.2 → 1.28）、采样温度 1.0 → 1.6。pushcut：示范都是抓—移—放，RL 后模型自己学会直接推过去。</p>
+<p>口诀：全对全错没得比，扔掉再采；只看结果会抄近道。</p>
+</details>
+<h3 id="v43-g-smolvla">V43 · 异步推理什么时候触发？不断粮的最小 g 怎么算？SmolVLA 的效果？</h3>
+<p>来源：<a href="lessons/18-fast-inference.html">第 18 章 · 第 1 步</a> · 加入 2026-11-24 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<p>队列剩余比例 <span class="arithmatex">\(|A_t|/n &lt; g\)</span> 时把当前观测发给模型。往返 <span class="arithmatex">\(E[\ell]\)</span> 秒要走 <span class="arithmatex">\(E[\ell]/\Delta t\)</span> 步，所以 <span class="arithmatex">\(g \ge (E[\ell]/\Delta t)/n\)</span>；30 fps、n = 50、往返 0.3 s → 9 步 → g ≥ 0.18。SmolVLA：平均完成 13.75 s → 9.70 s（快约 30%），60 秒内 9 → 19 个；论文默认 g = 0.7。</p>
+<p>口诀：往返多久，就留够几步。</p>
+</details>
+<h3 id="v44-smolvla-openvla-int8">V44 · 推理计算量粗估和什么成正比？SmolVLA 砍了哪几刀？OpenVLA 量化的结果为什么 int8 掉点？</h3>
+<p>来源：<a href="lessons/18-fast-inference.html">第 18 章 · 第 2–3 步</a> · 加入 2026-11-24 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<p>前缀计算量 ∝ token 数 × 层数。SmolVLA：每帧只留 64 个视觉 token、动作专家只读到 VLM 第 L/2 层、动作专家宽 0.75 d。OpenVLA：bf16 16.8 GB / 71.3%，int8 10.2 GB / 58.1%，int4 7.0 GB / 71.9%；int8 的反量化开销让推理变慢，跑不到 5 Hz，闭环里慢就掉点。</p>
+<p>口诀：少看几眼少算几层；压成电子版，翻页太慢反误事。</p>
+</details>
+<h3 id="v45-libero-wilson-710-19422000">V45 · LIBERO 一次评测多少回合？Wilson 区间的公式？7/10 和 1942/2000 的区间各多宽？</h3>
+<p>来源：<a href="lessons/19-evaluation.html">第 19 章 · 第 1–2 步</a> · 加入 2026-11-24 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<p>4 个套件 × 10 个任务 × 每任务 50 回合 = 2000。</p>
+<div class="arithmatex">\[\frac{\hat p + \frac{z^2}{2n} \pm z\sqrt{\frac{\hat p(1-\hat p)}{n} + \frac{z^2}{4n^2}}}{1 + z^2/n}\]</div>
+<p>7/10 → [39.7%, 89.2%]，约 50 个点；1942/2000 → [96.3%, 97.7%]，约 1.5 个点。</p>
+<p>口诀：十投七中，真实在四成到九成之间。</p>
+</details>
+<h3 id="v46-z-971-964-2000">V46 · 两比例 z 检验怎么算？97.1% 对 96.4%（各 2000 回合）能分出高下吗？分数顶到头时看什么？</h3>
+<p>来源：<a href="lessons/19-evaluation.html">第 19 章 · 第 3–4 步</a> · 加入 2026-11-24 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<p><span class="arithmatex">\(z = (\hat p_1 - \hat p_2)/\sqrt{\bar p(1-\bar p)(1/n_1 + 1/n_2)}\)</span>，<span class="arithmatex">\(\bar p\)</span> 是合并成功率。97.1% vs 96.4%：z ≈ 1.25、p ≈ 0.21，分不出。分数饱和时看最难的子项（LIBERO-Long）、扰动下的分数（LIBERO-Plus）、单位时间做了多少、真机与分布外。</p>
+<p>口诀：差距跟标准误比；都考满分就换难卷、比速度。</p>
+</details>
+<h3 id="v47">V47 · 从视频学隐动作，常见的四种失败是什么？</h3>
+<p>来源：<a href="lessons/20-latent-world-model.html">第 20 章 · 第 1 步</a> · 加入 2026-11-24 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<p>① 盯着像素：监督被纹理、光照、背景、视角主导；② 被噪声运动带跑：相机晃动比手的动作还大；③ 信息泄露：学隐动作的模块同时看到现在和未来；④ 多段流程又长又脆（JEPA L78–L118）。</p>
+<p>口诀：别学镜头怎么晃，别偷看答案。</p>
+</details>
+<h3 id="v48-vla-jepa">V48 · VLA-JEPA 的损失在哪里算？总损失是什么？推理时还要世界模型吗？人手视频帮了什么？</h3>
+<p>来源：<a href="lessons/20-latent-world-model.html">第 20 章 · 第 2–4 步</a> · 加入 2026-11-24 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<p>在潜空间里算：<span class="arithmatex">\(\mathcal{L}_{\text{WM}} = \sum_k \lVert \hat s_{t_k} - \mathrm{sg}(F(I_{t_k}))\rVert\)</span>，F 是冻住的 V-JEPA2；未来帧只进 F 当答案，VLM 只看当前画面。机器人数据总损失 <span class="arithmatex">\(\mathcal{L} = \mathcal{L}_{\text{FM}} + \beta\mathcal{L}_{\text{WM}}\)</span>。推理时不用世界模型，只用 Qwen3-VL 主干 + DiT-B flow 头。人手视频：LIBERO 97.2 vs 96.1（差不多），LIBERO-Plus 79.5 vs 62.9：不教新动作，教的是换了环境还稳。</p>
+<p>口诀：答案纸只给老师看；推理时陪练下场。</p>
+</details>
+<h3 id="v49-vla-config">V49 · 读一个 VLA 的 config 看哪五个字段？各家统一动作空间多大？</h3>
+<p>来源：<a href="lessons/21-open-models-2026.html">第 21 章 · 第 1–2 步</a> · 加入 2026-11-24 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<p>主干、动作头类型、chunk_size / n_action_steps、max_action_dim（统一空间）、去噪步数。flow 头 + 10 步去噪几乎成了标配。统一空间：X-VLA 20（ee6d）、Wall-OSS-0.5 26、LingBot-VLA 2.0 55（臂 14 + 末端 14 + 夹爪 2 + 灵巧手 12 + 腰 4 + 头 2 + 底盘 3 + 预留 4）、RDT 128。</p>
+<p>口诀：大脑、动作头、几步、几格、推几步。</p>
+</details>
+<h3 id="v50-lingbot-vla-20-moe-token">V50 · LingBot-VLA 2.0 的稀疏 MoE 动作专家每个 token 用多少？微调显存怎么粗估？</h3>
+<p>来源：<a href="lessons/21-open-models-2026.html">第 21 章 · 第 3–4 步</a> · 加入 2026-11-24 · 复习记录：</p>
+<details>
+<summary>答案</summary>
+<p>32 个专家选 4 个：12.5%；每个 token 走过的 FFN 宽度 4 × 512 + 704（共享）= 2752，等于不用 MoE 时的宽度，计算量不变、参数多得多。微调：全参数 ≈ 16 字节 / 参数（bf16 权重 2 + 梯度 2 + fp32 主权重 4 + Adam 8），LoRA ≈ 2 字节 / 参数；4B 模型全参数 64 GB、LoRA 8 GB（不算激活）。</p>
+<p>口诀：专科门诊挂四个号；全参十六字节，LoRA 两字节。</p>
+</details>
 <hr />
-<h2 id="_3">已掌握</h2>
+<h2 id="_4">已掌握</h2>
 </main>
 <footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a></footer>
 <script>(function(){var d=document.documentElement,K=["s","m","l","xl"];

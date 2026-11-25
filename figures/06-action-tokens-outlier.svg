@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="190" viewBox="0 0 880 190">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="16.0" y="26.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="17" fill="#1f2937" text-anchor="start" font-weight="bold">一个 +1.0 米的异常值把格子撑宽 4.4 倍：正常动作只用得上 58 格</text>
+<text x="16.0" y="180.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#6b7280" text-anchor="start" font-weight="normal">范围 [−0.128, +1.0]：每格 1.128 / 256 ≈ 4.4 毫米；OpenVLA 改用 1%–99% 分位数定范围（openvla L248–L256）。</text>
+<rect x="40.0" y="80.0" width="800.0" height="30.0" rx="2" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.4" opacity="1"/>
+<rect x="40.0" y="80.0" width="181.6" height="30.0" rx="2" fill="#dcfce7" stroke="#16a34a" stroke-width="1.4" opacity="1"/>
+<text x="130.8" y="100.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="12" fill="#16a34a" text-anchor="middle" font-weight="bold">正常动作：58 格</text>
+<text x="530.8" y="100.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="12" fill="#6b7280" text-anchor="middle" font-weight="normal">198 格几乎全浪费在一个异常值上</text>
+<text x="40.0" y="136.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="10.5" fill="#6b7280" text-anchor="start" font-weight="normal">−0.128</text>
+<text x="840.0" y="136.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="10.5" fill="#dc2626" text-anchor="end" font-weight="normal">+1.0（异常值）</text>
+</svg>

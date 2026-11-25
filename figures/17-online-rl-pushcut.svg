@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="270" viewBox="0 0 880 270">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="16.0" y="26.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="17" fill="#1f2937" text-anchor="start" font-weight="bold">pushcut：示范都是抓—移—放；RL 之后，模型发现直接推过去也能成功</text>
+<text x="16.0" y="260.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#6b7280" text-anchor="start" font-weight="normal">RoboTwin 2.0 的 move can pot 任务（SimpleVLA-RL §6.1 L891–L910）。奖励只看成没成，推和抓都得 1 分。</text>
+<text x="30.0" y="96.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="12.5" fill="#2563eb" text-anchor="start" font-weight="bold">示范（SFT 学到的）</text>
+<rect x="230.0" y="70.0" width="70.0" height="44.0" rx="8" fill="#ffffff" stroke="#9ca3af" stroke-width="1.4" opacity="1"/>
+<text x="265.0" y="95.6" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="12" fill="#1f2937" text-anchor="middle" font-weight="bold">罐子</text>
+<rect x="700.0" y="70.0" width="90.0" height="44.0" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="1.4" opacity="1"/>
+<text x="745.0" y="95.6" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="12" fill="#1f2937" text-anchor="middle" font-weight="bold">锅旁目标</text>
+<polyline points="300.0,92.0 360.0,92.0 360.0,62.0 620.0,62.0 620.0,92.0 700.0,92.0" fill="none" stroke="#2563eb" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" opacity="1"/>
+<polygon points="700.0,92.0 692.1,96.2 692.1,87.8" fill="#2563eb" stroke="#2563eb" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" opacity="1"/>
+<rect x="404.2" y="45.5" width="171.5" height="16.5" rx="3" fill="#ffffff" stroke="none" stroke-width="1.4" opacity="0.9"/>
+<text x="490.0" y="57.5" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#2563eb" text-anchor="middle" font-weight="normal">抓起 → 抬高 → 移过去 → 放下</text>
+<text x="30.0" y="191.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="12.5" fill="#ea580c" text-anchor="start" font-weight="bold">RL 之后（自己找到的）</text>
+<rect x="230.0" y="165.0" width="70.0" height="44.0" rx="8" fill="#ffffff" stroke="#9ca3af" stroke-width="1.4" opacity="1"/>
+<text x="265.0" y="190.6" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="12" fill="#1f2937" text-anchor="middle" font-weight="bold">罐子</text>
+<rect x="700.0" y="165.0" width="90.0" height="44.0" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="1.4" opacity="1"/>
+<text x="745.0" y="190.6" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="12" fill="#1f2937" text-anchor="middle" font-weight="bold">锅旁目标</text>
+<line x1="300.0" y1="187.0" x2="700.0" y2="187.0" stroke="#ea580c" stroke-width="2.4"/>
+<polygon points="700.0,187.0 692.1,191.2 692.1,182.8" fill="#ea580c" stroke="#ea580c" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" opacity="1"/>
+<rect x="455.8" y="170.5" width="88.5" height="16.5" rx="3" fill="#ffffff" stroke="none" stroke-width="1.4" opacity="0.9"/>
+<text x="500.0" y="182.5" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#ea580c" text-anchor="middle" font-weight="normal">贴着桌面直接推</text>
+</svg>

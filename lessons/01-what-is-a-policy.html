@@ -68,11 +68,15 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <a href="https://wikieden.github.io/ai-books/">← 全部讲义书</a>
 <span class="prefs" title="字号与主题"><button type="button" data-fs-step="-1" aria-label="字号变小">A−</button><button type="button" data-fs-step="1" aria-label="字号变大">A+</button><select id="ab-theme" aria-label="主题色"><option value="">跟随系统</option><option value="light">浅色</option><option value="dark">深色</option><option value="sepia">米黄护眼</option><option value="green">豆沙绿护眼</option><option value="navy">夜蓝</option></select></span>
 </div></header>
-<div class="layout"><nav class="side" aria-label="章节"><div class="h">VLA 从零到 π0</div><a href="index.html">讲义目录</a><a href="01-what-is-a-policy.html" class="cur"><span class="n">1</span>机器人策略是什么</a><a href="02-behavior-cloning.html"><span class="n">2</span>行为克隆：照着人类示范抄作业</a><a href="03-action-chunking.html"><span class="n">3</span>动作分块（action chunking）：看一眼，规划一整段</a><a href="04-multimodality.html"><span class="n">4</span>多峰（multimodality）：同一个情况，两种都对的做法</a><a href="05-vlm.html"><span class="n">5</span>VLM：图片切块和文字一起排队进 Transformer</a><a href="06-action-tokens.html"><span class="n">6</span>动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="07-fast.html"><span class="n">7</span>FAST：先压缩，再变词</a><a href="08-pi0.html"><span class="n">8</span>π0：大脑 + 小脑，动作专家（action expert）</a><a href="09-knowledge-insulation.html"><span class="n">9</span>知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="10-hierarchy.html"><span class="n">10</span>慢想快做：分层系统</a><a href="11-latent-actions.html"><span class="n">11</span>没有动作标签：隐动作与世界模型</a><a href="12-rl-recap.html"><span class="n">12</span>RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="13-rtc.html"><span class="n">13</span>实时执行：RTC，边想下一段，边把这一段走完</a><a href="14-vla-landscape.html"><span class="n">14</span>主流 VLA 模型全景：架构、关键改进、优劣势</a><a href="appendix-glossary.html">附录 · 缩写与术语表</a><a href="appendix-symbols.html">附录 · 公式符号怎么读</a></nav><main>
-<h1 id="1">第 1 章 · 机器人策略是什么</h1><div class="run"><a class="btn" href="../animations/01-policy-loop.html">▶ 打开本章可交互动画</a></div>
+<div class="layout"><nav class="side" aria-label="章节"><div class="h">VLA 从零到 π0</div><a href="index.html">讲义目录</a><a href="01-what-is-a-policy.html" class="cur"><span class="n">1</span>机器人策略是什么</a><a href="02-behavior-cloning.html"><span class="n">2</span>行为克隆：照着人类示范抄作业</a><a href="03-action-chunking.html"><span class="n">3</span>动作分块（action chunking）：看一眼，规划一整段</a><a href="04-multimodality.html"><span class="n">4</span>多峰（multimodality）：同一个情况，两种都对的做法</a><a href="05-vlm.html"><span class="n">5</span>VLM：图片切块和文字一起排队进 Transformer</a><a href="06-action-tokens.html"><span class="n">6</span>动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="07-fast.html"><span class="n">7</span>FAST：先压缩，再变词</a><a href="08-pi0.html"><span class="n">8</span>π0：大脑 + 小脑，动作专家（action expert）</a><a href="09-knowledge-insulation.html"><span class="n">9</span>知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="10-hierarchy.html"><span class="n">10</span>慢想快做：分层系统</a><a href="11-latent-actions.html"><span class="n">11</span>没有动作标签：隐动作与世界模型</a><a href="12-rl-recap.html"><span class="n">12</span>RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="13-rtc.html"><span class="n">13</span>实时执行：RTC，边想下一段，边把这一段走完</a><a href="14-vla-landscape.html"><span class="n">14</span>主流 VLA 模型全景：架构、关键改进、优劣势</a><a href="15-oft.html"><span class="n">15</span>OpenVLA-OFT：一次吐完所有动作，直接回归连续值</a><a href="16-cross-embodiment.html"><span class="n">16</span>跨本体：不同的机器人，怎么排进同一张动作表</a><a href="17-online-rl.html"><span class="n">17</span>在线 RL：SimpleVLA-RL，只看成没成，也能把 17% 练到 92%</a><a href="18-fast-inference.html"><span class="n">18</span>跑得快：异步推理、少看几眼、压小权重</a><a href="19-evaluation.html"><span class="n">19</span>评测：97.1% 和 96.4%，到底谁更强</a><a href="20-latent-world-model.html"><span class="n">20</span>潜空间世界模型：VLA-JEPA，看视频学&quot;世界怎么变&quot;，但别偷看答案</a><a href="21-open-models-2026.html"><span class="n">21</span>2026 开源 VLA：读一份 config，选一个能微调的模型</a><a href="appendix-glossary.html">附录 · 缩写与术语表</a><a href="appendix-symbols.html">附录 · 公式符号怎么读</a></nav><main>
+<h1 id="1">第 1 章 · 机器人策略是什么</h1><div class="run"><a class="btn" href="../animations/01-policy-loop.html">▶ 打开本章可交互动画</a><a class="btn" href="https://colab.research.google.com/github/wikieden/vla-from-scratch/blob/main/code/notebooks/ch01_policy.ipynb" target="_blank" rel="noopener">在 Colab 运行本章代码</a><a class="btn" href="../code/notebooks/ch01_policy.ipynb" download>下载 notebook</a><details><summary>本地运行</summary><pre><code>git clone https://github.com/wikieden/vla-from-scratch
+cd vla-from-scratch/code/notebooks
+pip install jupyterlab torch numpy
+jupyter lab ch01_policy.ipynb</code></pre><p>也可以下载后直接用 VS Code 打开 .ipynb 运行。需要 GPU 的章节在 Colab 里选「代码执行程序 → 更改运行时类型 → GPU」。</p></details></div>
 <blockquote>
 <p>本章回答：VLA 到底输入什么、输出什么？"动作"在模型眼里长什么样？<br />
 讲解日期：2026-10-27 · 上一章：— · 下一章：<a href="../lessons/02-behavior-cloning.html">第 2 章 行为克隆</a><br />
+对应原文：<code>materials/text/papers/openvla-2406.09246.txt</code>（7 维动作、256 格分箱的出处见第 6 章）；<code>rt1-2212.06817.txt</code>（3 Hz 控制）；<code>pi0-2410.24164.txt</code>（最高 50 Hz）<br />
 本章缩写：VLA = Vision-Language-Action（视觉 / 语言 / 动作）；RT = Robotics Transformer（机器人 / Transformer）；OpenVLA = 开源 VLA；ACT = Action Chunking with Transformers（动作分块 + Transformer）；Hz = hertz（每秒几次）。全表见 <a href="../lessons/appendix-glossary.html">appendix-glossary.md</a></p>
 </blockquote>
 <h2 id="_1">讲解</h2>
@@ -136,6 +140,8 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 </tbody>
 </table>
 <p>例：<code>[0.02, 0, -0.01, 0, 0, 0, 1]</code> = 往前挪 2 厘米、往下挪 1 厘米、不转、夹爪合上。</p>
+<p><img alt="一个动作 = 7 个数" src="../figures/01-policy-vector.png" /></p>
+<p><em>图 1-1 · 每个位置含义固定：1–3 位手挪多少，4–6 位手腕转多少，7 位夹爪。</em></p>
 <h3 id="_4">和普通聊天模型的区别</h3>
 <p>聊天模型输入图和字，输出<strong>字</strong>。VLA 输入图和字，输出<strong>动作数字</strong>，而且：</p>
 <ol>
@@ -151,6 +157,8 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <li><span class="arithmatex">\(\pi\)</span>：策略（policy），就是模型本身</li>
 <li><span class="arithmatex">\(a_t\)</span>：时刻 <span class="arithmatex">\(t\)</span> 输出的动作向量</li>
 </ul>
+<p><img alt="策略循环：看 → 想 → 做" src="../figures/01-policy-loop.png" /></p>
+<p><em>图 1-2 · 做完世界就变了，下一张图就不一样了；一秒重复很多次。</em></p>
 <h3 id="_6">动画演示：策略循环：看 → 想 → 做</h3>
 <p><img alt="策略循环：看 → 想 → 做" src="../animations/01-policy-loop.gif" /></p>
 <p>可交互版：<a href="../animations/01-policy-loop.html">animations/01-policy-loop.html</a>（用浏览器打开，可播放、单步、换随机数重来）。</p>
@@ -182,7 +190,108 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <p>看一眼，听一句，吐一串数；一秒吐很多次，吐完世界就变了。</p>
 </blockquote>
 <h2 id="_9">本章复习卡片</h2>
-<p>V01 VLA 的输入与输出、V02 一个动作向量 = 一个时刻（见 <a href="../review.html">review.md</a>）</p><nav class="pager"><span></span><a href="02-behavior-cloning.html">第 2 章 · 行为克隆：照着人类示范抄作业 →</a></nav>
+<p>V01 VLA 的输入与输出、V02 一个动作向量 = 一个时刻（见 <a href="../review.html">review.md</a>）</p>
+<h2 id="_10">附录 · 延伸阅读</h2>
+<blockquote>
+<p>留给以后深入学习用，不影响本章主线。★ 是建议先读的。</p>
+</blockquote>
+<h3 id="_11">推荐阅读</h3>
+<table>
+<thead>
+<tr>
+<th>读什么</th>
+<th>读哪里</th>
+<th>读它为了什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>★ OpenVLA §3</td>
+<td><code>openvla-2406.09246.txt</code> L248–L256</td>
+<td>7 维动作怎么定义、怎么变成词（第 6 章展开）</td>
+</tr>
+<tr>
+<td>RT-1</td>
+<td><code>rt1-2212.06817.txt</code> 摘要与 §3</td>
+<td>最早的大规模机器人 Transformer 策略，3 Hz</td>
+</tr>
+<tr>
+<td>π0</td>
+<td><code>pi0-2410.24164.txt</code> 摘要</td>
+<td>50 Hz、一次出一段动作（第 3、8 章）</td>
+</tr>
+<tr>
+<td><a href="https://wikieden.github.io/transformer-visual/lessons/01-vector.html">《从零读懂 Transformer》第 1 章 向量</a></td>
+<td>一串数字描述一个东西</td>
+<td>动作就是向量</td>
+</tr>
+<tr>
+<td><a href="https://wikieden.github.io/rl-from-scratch/lessons/06-policy.html">《从零学强化学习》第 6 章 策略</a></td>
+<td>π(a</td>
+<td>s)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_12">数学原理</h3>
+<ul>
+<li><strong>向量</strong>：一串数字，每个位置的含义固定；动作向量 7 维。</li>
+<li><strong>函数</strong>：策略 π 是一个函数：输入观测和指令，输出动作。</li>
+</ul>
+<h3 id="_13">公式清单</h3>
+<table>
+<thead>
+<tr>
+<th>公式</th>
+<th>意思</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(a_t = \pi(o_t, \ell)\)</span></td>
+<td>看一眼、听一句，吐一个动作</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_14">代码对照：把本章的数字用代码算一遍</h3>
+<blockquote>
+<p>纯 Python + NumPy，不需要 GPU。代码在仓库本地 <code>vla-deep-dive/solutions/chapter-code/ch01_policy.py</code>，配套测试 <code>tests/test_ch01.py</code>：</p>
+<p><code>bash  
+cd vla-deep-dive/solutions/chapter-code  
+uv run python ch01_policy.py  
+uv run pytest tests/test_ch01.py</code></p>
+</blockquote>
+<p><strong>讲义 ↔ 代码</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>讲义</th>
+<th>写法</th>
+<th>跑出来</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>动作就是一个向量</td>
+<td><code>describe(action)</code></td>
+<td>[0.02, 0, −0.01, 0, 0, 0, 1] = Δx +2 厘米，Δz −1 厘米，夹爪合上</td>
+</tr>
+<tr>
+<td>策略循环</td>
+<td><code>toy_policy(...)</code>、<code>run_loop(3)</code></td>
+<td>4 个时刻：3 次往下 1 厘米，第 4 次合上夹爪</td>
+</tr>
+</tbody>
+</table>
+<p><strong>代码里才看得到的 2 件事</strong>：</p>
+<ol>
+<li><code>run_loop</code> 每走一步都重新"看"一次高度：做完世界就变了，下一步的输入不同。</li>
+<li>夹爪用 0 / 1 表示，大于等于 0.5 当成合上；真实数据里夹爪也常是连续值。</li>
+</ol>
+<p><strong>自己改一改</strong>（不影响练习答案）：</p>
+<ul>
+<li>把 <code>toy_policy</code> 改成一次往下 2 厘米，数一数要几个时刻。</li>
+<li>给动作加一个 Δx，看 <code>describe</code> 怎么翻译。</li>
+</ul><nav class="pager"><span></span><a href="02-behavior-cloning.html">第 2 章 · 行为克隆：照着人类示范抄作业 →</a></nav>
 </main></div>
 <footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a></footer>
 <script>(function(){var d=document.documentElement,K=["s","m","l","xl"];

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="280" viewBox="0 0 860 280">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="16.0" y="26.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="17" fill="#1f2937" text-anchor="start" font-weight="bold">成功率 70% 左右：回合越多，95% Wilson 区间越窄</text>
+<text x="16.0" y="270.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#6b7280" text-anchor="start" font-weight="normal">7/10 → [39.7%, 89.2%]；57/80 → [60.5%, 80.0%]；1400/2000 → 约 [68.0%, 72.0%]。</text>
+<text x="140.0" y="225.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="10.5" fill="#6b7280" text-anchor="middle" font-weight="normal">30%</text>
+<text x="328.6" y="225.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="10.5" fill="#6b7280" text-anchor="middle" font-weight="normal">50%</text>
+<text x="517.1" y="225.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="10.5" fill="#6b7280" text-anchor="middle" font-weight="normal">70%</text>
+<text x="705.7" y="225.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="10.5" fill="#6b7280" text-anchor="middle" font-weight="normal">90%</text>
+<text x="800.0" y="225.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="10.5" fill="#6b7280" text-anchor="middle" font-weight="normal">100%</text>
+<line x1="140.0" y1="210.0" x2="800.0" y2="210.0" stroke="#1f2937" stroke-width="1.3"/>
+<line x1="140.0" y1="60.0" x2="140.0" y2="210.0" stroke="#1f2937" stroke-width="1.3"/>
+<text x="470.0" y="242.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11.5" fill="#1f2937" text-anchor="middle" font-weight="normal">真实成功率可能在哪</text>
+<line x1="231.2" y1="180.0" x2="698.4" y2="180.0" stroke="#2563eb" stroke-width="4"/>
+<circle cx="517.1" cy="180.0" r="5" fill="#2563eb" stroke="#2563eb" stroke-width="1.4"/>
+<text x="130.0" y="184.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="12" fill="#1f2937" text-anchor="end" font-weight="normal">n = 10</text>
+<text x="706.4" y="184.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11" fill="#2563eb" text-anchor="start" font-weight="normal">宽 49.5 点</text>
+<line x1="427.9" y1="130.0" x2="611.6" y2="130.0" stroke="#2563eb" stroke-width="4"/>
+<circle cx="528.9" cy="130.0" r="5" fill="#2563eb" stroke="#2563eb" stroke-width="1.4"/>
+<text x="130.0" y="134.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="12" fill="#1f2937" text-anchor="end" font-weight="normal">n = 80</text>
+<text x="619.6" y="134.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11" fill="#2563eb" text-anchor="start" font-weight="normal">宽 19.5 点</text>
+<line x1="497.9" y1="80.0" x2="535.7" y2="80.0" stroke="#2563eb" stroke-width="4"/>
+<circle cx="517.1" cy="80.0" r="5" fill="#2563eb" stroke="#2563eb" stroke-width="1.4"/>
+<text x="130.0" y="84.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="12" fill="#1f2937" text-anchor="end" font-weight="normal">n = 2000</text>
+<text x="543.7" y="84.0" font-family="'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="11" fill="#2563eb" text-anchor="start" font-weight="normal">宽 4.0 点</text>
+</svg>
