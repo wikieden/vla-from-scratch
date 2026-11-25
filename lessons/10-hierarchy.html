@@ -68,11 +68,8 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <a href="https://wikieden.github.io/ai-books/">← 全部讲义书</a>
 <span class="prefs" title="字号与主题"><button type="button" data-fs-step="-1" aria-label="字号变小">A−</button><button type="button" data-fs-step="1" aria-label="字号变大">A+</button><select id="ab-theme" aria-label="主题色"><option value="">跟随系统</option><option value="light">浅色</option><option value="dark">深色</option><option value="sepia">米黄护眼</option><option value="green">豆沙绿护眼</option><option value="navy">夜蓝</option></select></span>
 </div></header>
-<div class="layout"><nav class="side" aria-label="章节"><div class="h">VLA 从零到 π0</div><a href="index.html">讲义目录</a><a href="01-what-is-a-policy.html"><span class="n">1</span>机器人策略是什么</a><a href="02-behavior-cloning.html"><span class="n">2</span>行为克隆：照着人类示范抄作业</a><a href="03-action-chunking.html"><span class="n">3</span>动作分块（action chunking）：看一眼，规划一整段</a><a href="04-multimodality.html"><span class="n">4</span>多峰（multimodality）：同一个情况，两种都对的做法</a><a href="05-vlm.html"><span class="n">5</span>VLM：图片切块和文字一起排队进 Transformer</a><a href="06-action-tokens.html"><span class="n">6</span>动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="07-fast.html"><span class="n">7</span>FAST：先压缩，再变词</a><a href="08-pi0.html"><span class="n">8</span>π0：大脑 + 小脑，动作专家（action expert）</a><a href="09-knowledge-insulation.html"><span class="n">9</span>知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="10-hierarchy.html" class="cur"><span class="n">10</span>慢想快做：分层系统</a><a href="11-latent-actions.html"><span class="n">11</span>没有动作标签：隐动作与世界模型</a><a href="12-rl-recap.html"><span class="n">12</span>RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="13-rtc.html"><span class="n">13</span>实时执行：RTC，边想下一段，边把这一段走完</a><a href="14-vla-landscape.html"><span class="n">14</span>主流 VLA 模型全景：架构、关键改进、优劣势</a><a href="15-oft.html"><span class="n">15</span>OpenVLA-OFT：一次吐完所有动作，直接回归连续值</a><a href="16-cross-embodiment.html"><span class="n">16</span>跨本体：不同的机器人，怎么排进同一张动作表</a><a href="17-online-rl.html"><span class="n">17</span>在线 RL：SimpleVLA-RL，只看成没成，也能把 17% 练到 92%</a><a href="18-fast-inference.html"><span class="n">18</span>跑得快：异步推理、少看几眼、压小权重</a><a href="19-evaluation.html"><span class="n">19</span>评测：97.1% 和 96.4%，到底谁更强</a><a href="20-latent-world-model.html"><span class="n">20</span>潜空间世界模型：VLA-JEPA，看视频学&quot;世界怎么变&quot;，但别偷看答案</a><a href="21-open-models-2026.html"><span class="n">21</span>2026 开源 VLA：读一份 config，选一个能微调的模型</a><a href="appendix-glossary.html">附录 · 缩写与术语表</a><a href="appendix-symbols.html">附录 · 公式符号怎么读</a></nav><main>
-<h1 id="10">第 10 章 · 慢想快做：分层系统</h1><div class="run"><a class="btn" href="../animations/10-two-clocks.html">▶ 打开本章可交互动画</a><a class="btn" href="https://colab.research.google.com/github/wikieden/vla-from-scratch/blob/main/code/notebooks/ch10_hierarchy.ipynb" target="_blank" rel="noopener">在 Colab 运行本章代码</a><a class="btn" href="../code/notebooks/ch10_hierarchy.ipynb" download>下载 notebook</a><details><summary>本地运行</summary><pre><code>git clone https://github.com/wikieden/vla-from-scratch
-cd vla-from-scratch/code/notebooks
-pip install jupyterlab torch numpy
-jupyter lab ch10_hierarchy.ipynb</code></pre><p>也可以下载后直接用 VS Code 打开 .ipynb 运行。需要 GPU 的章节在 Colab 里选「代码执行程序 → 更改运行时类型 → GPU」。</p></details></div>
+<div class="layout"><nav class="side" aria-label="章节"><div class="h">VLA 从零到 π0</div><a href="index.html">讲义目录</a><a href="01-what-is-a-policy.html"><span class="n">1</span>机器人策略是什么</a><a href="02-behavior-cloning.html"><span class="n">2</span>行为克隆：照着人类示范抄作业</a><a href="03-action-chunking.html"><span class="n">3</span>动作分块（action chunking）：看一眼，规划一整段</a><a href="04-multimodality.html"><span class="n">4</span>多峰（multimodality）：同一个情况，两种都对的做法</a><a href="05-vlm.html"><span class="n">5</span>VLM：图片切块和文字一起排队进 Transformer</a><a href="06-action-tokens.html"><span class="n">6</span>动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="07-fast.html"><span class="n">7</span>FAST：先压缩，再变词</a><a href="08-pi0.html"><span class="n">8</span>π0：大脑 + 小脑，动作专家（action expert）</a><a href="09-knowledge-insulation.html"><span class="n">9</span>知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="10-hierarchy.html" class="cur"><span class="n">10</span>慢想快做：分层系统</a><a href="11-latent-actions.html"><span class="n">11</span>没有动作标签：隐动作与世界模型</a><a href="12-rl-recap.html"><span class="n">12</span>RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="13-rtc.html"><span class="n">13</span>实时执行：RTC，边想下一段，边把这一段走完</a><a href="14-vla-landscape.html"><span class="n">14</span>主流 VLA 模型全景：架构、关键改进、优劣势</a><a href="appendix-glossary.html">附录 · 缩写与术语表</a><a href="appendix-symbols.html">附录 · 公式符号怎么读</a></nav><main>
+<h1 id="10">第 10 章 · 慢想快做：分层系统</h1><div class="run"><a class="btn" href="../animations/10-two-clocks.html">▶ 打开本章可交互动画</a></div>
 <blockquote>
 <p>本章回答：一个模型既要想清楚"下一步干什么"，又要每秒出 50 个动作，怎么兼顾？高层和低层之间传什么？高层的训练数据从哪来？<br />
 讲解日期：2026-11-20 · 上一章：<a href="../lessons/09-knowledge-insulation.html">第 9 章 知识隔离与 π0.5</a> · 下一章：<a href="../lessons/11-latent-actions.html">第 11 章 隐动作与世界模型</a><br />
@@ -143,8 +140,6 @@ jupyter lab ch10_hierarchy.ipynb</code></pre><p>也可以下载后直接用 VS C
 </table>
 <p><strong>数字例子</strong>（按 Hi Robot 的节奏，任务是编的）：一个 8 秒的任务，高层每秒想一次 = 8 次；中途用户插一次话，再加 1 次 = 9 次；低层 50 Hz × 8 秒 = 400 个动作。</p>
 <p><strong>一句话</strong>：想得慢、做得快，两层各按自己的节奏跑。</p>
-<p><img alt="两只钟" src="../figures/10-hierarchy-clocks.png" /></p>
-<p><em>图 10-1 · 高层每秒一次、插话立刻重想；低层每秒 50 个动作。</em></p>
 <h3 id="2-2026-11-20">第 2 步：高层和低层之间传什么（2026-11-20）</h3>
 <p><strong>类比：经理给工人派活。</strong> 可以写一张纸条"去拿杯子"（文字），也可以直接把自己脑子里的整个想法"灌"给工人（一串向量）。纸条人人看得懂，但信息少；灌想法信息多，但别人看不懂。</p>
 <table>
@@ -185,8 +180,6 @@ jupyter lab ch10_hierarchy.ipynb</code></pre><p>也可以下载后直接用 VS C
 <p>原文的说法是给 VLM 一个观察和目标指令，让它想出之前可能出现的提示或人的插话（L227–L231）。</p>
 <p><strong>π0.5 的做法</strong>（第 9 章）：HL 数据（人工标注子任务）+ 后训练加 VI（口头指导：人一步步用语言指挥机器人做事的录像）。</p>
 <p><strong>一句话</strong>：高层的数据靠"倒推"：先有动作和简单指令，再编出会导致它的复杂指令。</p>
-<p><img alt="传文字还是传向量" src="../figures/10-hierarchy-interface.png" /></p>
-<p><em>图 10-2 · 文字好懂信息少，向量信息多看不懂。</em></p>
 <h3 id="_2">动画演示：两只钟</h3>
 <p><img alt="慢想快做：两只钟" src="../animations/10-two-clocks.gif" /></p>
 <p>可交互版：<a href="../animations/10-two-clocks.html">animations/10-two-clocks.html</a>（可播放、单步、重来）。任务和子任务是编的例子，节奏按 Hi Robot 原文。</p>
@@ -215,7 +208,7 @@ jupyter lab ch10_hierarchy.ipynb</code></pre><p>也可以下载后直接用 VS C
 先有动作再编话，倒推出高层的教材。</p>
 </blockquote>
 <h2 id="_5">本章复习卡片</h2>
-<p><a href="../review.html">V27</a>（三个系统的高层 / 低层节奏）、<a href="../review.html">V28</a>（插话后重新计时：8 秒任务高层 9 次、低层 400 个动作）。练习做完后，按答错、卡住的地方再补。</p>
+<p>练习做完后，按答错、卡住的地方补上。</p>
 <h2 id="_6">附录 · 延伸阅读</h2>
 <blockquote>
 <p>留给以后深入学习用，不影响本章主线。★ 是建议先读的。</p>
@@ -285,53 +278,10 @@ jupyter lab ch10_hierarchy.ipynb</code></pre><p>也可以下载后直接用 VS C
 </tr>
 </tbody>
 </table>
-<h3 id="_10">代码对照：把本章的数字用代码算一遍</h3>
-<blockquote>
-<p>纯 Python + NumPy，不需要 GPU。代码在仓库本地 <code>vla-deep-dive/solutions/chapter-code/ch10_hierarchy.py</code>，配套测试 <code>tests/test_ch10.py</code>：</p>
-<p><code>bash  
-cd vla-deep-dive/solutions/chapter-code  
-uv run python ch10_hierarchy.py  
-uv run pytest tests/test_ch10.py</code></p>
-</blockquote>
-<p><strong>讲义 ↔ 代码</strong>：</p>
-<table>
-<thead>
-<tr>
-<th>讲义</th>
-<th>写法</th>
-<th>跑出来</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>第 1 步</td>
-<td><code>high_level_calls(8, 1.0, [])</code></td>
-<td>8 次</td>
-</tr>
-<tr>
-<td>第 1 步</td>
-<td><code>high_level_calls(8, 1.0, [4.3])</code>、<code>low_level_actions(8, 50)</code></td>
-<td>9 次（4.3 秒插话后改从 4.3 起计时）；400 个动作</td>
-</tr>
-<tr>
-<td>第 1 步</td>
-<td><code>SYSTEMS</code></td>
-<td>GR00T N1：10 Hz / 120 Hz、16 步 63.9 ms</td>
-</tr>
-</tbody>
-</table>
-<p><strong>代码里才看得到的 2 件事</strong>：</p>
-<ol>
-<li>插话不是"多想一次再接着原节奏"，而是从插话时刻重新计时：所以插话后的几次是 4.3、5.3、6.3、7.3 秒。</li>
-<li>低层动作数用 floor：8 × 50 正好整数，换成 7.99 秒就会少一个。</li>
-</ol>
-<p><strong>自己改一改</strong>（不影响练习答案）：</p>
-<ul>
-<li>加第二次插话（比如 6.0 秒），数一数高层想几次。</li>
-<li>把高层周期改成 0.5 秒，比较想的次数。</li>
-</ul><nav class="pager"><a href="09-knowledge-insulation.html">← 第 9 章 · 知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="11-latent-actions.html">第 11 章 · 没有动作标签：隐动作与世界模型 →</a></nav>
+<h3 id="_10">代码对照</h3>
+<p>本章无代码对照：讲的是系统结构和节奏。</p><nav class="pager"><a href="09-knowledge-insulation.html">← 第 9 章 · 知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="11-latent-actions.html">第 11 章 · 没有动作标签：隐动作与世界模型 →</a></nav>
 </main></div>
-<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a></footer>
+<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a><br>联系与合作：<a href="mailto:wikieden@gmail.com">wikieden@gmail.com</a>（讲义勘误与建议、课程 / 企业内训、内容合作与转载授权）· 赞助请发邮件联系</footer>
 <script>(function(){var d=document.documentElement,K=["s","m","l","xl"];
 function save(k,v){try{v?localStorage.setItem(k,v):localStorage.removeItem(k)}catch(e){}}
 var s=document.getElementById("ab-theme");if(s){s.value=d.dataset.theme||"";s.onchange=function(){if(s.value)d.dataset.theme=s.value;else delete d.dataset.theme;save("ab-theme",s.value)}}

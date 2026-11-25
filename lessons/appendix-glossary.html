@@ -68,7 +68,7 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <a href="https://wikieden.github.io/ai-books/">← 全部讲义书</a>
 <span class="prefs" title="字号与主题"><button type="button" data-fs-step="-1" aria-label="字号变小">A−</button><button type="button" data-fs-step="1" aria-label="字号变大">A+</button><select id="ab-theme" aria-label="主题色"><option value="">跟随系统</option><option value="light">浅色</option><option value="dark">深色</option><option value="sepia">米黄护眼</option><option value="green">豆沙绿护眼</option><option value="navy">夜蓝</option></select></span>
 </div></header>
-<div class="layout"><nav class="side" aria-label="章节"><div class="h">VLA 从零到 π0</div><a href="index.html">讲义目录</a><a href="01-what-is-a-policy.html"><span class="n">1</span>机器人策略是什么</a><a href="02-behavior-cloning.html"><span class="n">2</span>行为克隆：照着人类示范抄作业</a><a href="03-action-chunking.html"><span class="n">3</span>动作分块（action chunking）：看一眼，规划一整段</a><a href="04-multimodality.html"><span class="n">4</span>多峰（multimodality）：同一个情况，两种都对的做法</a><a href="05-vlm.html"><span class="n">5</span>VLM：图片切块和文字一起排队进 Transformer</a><a href="06-action-tokens.html"><span class="n">6</span>动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="07-fast.html"><span class="n">7</span>FAST：先压缩，再变词</a><a href="08-pi0.html"><span class="n">8</span>π0：大脑 + 小脑，动作专家（action expert）</a><a href="09-knowledge-insulation.html"><span class="n">9</span>知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="10-hierarchy.html"><span class="n">10</span>慢想快做：分层系统</a><a href="11-latent-actions.html"><span class="n">11</span>没有动作标签：隐动作与世界模型</a><a href="12-rl-recap.html"><span class="n">12</span>RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="13-rtc.html"><span class="n">13</span>实时执行：RTC，边想下一段，边把这一段走完</a><a href="14-vla-landscape.html"><span class="n">14</span>主流 VLA 模型全景：架构、关键改进、优劣势</a><a href="15-oft.html"><span class="n">15</span>OpenVLA-OFT：一次吐完所有动作，直接回归连续值</a><a href="16-cross-embodiment.html"><span class="n">16</span>跨本体：不同的机器人，怎么排进同一张动作表</a><a href="17-online-rl.html"><span class="n">17</span>在线 RL：SimpleVLA-RL，只看成没成，也能把 17% 练到 92%</a><a href="18-fast-inference.html"><span class="n">18</span>跑得快：异步推理、少看几眼、压小权重</a><a href="19-evaluation.html"><span class="n">19</span>评测：97.1% 和 96.4%，到底谁更强</a><a href="20-latent-world-model.html"><span class="n">20</span>潜空间世界模型：VLA-JEPA，看视频学&quot;世界怎么变&quot;，但别偷看答案</a><a href="21-open-models-2026.html"><span class="n">21</span>2026 开源 VLA：读一份 config，选一个能微调的模型</a><a href="appendix-glossary.html" class="cur">附录 · 缩写与术语表</a><a href="appendix-symbols.html">附录 · 公式符号怎么读</a></nav><main>
+<div class="layout"><nav class="side" aria-label="章节"><div class="h">VLA 从零到 π0</div><a href="index.html">讲义目录</a><a href="01-what-is-a-policy.html"><span class="n">1</span>机器人策略是什么</a><a href="02-behavior-cloning.html"><span class="n">2</span>行为克隆：照着人类示范抄作业</a><a href="03-action-chunking.html"><span class="n">3</span>动作分块（action chunking）：看一眼，规划一整段</a><a href="04-multimodality.html"><span class="n">4</span>多峰（multimodality）：同一个情况，两种都对的做法</a><a href="05-vlm.html"><span class="n">5</span>VLM：图片切块和文字一起排队进 Transformer</a><a href="06-action-tokens.html"><span class="n">6</span>动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="07-fast.html"><span class="n">7</span>FAST：先压缩，再变词</a><a href="08-pi0.html"><span class="n">8</span>π0：大脑 + 小脑，动作专家（action expert）</a><a href="09-knowledge-insulation.html"><span class="n">9</span>知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="10-hierarchy.html"><span class="n">10</span>慢想快做：分层系统</a><a href="11-latent-actions.html"><span class="n">11</span>没有动作标签：隐动作与世界模型</a><a href="12-rl-recap.html"><span class="n">12</span>RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="13-rtc.html"><span class="n">13</span>实时执行：RTC，边想下一段，边把这一段走完</a><a href="14-vla-landscape.html"><span class="n">14</span>主流 VLA 模型全景：架构、关键改进、优劣势</a><a href="appendix-glossary.html" class="cur">附录 · 缩写与术语表</a><a href="appendix-symbols.html">附录 · 公式符号怎么读</a></nav><main>
 <h1 id="_1">附录 · 缩写与术语表</h1>
 <blockquote>
 <p>用途：讲义里遇到缩写，先查这一页。每章开头的"本章缩写"只列这一章用到的。整理日期：2026-11-07（复习时问"DCT 是什么缩写"，按规则补齐）。公式符号的读法见 <a href="../lessons/appendix-symbols.html">appendix-symbols.md</a>。</p>
@@ -266,7 +266,7 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 </tr>
 <tr>
 <td>LAPA</td>
-<td>Latent Action Pretraining from Videos</td>
+<td>Latent Action Pretraining</td>
 <td>隐 / 动作 / 预训练：从无标签视频学动作码（第 11 章）</td>
 <td><a href="../lessons/11-latent-actions.html">第 11 章</a></td>
 </tr>
@@ -366,120 +366,6 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <td>最常用的 VLA 仿真基准，已接近饱和</td>
 <td><a href="../lessons/14-vla-landscape.html">第 14 章</a></td>
 </tr>
-<tr>
-<td>PD</td>
-<td>Parallel Decoding</td>
-<td>并行 / 解码：空的动作位 + 双向注意力，一次前向出全部动作</td>
-<td><a href="../lessons/15-oft.html">第 15 章</a></td>
-</tr>
-<tr>
-<td>AC</td>
-<td>Action Chunking</td>
-<td>动作 / 分块：一次出一段（第 3 章），OFT 表里的缩写</td>
-<td><a href="../lessons/15-oft.html">第 15 章</a></td>
-</tr>
-<tr>
-<td>FiLM</td>
-<td>Feature-wise Linear Modulation</td>
-<td>逐特征 / 线性 / 调制：<span class="arithmatex">\((1+\gamma)\odot F + \beta\)</span>，用指令给视觉特征调色</td>
-<td><a href="../lessons/15-oft.html">第 15 章</a></td>
-</tr>
-<tr>
-<td>MLP</td>
-<td>Multi-Layer Perceptron</td>
-<td>多层 / 感知机：OFT 的 L1 动作头</td>
-<td><a href="../lessons/15-oft.html">第 15 章</a></td>
-</tr>
-<tr>
-<td>DDIM</td>
-<td>Denoising Diffusion Implicit Models</td>
-<td>去噪扩散隐式模型：一种可以少步采样的扩散采样器</td>
-<td><a href="../lessons/15-oft.html">第 15 章</a></td>
-</tr>
-<tr>
-<td>LoRA</td>
-<td>Low-Rank Adaptation</td>
-<td>低秩 / 适配：冻住原权重，只训两个小矩阵</td>
-<td><a href="../lessons/15-oft.html">第 15 章</a></td>
-</tr>
-<tr>
-<td>X-VLA</td>
-<td>Extended VLA</td>
-<td>扩展 VLA：共享 Transformer + 每个域一组软提示</td>
-<td><a href="../lessons/16-cross-embodiment.html">第 16 章</a></td>
-</tr>
-<tr>
-<td>ee6d</td>
-<td>end-effector + 6D rotation</td>
-<td>末端位置 + 6D 旋转表示，X-VLA 的 20 维动作</td>
-<td><a href="../lessons/16-cross-embodiment.html">第 16 章</a></td>
-</tr>
-<tr>
-<td>BCE</td>
-<td>Binary Cross-Entropy</td>
-<td>二元 / 交叉 / 熵：夹爪开合这类二分类的损失</td>
-<td><a href="../lessons/16-cross-embodiment.html">第 16 章</a></td>
-</tr>
-<tr>
-<td>GRPO</td>
-<td>Group Relative Policy Optimization</td>
-<td>组 / 相对 / 策略 / 优化：同一场景采一组，用组内平均当基线</td>
-<td><a href="../lessons/17-online-rl.html">第 17 章</a></td>
-</tr>
-<tr>
-<td>SFT</td>
-<td>Supervised Fine-Tuning</td>
-<td>监督 / 微调：照示范学（第 2 章的行为克隆）</td>
-<td><a href="../lessons/17-online-rl.html">第 17 章</a></td>
-</tr>
-<tr>
-<td>KL</td>
-<td>Kullback–Leibler divergence</td>
-<td>KL 散度：两个分布差多少</td>
-<td><a href="../lessons/17-online-rl.html">第 17 章</a></td>
-</tr>
-<tr>
-<td>veRL</td>
-<td>Volcano Engine Reinforcement Learning</td>
-<td>火山引擎的 LLM 强化学习框架，SimpleVLA-RL 在它上面改</td>
-<td><a href="../lessons/17-online-rl.html">第 17 章</a></td>
-</tr>
-<tr>
-<td>FLOPs</td>
-<td>Floating-point Operations</td>
-<td>浮点运算次数</td>
-<td><a href="../lessons/18-fast-inference.html">第 18 章</a></td>
-</tr>
-<tr>
-<td>V-JEPA2</td>
-<td>Video Joint-Embedding Predictive Architecture 2</td>
-<td>视频版 JEPA 第 2 代：VLA-JEPA 里冻住的视频编码器 F</td>
-<td><a href="../lessons/20-latent-world-model.html">第 20 章</a></td>
-</tr>
-<tr>
-<td>ELBO</td>
-<td>Evidence Lower Bound</td>
-<td>证据 / 下界：对数似然的下界</td>
-<td><a href="../lessons/20-latent-world-model.html">第 20 章</a></td>
-</tr>
-<tr>
-<td>WM / FM</td>
-<td>World Model / Flow Matching</td>
-<td>世界模型损失 / flow matching 损失（VLA-JEPA 式 9）</td>
-<td><a href="../lessons/20-latent-world-model.html">第 20 章</a></td>
-</tr>
-<tr>
-<td>FFT</td>
-<td>Full Fine-Tuning</td>
-<td>全参数微调（MolmoAct2 的 <code>train_mode_vlm="fft"</code>）</td>
-<td><a href="../lessons/21-open-models-2026.html">第 21 章</a></td>
-</tr>
-<tr>
-<td>VQA</td>
-<td>Visual Question Answering</td>
-<td>视觉问答</td>
-<td><a href="../lessons/21-open-models-2026.html">第 21 章</a></td>
-</tr>
 </tbody>
 </table>
 <h2 id="_3">数据与硬件</h2>
@@ -528,60 +414,6 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <td>Joint Photographic Experts Group</td>
 <td>联合 / 图像 / 专家 / 组：制定这种图片压缩格式的组织，也用 DCT</td>
 <td><a href="../lessons/07-fast.html">第 7 章</a></td>
-</tr>
-<tr>
-<td>SR</td>
-<td>Success Rate</td>
-<td>成功率</td>
-<td><a href="../lessons/15-oft.html">第 15 章</a></td>
-</tr>
-<tr>
-<td>DoF</td>
-<td>Degrees of Freedom</td>
-<td>自由度：一条臂有几个能独立转的关节</td>
-<td><a href="../lessons/16-cross-embodiment.html">第 16 章</a></td>
-</tr>
-<tr>
-<td>EEF</td>
-<td>End-Effector</td>
-<td>末端执行器：手 / 夹爪那一端</td>
-<td><a href="../lessons/16-cross-embodiment.html">第 16 章</a></td>
-</tr>
-<tr>
-<td>SIMPLER / SimplerEnv</td>
-<td>—</td>
-<td>照真机场景搭的仿真评测环境（Google 机器人、WidowX）</td>
-<td><a href="../lessons/19-evaluation.html">第 19 章</a></td>
-</tr>
-<tr>
-<td>OOD</td>
-<td>Out-of-Distribution</td>
-<td>分布外：训练时没见过的场景</td>
-<td><a href="../lessons/19-evaluation.html">第 19 章</a></td>
-</tr>
-<tr>
-<td>CI / SE</td>
-<td>Confidence Interval / Standard Error</td>
-<td>置信 / 区间、标准 / 误差</td>
-<td><a href="../lessons/19-evaluation.html">第 19 章</a></td>
-</tr>
-<tr>
-<td>SSv2</td>
-<td>Something-Something v2</td>
-<td>22 万条人手操作视频，VLA-JEPA 的预训练视频</td>
-<td><a href="../lessons/20-latent-world-model.html">第 20 章</a></td>
-</tr>
-<tr>
-<td>bf16 / int8 / int4</td>
-<td>bfloat16 / 8-bit integer / 4-bit integer</td>
-<td>每个数用 2 / 1 / 0.5 字节存</td>
-<td><a href="../lessons/18-fast-inference.html">第 18 章</a></td>
-</tr>
-<tr>
-<td>VRAM</td>
-<td>Video RAM</td>
-<td>显存</td>
-<td><a href="../lessons/18-fast-inference.html">第 18 章</a></td>
 </tr>
 </tbody>
 </table>
@@ -656,34 +488,10 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <td>模型自己写出的子任务（π0.5、Hi Robot）</td>
 <td><a href="../lessons/09-knowledge-insulation.html">第 9 章</a></td>
 </tr>
-<tr>
-<td>g</td>
-<td>queue threshold</td>
-<td>异步推理阈值：队列剩余比例低于 g 就开始想下一段</td>
-<td><a href="../lessons/18-fast-inference.html">第 18 章</a></td>
-</tr>
-<tr>
-<td><span class="arithmatex">\(E[\ell]\)</span></td>
-<td>expected round-trip latency</td>
-<td>一次推理往返时间的期望</td>
-<td><a href="../lessons/18-fast-inference.html">第 18 章</a></td>
-</tr>
-<tr>
-<td><span class="arithmatex">\(\hat A_i\)</span></td>
-<td>normalized advantage</td>
-<td>GRPO 的组内标准化优势</td>
-<td><a href="../lessons/17-online-rl.html">第 17 章</a></td>
-</tr>
-<tr>
-<td>q01 / q99</td>
-<td>1% / 99% quantile</td>
-<td>1% / 99% 分位数，用来归一化动作</td>
-<td><a href="../lessons/21-open-models-2026.html">第 21 章</a></td>
-</tr>
 </tbody>
 </table>
 </main></div>
-<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a></footer>
+<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a><br>联系与合作：<a href="mailto:wikieden@gmail.com">wikieden@gmail.com</a>（讲义勘误与建议、课程 / 企业内训、内容合作与转载授权）· 赞助请发邮件联系</footer>
 <script>(function(){var d=document.documentElement,K=["s","m","l","xl"];
 function save(k,v){try{v?localStorage.setItem(k,v):localStorage.removeItem(k)}catch(e){}}
 var s=document.getElementById("ab-theme");if(s){s.value=d.dataset.theme||"";s.onchange=function(){if(s.value)d.dataset.theme=s.value;else delete d.dataset.theme;save("ab-theme",s.value)}}

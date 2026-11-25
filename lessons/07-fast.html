@@ -68,15 +68,11 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <a href="https://wikieden.github.io/ai-books/">← 全部讲义书</a>
 <span class="prefs" title="字号与主题"><button type="button" data-fs-step="-1" aria-label="字号变小">A−</button><button type="button" data-fs-step="1" aria-label="字号变大">A+</button><select id="ab-theme" aria-label="主题色"><option value="">跟随系统</option><option value="light">浅色</option><option value="dark">深色</option><option value="sepia">米黄护眼</option><option value="green">豆沙绿护眼</option><option value="navy">夜蓝</option></select></span>
 </div></header>
-<div class="layout"><nav class="side" aria-label="章节"><div class="h">VLA 从零到 π0</div><a href="index.html">讲义目录</a><a href="01-what-is-a-policy.html"><span class="n">1</span>机器人策略是什么</a><a href="02-behavior-cloning.html"><span class="n">2</span>行为克隆：照着人类示范抄作业</a><a href="03-action-chunking.html"><span class="n">3</span>动作分块（action chunking）：看一眼，规划一整段</a><a href="04-multimodality.html"><span class="n">4</span>多峰（multimodality）：同一个情况，两种都对的做法</a><a href="05-vlm.html"><span class="n">5</span>VLM：图片切块和文字一起排队进 Transformer</a><a href="06-action-tokens.html"><span class="n">6</span>动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="07-fast.html" class="cur"><span class="n">7</span>FAST：先压缩，再变词</a><a href="08-pi0.html"><span class="n">8</span>π0：大脑 + 小脑，动作专家（action expert）</a><a href="09-knowledge-insulation.html"><span class="n">9</span>知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="10-hierarchy.html"><span class="n">10</span>慢想快做：分层系统</a><a href="11-latent-actions.html"><span class="n">11</span>没有动作标签：隐动作与世界模型</a><a href="12-rl-recap.html"><span class="n">12</span>RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="13-rtc.html"><span class="n">13</span>实时执行：RTC，边想下一段，边把这一段走完</a><a href="14-vla-landscape.html"><span class="n">14</span>主流 VLA 模型全景：架构、关键改进、优劣势</a><a href="15-oft.html"><span class="n">15</span>OpenVLA-OFT：一次吐完所有动作，直接回归连续值</a><a href="16-cross-embodiment.html"><span class="n">16</span>跨本体：不同的机器人，怎么排进同一张动作表</a><a href="17-online-rl.html"><span class="n">17</span>在线 RL：SimpleVLA-RL，只看成没成，也能把 17% 练到 92%</a><a href="18-fast-inference.html"><span class="n">18</span>跑得快：异步推理、少看几眼、压小权重</a><a href="19-evaluation.html"><span class="n">19</span>评测：97.1% 和 96.4%，到底谁更强</a><a href="20-latent-world-model.html"><span class="n">20</span>潜空间世界模型：VLA-JEPA，看视频学&quot;世界怎么变&quot;，但别偷看答案</a><a href="21-open-models-2026.html"><span class="n">21</span>2026 开源 VLA：读一份 config，选一个能微调的模型</a><a href="appendix-glossary.html">附录 · 缩写与术语表</a><a href="appendix-symbols.html">附录 · 公式符号怎么读</a></nav><main>
-<h1 id="7-fast">第 7 章 · FAST：先压缩，再变词</h1><div class="run"><a class="btn" href="../animations/07-fast-dct.html">▶ 打开本章可交互动画</a><a class="btn" href="https://colab.research.google.com/github/wikieden/vla-from-scratch/blob/main/code/notebooks/ch07_fast.ipynb" target="_blank" rel="noopener">在 Colab 运行本章代码</a><a class="btn" href="../code/notebooks/ch07_fast.ipynb" download>下载 notebook</a><details><summary>本地运行</summary><pre><code>git clone https://github.com/wikieden/vla-from-scratch
-cd vla-from-scratch/code/notebooks
-pip install jupyterlab torch numpy
-jupyter lab ch07_fast.ipynb</code></pre><p>也可以下载后直接用 VS Code 打开 .ipynb 运行。需要 GPU 的章节在 Colab 里选「代码执行程序 → 更改运行时类型 → GPU」。</p></details></div>
+<div class="layout"><nav class="side" aria-label="章节"><div class="h">VLA 从零到 π0</div><a href="index.html">讲义目录</a><a href="01-what-is-a-policy.html"><span class="n">1</span>机器人策略是什么</a><a href="02-behavior-cloning.html"><span class="n">2</span>行为克隆：照着人类示范抄作业</a><a href="03-action-chunking.html"><span class="n">3</span>动作分块（action chunking）：看一眼，规划一整段</a><a href="04-multimodality.html"><span class="n">4</span>多峰（multimodality）：同一个情况，两种都对的做法</a><a href="05-vlm.html"><span class="n">5</span>VLM：图片切块和文字一起排队进 Transformer</a><a href="06-action-tokens.html"><span class="n">6</span>动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="07-fast.html" class="cur"><span class="n">7</span>FAST：先压缩，再变词</a><a href="08-pi0.html"><span class="n">8</span>π0：大脑 + 小脑，动作专家（action expert）</a><a href="09-knowledge-insulation.html"><span class="n">9</span>知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="10-hierarchy.html"><span class="n">10</span>慢想快做：分层系统</a><a href="11-latent-actions.html"><span class="n">11</span>没有动作标签：隐动作与世界模型</a><a href="12-rl-recap.html"><span class="n">12</span>RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="13-rtc.html"><span class="n">13</span>实时执行：RTC，边想下一段，边把这一段走完</a><a href="14-vla-landscape.html"><span class="n">14</span>主流 VLA 模型全景：架构、关键改进、优劣势</a><a href="appendix-glossary.html">附录 · 缩写与术语表</a><a href="appendix-symbols.html">附录 · 公式符号怎么读</a></nav><main>
+<h1 id="7-fast">第 7 章 · FAST：先压缩，再变词</h1><div class="run"><a class="btn" href="../animations/07-fast-dct.html">▶ 打开本章可交互动画</a></div>
 <blockquote>
 <p>本章回答：逐维分箱除了慢，还有什么毛病？FAST 怎么用"压缩"同时解决"慢"和"学不动"？<br />
 讲解日期：2026-11-04 · 上一章：<a href="../lessons/06-action-tokens.html">第 6 章 动作当词</a> · 下一章：<a href="../lessons/08-pi0.html">第 8 章 π0</a><br />
-对应原文：<code>materials/text/papers/fast-tokenizer-2501.09747.txt</code> L63–L70（相邻 token 太像）、L206–L220（DCT）、L222–L245（FAST 流程、图 4）<br />
 本章缩写：FAST = Frequency-space Action Sequence Tokenization（频率空间 / 动作序列 / 分词）；DCT = Discrete Cosine Transform（离散 / 余弦 / 变换）；BPE = Byte Pair Encoding（字节 / 对 / 编码）；JPEG = Joint Photographic Experts Group（联合 / 图像 / 专家 / 组）；DC 分量 = Direct Current（直流）分量 = 平均值；γ = scale（取整前乘的倍数）。全表见 <a href="../lessons/appendix-glossary.html">appendix-glossary.md</a></p>
 </blockquote>
 <h2 id="_1">讲解</h2>
@@ -90,8 +86,6 @@ jupyter lab ch07_fast.ipynb</code></pre><p>也可以下载后直接用 VS Code �
 <p><em>"Highly correlated action tokens diminish the effectiveness of the next token prediction objective … low token prediction loss can often be achieved with mappings as trivial as simply copying the most recent action token, leaving models in poor local optima."</em></p>
 </blockquote>
 <p>意思是：相邻 token 高度相关时，"抄上一个"就能把损失降得很低，模型卡在这个偷懒的解里出不来。</p>
-<p><img alt="FAST 的四步" src="../figures/07-fast-pipeline.png" /></p>
-<p><em>图 7-1 · 归一化 → DCT → 乘 γ 取整 → BPE。</em></p>
 <h3 id="2-dct">第 2 步：别逐时刻记，改记"整体形状 + 细节"（DCT）</h3>
 <p><strong>白话类比：描述一段路</strong></p>
 <p>逐时刻记录像这样："第 1 个 0.02 秒前进 2 毫米，第 2 个 0.02 秒前进 2 毫米，……"，50 个数几乎一样。</p>
@@ -130,15 +124,6 @@ jupyter lab ch07_fast.ipynb</code></pre><p>也可以下载后直接用 VS Code �
 </tr>
 </tbody>
 </table>
-<p><img alt="能量集中在前几个低频系数" src="../figures/07-fast-dct.png" /></p>
-<p><em>图 7-2 · 加速 → 匀速 → 减速的一段动作，只留 3 个低频就几乎重建出来。</em></p>
-<p><strong>场景代码</strong>：LeRobot 的 π0-FAST 加载 FAST 分词器的真实写法（<code>materials/code/lerobot/repo/src/lerobot/policies/pi0_fast/modeling_pi0_fast.py</code> L770–L774）：</p>
-<pre><code class="language-python">from transformers import AutoProcessor
-
-# config.action_tokenizer_name 默认指向 Physical Intelligence 发布的 FAST 分词器
-action_tokenizer = AutoProcessor.from_pretrained(config.action_tokenizer_name, trust_remote_code=True)
-tokens = action_tokenizer(action_chunk)   # 一段动作 → DCT → 取整 → BPE → 少量 token
-</code></pre>
 <h3 id="dct">动画演示：DCT：先说形状，再补细节</h3>
 <p><img alt="DCT：先说形状，再补细节" src="../animations/07-fast-dct.gif" /></p>
 <p>可交互版：<a href="../animations/07-fast-dct.html">animations/07-fast-dct.html</a>（用浏览器打开，可播放、单步、换随机数重来）。</p>
@@ -251,115 +236,9 @@ tokens = action_tokenizer(action_chunk)   # 一段动作 → DCT → 取整 → 
 先说形状再补细节，DCT 压一压，BPE 并一并，字少还有料。</p>
 </blockquote>
 <h2 id="_4">本章复习卡片</h2>
-<p>V14 逐维分箱为什么"学不动"、V15 FAST 四步（见 <a href="../review.html">review.md</a>）</p>
-<h2 id="_5">附录 · 延伸阅读</h2>
-<blockquote>
-<p>留给以后深入学习用，不影响本章主线。★ 是建议先读的。</p>
-</blockquote>
-<h3 id="_6">推荐阅读</h3>
-<table>
-<thead>
-<tr>
-<th>读什么</th>
-<th>读哪里</th>
-<th>读它为了什么</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>★ FAST（Pertsch 等，2025）</td>
-<td><code>fast-tokenizer-2501.09747.txt</code> L63–L70、L206–L245</td>
-<td>为什么相邻 token 不好、DCT + BPE 怎么做</td>
-</tr>
-<tr>
-<td>JPEG 的 DCT</td>
-<td>任何图像压缩教材</td>
-<td>同一个变换，用在图片上</td>
-</tr>
-<tr>
-<td><a href="../lessons/06-action-tokens.html">第 6 章 动作当词</a></td>
-<td>逐维分箱</td>
-<td>FAST 要修的那一种</td>
-</tr>
-<tr>
-<td><a href="../lessons/09-knowledge-insulation.html">第 9 章 知识隔离</a></td>
-<td>大脑念 FAST 词</td>
-<td>FAST 在 KI 里当"老师"</td>
-</tr>
-</tbody>
-</table>
-<h3 id="_7">数学原理</h3>
-<ul>
-<li><strong>DCT-II</strong>：把 N 个数换成 N 个余弦的系数；正交版本的逆变换就是转置。</li>
-<li><strong>能量集中</strong>：平滑信号的大部分能量在低频，高频系数接近 0。</li>
-<li><strong>BPE</strong>：反复把最常见的相邻一对合成一个新符号。</li>
-</ul>
-<h3 id="_8">公式清单</h3>
-<table>
-<thead>
-<tr>
-<th>公式</th>
-<th>意思</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><span class="arithmatex">\(c_k = \sqrt{2/N}\,\alpha_k \sum_i x_i \cos\frac{\pi(i+0.5)k}{N}\)</span></td>
-<td>正交 DCT-II（<span class="arithmatex">\(\alpha_0 = 1/\sqrt2\)</span>，其余 1）</td>
-</tr>
-<tr>
-<td><span class="arithmatex">\(\text{round}(\gamma \cdot c_k)\)</span></td>
-<td>乘倍数再取整，小系数变 0</td>
-</tr>
-</tbody>
-</table>
-<h3 id="_9">代码对照：把本章的数字用代码算一遍</h3>
-<blockquote>
-<p>纯 Python + NumPy，不需要 GPU。代码在仓库本地 <code>vla-deep-dive/solutions/chapter-code/ch07_fast.py</code>，配套测试 <code>tests/test_ch07.py</code>：</p>
-<p><code>bash  
-cd vla-deep-dive/solutions/chapter-code  
-uv run python ch07_fast.py  
-uv run pytest tests/test_ch07.py</code></p>
-</blockquote>
-<p><strong>讲义 ↔ 代码</strong>：</p>
-<table>
-<thead>
-<tr>
-<th>讲义</th>
-<th>写法</th>
-<th>跑出来</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>第 1 步</td>
-<td><code>copy_last_accuracy(seq)</code></td>
-<td>6 / 9</td>
-</tr>
-<tr>
-<td>第 2 步</td>
-<td><code>dct</code>、<code>idct</code>、<code>keep_low(x, k)</code></td>
-<td>匀速只有 1 个非零系数；加减速留 3 个误差 0.00014；来回抖留 6 个仍误差 0.011</td>
-</tr>
-<tr>
-<td>第 2 步</td>
-<td><code>fast_tokens(x, γ)</code></td>
-<td>γ = 10 时 50 个系数只剩 2 个非零</td>
-</tr>
-</tbody>
-</table>
-<p><strong>代码里才看得到的 2 件事</strong>：</p>
-<ol>
-<li><code>dct_matrix</code> 第 0 行要再除以 √2，才是正交矩阵；少了这一步，<code>idct(dct(x))</code> 就回不到 x。</li>
-<li>匀速那一段的 DC 系数是 0.01 × √50 ≈ 0.0707，不是 0.01：正交 DCT 会把"平均值"放大 √N 倍。</li>
-</ol>
-<p><strong>自己改一改</strong>（不影响练习答案）：</p>
-<ul>
-<li>把 γ 从 10 改成 100，看非零系数变多少。</li>
-<li>自己写一段"先匀速、中间突然停一下"的动作，看要保留几个低频。</li>
-</ul><nav class="pager"><a href="06-action-tokens.html">← 第 6 章 · 动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="08-pi0.html">第 8 章 · π0：大脑 + 小脑，动作专家（action expert） →</a></nav>
+<p>V14 逐维分箱为什么"学不动"、V15 FAST 四步（见 <a href="../review.html">review.md</a>）</p><nav class="pager"><a href="06-action-tokens.html">← 第 6 章 · 动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="08-pi0.html">第 8 章 · π0：大脑 + 小脑，动作专家（action expert） →</a></nav>
 </main></div>
-<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a></footer>
+<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a><br>联系与合作：<a href="mailto:wikieden@gmail.com">wikieden@gmail.com</a>（讲义勘误与建议、课程 / 企业内训、内容合作与转载授权）· 赞助请发邮件联系</footer>
 <script>(function(){var d=document.documentElement,K=["s","m","l","xl"];
 function save(k,v){try{v?localStorage.setItem(k,v):localStorage.removeItem(k)}catch(e){}}
 var s=document.getElementById("ab-theme");if(s){s.value=d.dataset.theme||"";s.onchange=function(){if(s.value)d.dataset.theme=s.value;else delete d.dataset.theme;save("ab-theme",s.value)}}

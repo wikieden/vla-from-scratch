@@ -68,15 +68,11 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <a href="https://wikieden.github.io/ai-books/">← 全部讲义书</a>
 <span class="prefs" title="字号与主题"><button type="button" data-fs-step="-1" aria-label="字号变小">A−</button><button type="button" data-fs-step="1" aria-label="字号变大">A+</button><select id="ab-theme" aria-label="主题色"><option value="">跟随系统</option><option value="light">浅色</option><option value="dark">深色</option><option value="sepia">米黄护眼</option><option value="green">豆沙绿护眼</option><option value="navy">夜蓝</option></select></span>
 </div></header>
-<div class="layout"><nav class="side" aria-label="章节"><div class="h">VLA 从零到 π0</div><a href="index.html">讲义目录</a><a href="01-what-is-a-policy.html"><span class="n">1</span>机器人策略是什么</a><a href="02-behavior-cloning.html"><span class="n">2</span>行为克隆：照着人类示范抄作业</a><a href="03-action-chunking.html"><span class="n">3</span>动作分块（action chunking）：看一眼，规划一整段</a><a href="04-multimodality.html"><span class="n">4</span>多峰（multimodality）：同一个情况，两种都对的做法</a><a href="05-vlm.html"><span class="n">5</span>VLM：图片切块和文字一起排队进 Transformer</a><a href="06-action-tokens.html" class="cur"><span class="n">6</span>动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="07-fast.html"><span class="n">7</span>FAST：先压缩，再变词</a><a href="08-pi0.html"><span class="n">8</span>π0：大脑 + 小脑，动作专家（action expert）</a><a href="09-knowledge-insulation.html"><span class="n">9</span>知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="10-hierarchy.html"><span class="n">10</span>慢想快做：分层系统</a><a href="11-latent-actions.html"><span class="n">11</span>没有动作标签：隐动作与世界模型</a><a href="12-rl-recap.html"><span class="n">12</span>RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="13-rtc.html"><span class="n">13</span>实时执行：RTC，边想下一段，边把这一段走完</a><a href="14-vla-landscape.html"><span class="n">14</span>主流 VLA 模型全景：架构、关键改进、优劣势</a><a href="15-oft.html"><span class="n">15</span>OpenVLA-OFT：一次吐完所有动作，直接回归连续值</a><a href="16-cross-embodiment.html"><span class="n">16</span>跨本体：不同的机器人，怎么排进同一张动作表</a><a href="17-online-rl.html"><span class="n">17</span>在线 RL：SimpleVLA-RL，只看成没成，也能把 17% 练到 92%</a><a href="18-fast-inference.html"><span class="n">18</span>跑得快：异步推理、少看几眼、压小权重</a><a href="19-evaluation.html"><span class="n">19</span>评测：97.1% 和 96.4%，到底谁更强</a><a href="20-latent-world-model.html"><span class="n">20</span>潜空间世界模型：VLA-JEPA，看视频学&quot;世界怎么变&quot;，但别偷看答案</a><a href="21-open-models-2026.html"><span class="n">21</span>2026 开源 VLA：读一份 config，选一个能微调的模型</a><a href="appendix-glossary.html">附录 · 缩写与术语表</a><a href="appendix-symbols.html">附录 · 公式符号怎么读</a></nav><main>
-<h1 id="6-256-rt-2-openvla">第 6 章 · 动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</h1><div class="run"><a class="btn" href="../animations/06-binning-autoregressive.html">▶ 打开本章可交互动画</a><a class="btn" href="https://colab.research.google.com/github/wikieden/vla-from-scratch/blob/main/code/notebooks/ch06_action_tokens.ipynb" target="_blank" rel="noopener">在 Colab 运行本章代码</a><a class="btn" href="../code/notebooks/ch06_action_tokens.ipynb" download>下载 notebook</a><details><summary>本地运行</summary><pre><code>git clone https://github.com/wikieden/vla-from-scratch
-cd vla-from-scratch/code/notebooks
-pip install jupyterlab torch numpy
-jupyter lab ch06_action_tokens.ipynb</code></pre><p>也可以下载后直接用 VS Code 打开 .ipynb 运行。需要 GPU 的章节在 Colab 里选「代码执行程序 → 更改运行时类型 → GPU」。</p></details></div>
+<div class="layout"><nav class="side" aria-label="章节"><div class="h">VLA 从零到 π0</div><a href="index.html">讲义目录</a><a href="01-what-is-a-policy.html"><span class="n">1</span>机器人策略是什么</a><a href="02-behavior-cloning.html"><span class="n">2</span>行为克隆：照着人类示范抄作业</a><a href="03-action-chunking.html"><span class="n">3</span>动作分块（action chunking）：看一眼，规划一整段</a><a href="04-multimodality.html"><span class="n">4</span>多峰（multimodality）：同一个情况，两种都对的做法</a><a href="05-vlm.html"><span class="n">5</span>VLM：图片切块和文字一起排队进 Transformer</a><a href="06-action-tokens.html" class="cur"><span class="n">6</span>动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="07-fast.html"><span class="n">7</span>FAST：先压缩，再变词</a><a href="08-pi0.html"><span class="n">8</span>π0：大脑 + 小脑，动作专家（action expert）</a><a href="09-knowledge-insulation.html"><span class="n">9</span>知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="10-hierarchy.html"><span class="n">10</span>慢想快做：分层系统</a><a href="11-latent-actions.html"><span class="n">11</span>没有动作标签：隐动作与世界模型</a><a href="12-rl-recap.html"><span class="n">12</span>RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="13-rtc.html"><span class="n">13</span>实时执行：RTC，边想下一段，边把这一段走完</a><a href="14-vla-landscape.html"><span class="n">14</span>主流 VLA 模型全景：架构、关键改进、优劣势</a><a href="appendix-glossary.html">附录 · 缩写与术语表</a><a href="appendix-symbols.html">附录 · 公式符号怎么读</a></nav><main>
+<h1 id="6-256-rt-2-openvla">第 6 章 · 动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</h1><div class="run"><a class="btn" href="../animations/06-binning-autoregressive.html">▶ 打开本章可交互动画</a></div>
 <blockquote>
 <p>本章回答：VLM 只会输出文字 token，怎么让它输出动作？<br />
 讲解日期：2026-11-04 · 上一章：<a href="../lessons/05-vlm.html">第 5 章 VLM</a> · 下一章：<a href="../lessons/07-fast.html">第 7 章 FAST</a><br />
-对应原文：<code>materials/text/papers/rt2-2307.15818.txt</code> L268–L292（每维 256 格、动作说成一句话）；<code>openvla-2406.09246.txt</code> L248–L259（1%–99% 分位数、覆盖最少用的 256 个词）、L338（4090 约 6 Hz）<br />
 本章缩写：RT-2 = Robotics Transformer 2；OpenVLA = 开源 VLA；OFT = Optimized Fine-Tuning（优化 / 微调）；FAST = Frequency-space Action Sequence Tokenization（频率空间 / 动作序列 / 分词）；GPU = Graphics Processing Unit（图形 / 处理 / 单元）。全表见 <a href="../lessons/appendix-glossary.html">appendix-glossary.md</a></p>
 </blockquote>
 <h2 id="_1">讲解</h2>
@@ -98,14 +94,6 @@ jupyter lab ch06_action_tokens.ipynb</code></pre><p>也可以下载后直接用 
 <li>Llama 的词表里没有现成的 256 个数字词，于是把<strong>最少用的 256 个词</strong>改成动作词（原文 <em>"overwriting the 256 least used tokens"</em>，第 259 行）。</li>
 </ul>
 <p><strong>顺带解决了第 4 章的多峰问题</strong>：模型输出的是"256 个格子各自的概率"，左边格子和右边格子可以同时概率高，抽一个就行，不会被平均到中间。</p>
-<p><img alt="256 格的尺子" src="../figures/06-action-tokens-bins.png" /></p>
-<p><em>图 6-1 · 负数在 128 左边，正数在右边。</em></p>
-<p><strong>场景代码</strong>：OpenVLA 的真实分箱写法（<code>materials/code/openvla-oft/repo/prismatic/vla/action_tokenizer.py</code> L28–L46，节选）：</p>
-<pre><code class="language-python">self.bins = np.linspace(min_action, max_action, self.n_bins)     # 256 个刻度，范围已归一化到 [-1, 1]
-action = np.clip(action, a_min=float(self.min_action), a_max=float(self.max_action))
-discretized_action = np.digitize(action, self.bins)             # 落在第几格（1..256）
-return self.tokenizer.decode(list(self.tokenizer.vocab_size - discretized_action))  # 用词表最后 256 个词
-</code></pre>
 <h3 id="2">第 2 步：代价是"一个字一个字地念"，太慢</h3>
 <p>VLM 输出词的方式是<strong>自回归</strong>：说完一个词，才能说下一个（每个词都要把整个大模型跑一遍）。一个 7 维动作 = 7 个动作词，就要跑 7 遍。</p>
 <p><strong>白话类比：报电话号码</strong>。你要把 7 位号码一位一位念出来，念完一位才能念下一位。如果一次要报 50 个号码（一个 chunk），就要念 350 位。</p>
@@ -132,8 +120,6 @@ return self.tokenizer.decode(list(self.tokenizer.vocab_size - discretized_action
 </tr>
 </tbody>
 </table>
-<p><img alt="一个异常值把格子撑宽" src="../figures/06-action-tokens-outlier.png" /></p>
-<p><em>图 6-2 · 范围被 +1.0 撑开后，正常动作只用得上 58 格。</em></p>
 <h3 id="256-350">动画演示：分箱与逐词念：256 格、350 个词</h3>
 <p><img alt="分箱与逐词念：256 格、350 个词" src="../animations/06-binning-autoregressive.gif" /></p>
 <p>可交互版：<a href="../animations/06-binning-autoregressive.html">animations/06-binning-autoregressive.html</a>（用浏览器打开，可播放、单步、换随机数重来）。</p>
@@ -178,118 +164,9 @@ return self.tokenizer.decode(list(self.tokenizer.vocab_size - discretized_action
 一个字一个字地念，念得太慢。</p>
 </blockquote>
 <h2 id="_4">本章复习卡片</h2>
-<p>V12 分箱的格宽与格号怎么算、为什么用分位数、V13 逐词输出为什么慢（见 <a href="../review.html">review.md</a>）</p>
-<h2 id="_5">附录 · 延伸阅读</h2>
-<blockquote>
-<p>留给以后深入学习用，不影响本章主线。★ 是建议先读的。</p>
-</blockquote>
-<h3 id="_6">推荐阅读</h3>
-<table>
-<thead>
-<tr>
-<th>读什么</th>
-<th>读哪里</th>
-<th>读它为了什么</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>★ RT-2 §3</td>
-<td><code>rt2-2307.15818.txt</code> L268–L292</td>
-<td>动作变成一句话</td>
-</tr>
-<tr>
-<td>★ OpenVLA §3</td>
-<td><code>openvla-2406.09246.txt</code> L248–L259、L338</td>
-<td>分位数定范围、覆盖最少用的词、6 Hz</td>
-</tr>
-<tr>
-<td>OpenVLA 分箱代码</td>
-<td><code>openvla-oft/repo/prismatic/vla/action_tokenizer.py</code></td>
-<td>np.digitize 的真实写法</td>
-</tr>
-<tr>
-<td><a href="../lessons/07-fast.html">第 7 章 FAST</a>、<a href="../lessons/15-oft.html">第 15 章 OFT</a></td>
-<td>少念几个字 / 不逐字念</td>
-<td>本章两个问题的解法</td>
-</tr>
-</tbody>
-</table>
-<h3 id="_7">数学原理</h3>
-<ul>
-<li><strong>均匀分箱</strong>：格宽 = (最大 − 最小) / 格数；格号 = ⌊(x − 最小) / 格宽⌋。</li>
-<li><strong>分位数</strong>：q% 分位数是"有 q% 的数比它小"的那个值。</li>
-</ul>
-<h3 id="_8">公式清单</h3>
-<table>
-<thead>
-<tr>
-<th>公式</th>
-<th>意思</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>格宽 <span class="arithmatex">\(= (hi - lo)/256\)</span></td>
-<td>每格多宽</td>
-</tr>
-<tr>
-<td>格号 <span class="arithmatex">\(= \lfloor (x - lo)/\text{格宽} \rfloor\)</span></td>
-<td>连续值落在第几格</td>
-</tr>
-<tr>
-<td>用时 <span class="arithmatex">\(=\)</span> chunk × 维数 / 每秒词数</td>
-<td>逐词念完一段要多久</td>
-</tr>
-</tbody>
-</table>
-<h3 id="_9">代码对照：把本章的数字用代码算一遍</h3>
-<blockquote>
-<p>纯 Python + NumPy，不需要 GPU。代码在仓库本地 <code>vla-deep-dive/solutions/chapter-code/ch06_action_tokens.py</code>，配套测试 <code>tests/test_ch06.py</code>：</p>
-<p><code>bash  
-cd vla-deep-dive/solutions/chapter-code  
-uv run python ch06_action_tokens.py  
-uv run pytest tests/test_ch06.py</code></p>
-</blockquote>
-<p><strong>讲义 ↔ 代码</strong>：</p>
-<table>
-<thead>
-<tr>
-<th>讲义</th>
-<th>写法</th>
-<th>跑出来</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>第 1 步</td>
-<td><code>bin_width</code>、<code>to_bin</code></td>
-<td>1 毫米；0 → 128、+0.02 → 148、−0.05 → 78、−0.1 → 28</td>
-</tr>
-<tr>
-<td>第 1 步</td>
-<td><code>bin_width(−0.128, 1.0)</code>、<code>quantile_range</code></td>
-<td>4.4 毫米、58 格；分位数范围不被异常值撑大</td>
-</tr>
-<tr>
-<td>第 2 步</td>
-<td><code>decode_time(50, 7, 42)</code></td>
-<td>8.3 秒</td>
-</tr>
-</tbody>
-</table>
-<p><strong>代码里才看得到的 2 件事</strong>：</p>
-<ol>
-<li><code>to_bin</code> 先 round 再 floor：0.02 / 0.001 在浮点里是 147.99999…，不 round 会落到 147。</li>
-<li>OpenVLA 真实代码用 <code>np.digitize</code> 和 256 个刻度，返回 1–256，和这里 0–255 的约定差 1（源码注释里专门说明了这一点）。</li>
-</ol>
-<p><strong>自己改一改</strong>（不影响练习答案）：</p>
-<ul>
-<li>把格数改成 64，看每格多宽、精度掉多少。</li>
-<li>给 <code>quantile_range</code> 换成 5%–95%，看范围怎么变。</li>
-</ul><nav class="pager"><a href="05-vlm.html">← 第 5 章 · VLM：图片切块和文字一起排队进 Transformer</a><a href="07-fast.html">第 7 章 · FAST：先压缩，再变词 →</a></nav>
+<p>V12 分箱的格宽与格号怎么算、为什么用分位数、V13 逐词输出为什么慢（见 <a href="../review.html">review.md</a>）</p><nav class="pager"><a href="05-vlm.html">← 第 5 章 · VLM：图片切块和文字一起排队进 Transformer</a><a href="07-fast.html">第 7 章 · FAST：先压缩，再变词 →</a></nav>
 </main></div>
-<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a></footer>
+<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a><br>联系与合作：<a href="mailto:wikieden@gmail.com">wikieden@gmail.com</a>（讲义勘误与建议、课程 / 企业内训、内容合作与转载授权）· 赞助请发邮件联系</footer>
 <script>(function(){var d=document.documentElement,K=["s","m","l","xl"];
 function save(k,v){try{v?localStorage.setItem(k,v):localStorage.removeItem(k)}catch(e){}}
 var s=document.getElementById("ab-theme");if(s){s.value=d.dataset.theme||"";s.onchange=function(){if(s.value)d.dataset.theme=s.value;else delete d.dataset.theme;save("ab-theme",s.value)}}

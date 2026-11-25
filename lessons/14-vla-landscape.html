@@ -68,14 +68,11 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <a href="https://wikieden.github.io/ai-books/">← 全部讲义书</a>
 <span class="prefs" title="字号与主题"><button type="button" data-fs-step="-1" aria-label="字号变小">A−</button><button type="button" data-fs-step="1" aria-label="字号变大">A+</button><select id="ab-theme" aria-label="主题色"><option value="">跟随系统</option><option value="light">浅色</option><option value="dark">深色</option><option value="sepia">米黄护眼</option><option value="green">豆沙绿护眼</option><option value="navy">夜蓝</option></select></span>
 </div></header>
-<div class="layout"><nav class="side" aria-label="章节"><div class="h">VLA 从零到 π0</div><a href="index.html">讲义目录</a><a href="01-what-is-a-policy.html"><span class="n">1</span>机器人策略是什么</a><a href="02-behavior-cloning.html"><span class="n">2</span>行为克隆：照着人类示范抄作业</a><a href="03-action-chunking.html"><span class="n">3</span>动作分块（action chunking）：看一眼，规划一整段</a><a href="04-multimodality.html"><span class="n">4</span>多峰（multimodality）：同一个情况，两种都对的做法</a><a href="05-vlm.html"><span class="n">5</span>VLM：图片切块和文字一起排队进 Transformer</a><a href="06-action-tokens.html"><span class="n">6</span>动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="07-fast.html"><span class="n">7</span>FAST：先压缩，再变词</a><a href="08-pi0.html"><span class="n">8</span>π0：大脑 + 小脑，动作专家（action expert）</a><a href="09-knowledge-insulation.html"><span class="n">9</span>知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="10-hierarchy.html"><span class="n">10</span>慢想快做：分层系统</a><a href="11-latent-actions.html"><span class="n">11</span>没有动作标签：隐动作与世界模型</a><a href="12-rl-recap.html"><span class="n">12</span>RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="13-rtc.html"><span class="n">13</span>实时执行：RTC，边想下一段，边把这一段走完</a><a href="14-vla-landscape.html" class="cur"><span class="n">14</span>主流 VLA 模型全景：架构、关键改进、优劣势</a><a href="15-oft.html"><span class="n">15</span>OpenVLA-OFT：一次吐完所有动作，直接回归连续值</a><a href="16-cross-embodiment.html"><span class="n">16</span>跨本体：不同的机器人，怎么排进同一张动作表</a><a href="17-online-rl.html"><span class="n">17</span>在线 RL：SimpleVLA-RL，只看成没成，也能把 17% 练到 92%</a><a href="18-fast-inference.html"><span class="n">18</span>跑得快：异步推理、少看几眼、压小权重</a><a href="19-evaluation.html"><span class="n">19</span>评测：97.1% 和 96.4%，到底谁更强</a><a href="20-latent-world-model.html"><span class="n">20</span>潜空间世界模型：VLA-JEPA，看视频学&quot;世界怎么变&quot;，但别偷看答案</a><a href="21-open-models-2026.html"><span class="n">21</span>2026 开源 VLA：读一份 config，选一个能微调的模型</a><a href="appendix-glossary.html">附录 · 缩写与术语表</a><a href="appendix-symbols.html">附录 · 公式符号怎么读</a></nav><main>
-<h1 id="14-vla">第 14 章 · 主流 VLA 模型全景：架构、关键改进、优劣势</h1><div class="run"><a class="btn" href="../animations/14-vla-landscape.html">▶ 打开本章可交互动画</a><a class="btn" href="https://colab.research.google.com/github/wikieden/vla-from-scratch/blob/main/code/notebooks/ch14_vla_landscape.ipynb" target="_blank" rel="noopener">在 Colab 运行本章代码</a><a class="btn" href="../code/notebooks/ch14_vla_landscape.ipynb" download>下载 notebook</a><details><summary>本地运行</summary><pre><code>git clone https://github.com/wikieden/vla-from-scratch
-cd vla-from-scratch/code/notebooks
-pip install jupyterlab torch numpy
-jupyter lab ch14_vla_landscape.ipynb</code></pre><p>也可以下载后直接用 VS Code 打开 .ipynb 运行。需要 GPU 的章节在 Colab 里选「代码执行程序 → 更改运行时类型 → GPU」。</p></details></div>
+<div class="layout"><nav class="side" aria-label="章节"><div class="h">VLA 从零到 π0</div><a href="index.html">讲义目录</a><a href="01-what-is-a-policy.html"><span class="n">1</span>机器人策略是什么</a><a href="02-behavior-cloning.html"><span class="n">2</span>行为克隆：照着人类示范抄作业</a><a href="03-action-chunking.html"><span class="n">3</span>动作分块（action chunking）：看一眼，规划一整段</a><a href="04-multimodality.html"><span class="n">4</span>多峰（multimodality）：同一个情况，两种都对的做法</a><a href="05-vlm.html"><span class="n">5</span>VLM：图片切块和文字一起排队进 Transformer</a><a href="06-action-tokens.html"><span class="n">6</span>动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="07-fast.html"><span class="n">7</span>FAST：先压缩，再变词</a><a href="08-pi0.html"><span class="n">8</span>π0：大脑 + 小脑，动作专家（action expert）</a><a href="09-knowledge-insulation.html"><span class="n">9</span>知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="10-hierarchy.html"><span class="n">10</span>慢想快做：分层系统</a><a href="11-latent-actions.html"><span class="n">11</span>没有动作标签：隐动作与世界模型</a><a href="12-rl-recap.html"><span class="n">12</span>RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="13-rtc.html"><span class="n">13</span>实时执行：RTC，边想下一段，边把这一段走完</a><a href="14-vla-landscape.html" class="cur"><span class="n">14</span>主流 VLA 模型全景：架构、关键改进、优劣势</a><a href="appendix-glossary.html">附录 · 缩写与术语表</a><a href="appendix-symbols.html">附录 · 公式符号怎么读</a></nav><main>
+<h1 id="14-vla">第 14 章 · 主流 VLA 模型全景：架构、关键改进、优劣势</h1><div class="run"><a class="btn" href="../animations/14-vla-landscape.html">▶ 打开本章可交互动画</a></div>
 <blockquote>
 <p>本章回答：学完前 13 章，回头看今天的主流 VLA：它们各自是什么架构？比前一代改进了什么？各有什么长处和短板？遇到一个新模型，怎么快速看懂它？<br />
-讲解日期：2026-11-20 · 上一章：<a href="../lessons/13-rtc.html">第 13 章 实时执行：RTC</a> · 下一章：<a href="../lessons/15-oft.html">第 15 章 OpenVLA-OFT</a><br />
+讲解日期：2026-11-20 · 上一章：<a href="../lessons/13-rtc.html">第 13 章 实时执行：RTC</a> · 下一章：—（全书完）<br />
 对应原文：<code>materials/text/papers/</code> 下各模型论文（每节标出文件和行号）；部署与选型的细节见面试资料 03 模型 / 框架 / 评测（核实于 2026-10-27，带 ⚠️ 的是二手数字）<br />
 本章缩写：OXE = Open X-Embodiment（开放 / 跨 / 本体数据集）；OFT = Optimized Fine-Tuning（优化 / 微调）；RDT = Robotics Diffusion Transformer（机器人 / 扩散 / Transformer）；DiT = Diffusion Transformer；CogACT = Cognition + Action（认知 + 动作）；JEPA = Joint-Embedding Predictive Architecture（联合 / 嵌入 / 预测 / 架构）；WAM = World Action Model（世界 / 动作 / 模型）；LIBERO = 一个机器人操作仿真基准；KI = Knowledge Insulation（知识 / 隔离）。全表见 <a href="../lessons/appendix-glossary.html">appendix-glossary.md</a></p>
 </blockquote>
@@ -339,8 +336,6 @@ jupyter lab ch14_vla_landscape.ipynb</code></pre><p>也可以下载后直接用 
 </tbody>
 </table>
 <p><strong>一句话</strong>：动作头从"念词"走到"从噪声推出"，再走到"和未来画面一起推出"。</p>
-<p><img alt="主流 VLA 按年份和动作头排一排" src="../figures/14-vla-landscape-timeline.png" /></p>
-<p><em>图 14-1 · 颜色表示动作怎么出。</em></p>
 <h3 id="3-2026-11-20">第 3 步：演进的主线和优劣势总表（2026-11-20）</h3>
 <p><strong>五条主线</strong>（每条对应前面的章）：</p>
 <table>
@@ -405,7 +400,7 @@ jupyter lab ch14_vla_landscape.ipynb</code></pre><p>也可以下载后直接用 
 <tr>
 <td>连续回归（L1）</td>
 <td>一次出完，最快，最简单</td>
-<td>只给一个答案：L1 取中位数，五五开的多峰会不稳（第 15 章）</td>
+<td>只给一个答案，多峰会被平均</td>
 <td>OpenVLA-OFT</td>
 </tr>
 <tr>
@@ -429,8 +424,6 @@ jupyter lab ch14_vla_landscape.ipynb</code></pre><p>也可以下载后直接用 
 - 研究 VLA 训练本身、读源码 → OpenVLA / OFT；
 - 结构化、高精度、高节拍的工业任务 → 先别用 VLA，用经典视觉定位 + 运动规划。</p>
 <p><strong>一句话</strong>：没有一个模型全赢；看清它在三个问题上的选择，就知道它强在哪、弱在哪。</p>
-<p><img alt="四类动作头的长处和短板" src="../figures/14-vla-landscape-heads.png" /></p>
-<p><em>图 14-2 · 没有一个模型全赢。</em></p>
 <h3 id="vla">动画演示：VLA 全景地图</h3>
 <p><img alt="主流 VLA 全景：动作怎么出，一路怎么变" src="../animations/14-vla-landscape.gif" /></p>
 <p>可交互版：<a href="../animations/14-vla-landscape.html">animations/14-vla-landscape.html</a>（可播放、单步、重来）。</p>
@@ -454,7 +447,7 @@ jupyter lab ch14_vla_landscape.ipynb</code></pre><p>也可以下载后直接用 
 没有全赢的模型，只有对得上的选择。</p>
 </blockquote>
 <h2 id="_4">本章复习卡片</h2>
-<p><a href="../review.html">V35</a>（三个问题 + 两个工程问题）、<a href="../review.html">V36</a>（五条演进主线）。练习做完后，按答错、卡住的地方再补。</p>
+<p>练习做完后，按答错、卡住的地方补上。</p>
 <h2 id="_5">附录 · 延伸阅读</h2>
 <blockquote>
 <p>留给以后深入学习用，不影响本章主线。★ 是建议先读的。</p>
@@ -535,43 +528,10 @@ jupyter lab ch14_vla_landscape.ipynb</code></pre><p>也可以下载后直接用 
 </tr>
 </tbody>
 </table>
-<h3 id="_9">代码对照：把本章的数字用代码算一遍</h3>
-<blockquote>
-<p>纯 Python + NumPy，不需要 GPU。代码在仓库本地 <code>vla-deep-dive/solutions/chapter-code/ch14_vla_landscape.py</code>，配套测试 <code>tests/test_ch14.py</code>：</p>
-<p><code>bash  
-cd vla-deep-dive/solutions/chapter-code  
-uv run python ch14_vla_landscape.py  
-uv run pytest tests/test_ch14.py</code></p>
-</blockquote>
-<p><strong>讲义 ↔ 代码</strong>：</p>
-<table>
-<thead>
-<tr>
-<th>讲义</th>
-<th>写法</th>
-<th>跑出来</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>第 2 步</td>
-<td><code>MODELS</code>、<code>group_by_head(MODELS)</code></td>
-<td>离散 token：RT-2、OpenVLA、π0-FAST；flow 头：π0、GR00T N1、SmolVLA 等</td>
-</tr>
-</tbody>
-</table>
-<p><strong>代码里才看得到的 2 件事</strong>：</p>
-<ol>
-<li><code>MODELS</code> 只收了第 2 步 A–D 组的 12 个模型；E、F 两组讲的是训练配方和数据，不按动作头分。</li>
-<li>分组时把"离散 token（FAST）"也归进离散 token：FAST 改的是怎么切词，不是动作头。</li>
-</ol>
-<p><strong>自己改一改</strong>（不影响练习答案）：</p>
-<ul>
-<li>把第 15–21 章的新模型加进 <code>MODELS</code>，看各组的数量怎么变。</li>
-<li>改成按"大脑小脑怎么连"分组。</li>
-</ul><nav class="pager"><a href="13-rtc.html">← 第 13 章 · 实时执行：RTC，边想下一段，边把这一段走完</a><a href="15-oft.html">第 15 章 · OpenVLA-OFT：一次吐完所有动作，直接回归连续值 →</a></nav>
+<h3 id="_9">代码对照</h3>
+<p>本章无代码对照：开源代码的位置见面试资料 03 的"本地代码"一节（openpi、lerobot、openvla-oft）。</p><nav class="pager"><a href="13-rtc.html">← 第 13 章 · 实时执行：RTC，边想下一段，边把这一段走完</a><span></span></nav>
 </main></div>
-<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a></footer>
+<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a><br>联系与合作：<a href="mailto:wikieden@gmail.com">wikieden@gmail.com</a>（讲义勘误与建议、课程 / 企业内训、内容合作与转载授权）· 赞助请发邮件联系</footer>
 <script>(function(){var d=document.documentElement,K=["s","m","l","xl"];
 function save(k,v){try{v?localStorage.setItem(k,v):localStorage.removeItem(k)}catch(e){}}
 var s=document.getElementById("ab-theme");if(s){s.value=d.dataset.theme||"";s.onchange=function(){if(s.value)d.dataset.theme=s.value;else delete d.dataset.theme;save("ab-theme",s.value)}}

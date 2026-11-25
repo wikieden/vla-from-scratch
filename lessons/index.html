@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>VLA 从零到 π0 · 讲义目录 · VLA 从零到 π0</title>
+<title>讲义：VLA 从零到 π0 / π0.6 · VLA 从零到 π0</title>
 <script>(function(){try{var d=document.documentElement,t=localStorage.getItem("ab-theme"),f=localStorage.getItem("ab-fs");if(t)d.dataset.theme=t;if(f)d.dataset.fs=f}catch(e){}})();</script>
 <style>:root{--bg:#fbfbfa;--fg:#1f2328;--mute:#5d6470;--line:#e3e5e8;--card:#fff;--acc:#2f6fdf;--code:#f2f3f5;--quote:#f4f6fa;--fs:16px}
 @media (prefers-color-scheme:dark){:root:not([data-theme]){--bg:#15181d;--fg:#e4e7ec;--mute:#9aa3b2;--line:#2c323b;--card:#1c2026;--acc:#7aa7ff;--code:#22272f;--quote:#1b2029}}
@@ -68,127 +68,25 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <a href="https://wikieden.github.io/ai-books/">← 全部讲义书</a>
 <span class="prefs" title="字号与主题"><button type="button" data-fs-step="-1" aria-label="字号变小">A−</button><button type="button" data-fs-step="1" aria-label="字号变大">A+</button><select id="ab-theme" aria-label="主题色"><option value="">跟随系统</option><option value="light">浅色</option><option value="dark">深色</option><option value="sepia">米黄护眼</option><option value="green">豆沙绿护眼</option><option value="navy">夜蓝</option></select></span>
 </div></header>
-<div class="layout"><nav class="side" aria-label="章节"><div class="h">VLA 从零到 π0</div><a href="index.html" class="cur">讲义目录</a><a href="01-what-is-a-policy.html"><span class="n">1</span>机器人策略是什么</a><a href="02-behavior-cloning.html"><span class="n">2</span>行为克隆：照着人类示范抄作业</a><a href="03-action-chunking.html"><span class="n">3</span>动作分块（action chunking）：看一眼，规划一整段</a><a href="04-multimodality.html"><span class="n">4</span>多峰（multimodality）：同一个情况，两种都对的做法</a><a href="05-vlm.html"><span class="n">5</span>VLM：图片切块和文字一起排队进 Transformer</a><a href="06-action-tokens.html"><span class="n">6</span>动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="07-fast.html"><span class="n">7</span>FAST：先压缩，再变词</a><a href="08-pi0.html"><span class="n">8</span>π0：大脑 + 小脑，动作专家（action expert）</a><a href="09-knowledge-insulation.html"><span class="n">9</span>知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="10-hierarchy.html"><span class="n">10</span>慢想快做：分层系统</a><a href="11-latent-actions.html"><span class="n">11</span>没有动作标签：隐动作与世界模型</a><a href="12-rl-recap.html"><span class="n">12</span>RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="13-rtc.html"><span class="n">13</span>实时执行：RTC，边想下一段，边把这一段走完</a><a href="14-vla-landscape.html"><span class="n">14</span>主流 VLA 模型全景：架构、关键改进、优劣势</a><a href="15-oft.html"><span class="n">15</span>OpenVLA-OFT：一次吐完所有动作，直接回归连续值</a><a href="16-cross-embodiment.html"><span class="n">16</span>跨本体：不同的机器人，怎么排进同一张动作表</a><a href="17-online-rl.html"><span class="n">17</span>在线 RL：SimpleVLA-RL，只看成没成，也能把 17% 练到 92%</a><a href="18-fast-inference.html"><span class="n">18</span>跑得快：异步推理、少看几眼、压小权重</a><a href="19-evaluation.html"><span class="n">19</span>评测：97.1% 和 96.4%，到底谁更强</a><a href="20-latent-world-model.html"><span class="n">20</span>潜空间世界模型：VLA-JEPA，看视频学&quot;世界怎么变&quot;，但别偷看答案</a><a href="21-open-models-2026.html"><span class="n">21</span>2026 开源 VLA：读一份 config，选一个能微调的模型</a><a href="appendix-glossary.html">附录 · 缩写与术语表</a><a href="appendix-symbols.html">附录 · 公式符号怎么读</a></nav><main>
-<h1 id="vla-0">VLA 从零到 π0 · 讲义目录</h1>
-<blockquote>
-<p>在线阅读：<a href="https://wikieden.github.io/vla-from-scratch/">https://wikieden.github.io/vla-from-scratch/</a><br />
-21 章 · 26 个动画（GIF + 可交互页面）· 42 张静态图 · 50 张复习卡片 · 覆盖 VLA 论文主线（RT-1 → π0 → π*0.6）与 2026 年的开源模型</p>
-</blockquote>
-<h2 id="_1">这本书讲什么</h2>
-<p>从"机器人策略到底输入什么、输出什么"讲起：先讲行为克隆、动作分块、多峰这些老问题，再讲 VLM 怎么变成 VLA（动作当词、FAST、π0 的动作专家），然后是知识隔离、分层、隐动作、RL 后训练、实时执行；最后七章讲 2025–2026 的工程主题：微调配方（OFT）、跨本体、在线 RL、推理加速、评测、潜空间世界模型，以及怎么读懂一个新开源模型的 config。</p>
+<div class="layout"><nav class="side" aria-label="章节"><div class="h">VLA 从零到 π0</div><a href="index.html" class="cur">讲义目录</a><a href="01-what-is-a-policy.html"><span class="n">1</span>机器人策略是什么</a><a href="02-behavior-cloning.html"><span class="n">2</span>行为克隆：照着人类示范抄作业</a><a href="03-action-chunking.html"><span class="n">3</span>动作分块（action chunking）：看一眼，规划一整段</a><a href="04-multimodality.html"><span class="n">4</span>多峰（multimodality）：同一个情况，两种都对的做法</a><a href="05-vlm.html"><span class="n">5</span>VLM：图片切块和文字一起排队进 Transformer</a><a href="06-action-tokens.html"><span class="n">6</span>动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="07-fast.html"><span class="n">7</span>FAST：先压缩，再变词</a><a href="08-pi0.html"><span class="n">8</span>π0：大脑 + 小脑，动作专家（action expert）</a><a href="09-knowledge-insulation.html"><span class="n">9</span>知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="10-hierarchy.html"><span class="n">10</span>慢想快做：分层系统</a><a href="11-latent-actions.html"><span class="n">11</span>没有动作标签：隐动作与世界模型</a><a href="12-rl-recap.html"><span class="n">12</span>RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="13-rtc.html"><span class="n">13</span>实时执行：RTC，边想下一段，边把这一段走完</a><a href="14-vla-landscape.html"><span class="n">14</span>主流 VLA 模型全景：架构、关键改进、优劣势</a><a href="appendix-glossary.html">附录 · 缩写与术语表</a><a href="appendix-symbols.html">附录 · 公式符号怎么读</a></nav><main>
+<h1 id="vla-0-06">讲义：VLA 从零到 π0 / π*0.6</h1>
+<p>对话讲解的完整留档，按章节整理。每章结构相同：<strong>本章回答的问题 → 讲解（白话类比 → 公式 → 例子）→ 练习与作答记录 → 口诀 → 本章复习卡片</strong>。</p>
 <ul>
-<li><strong>适合谁</strong>：会一点 Transformer（向量、点积、attention），不需要机器人背景；用到的 RL、统计、旋转、系统知识，在那一章现场补，或链接到对应的书。</li>
-<li><strong>读完能做什么</strong>：拿到一个新 VLA，能说出它动作怎么出、大脑小脑怎么连、吃了什么数据；能估它跑多快、要多少显存、论文分数可不可信；能为自己的机器人选一个开源模型起步（对应里程碑 V-M0–V-M8）。</li>
-<li><strong>怎么读</strong>：按章顺序读。每章先看讲解和动画，再自己做练习，最后用复习卡片隔几天考自己。</li>
+<li>前置知识：向量、点积、softmax、attention、多头、位置编码，见 <a href="https://wikieden.github.io/transformer-visual/lessons/index.html">transformer-deep-dive 讲义</a>；</li>
+<li>隐动作 / 世界模型部分接 nvidia-cosmos3 讲义；</li>
+<li>复习卡片集中在 <a href="../review.html">../review.md</a>，编号以 V 开头；</li>
+<li>缩写与术语表见 <a href="../lessons/appendix-glossary.html">appendix-glossary.md</a>，每章开头也有"本章缩写"；公式符号怎么读（希腊字母、上下标、∼、∈、∇……）见 <a href="../lessons/appendix-symbols.html">appendix-symbols.md</a>；</li>
+<li>每章关键原理的动画见 <a href="../animations/index.html">../animations/</a>（讲义里嵌 GIF，html 可交互）；</li>
+<li>路线和对应论文见 ../study-plan.md 末节。</li>
 </ul>
-<p>全书反复问三个问题：<strong>动作怎么出、大脑小脑怎么连、吃了什么数据</strong>；再加两个工程问题：<strong>多快、能不能复现</strong>。</p>
-<h2 id="_2">讲解的特点</h2>
-<ul>
-<li><strong>一次一小步</strong>：每个概念按"白话类比 → 公式（每个符号说清楚怎么读）→ 小数字亲手算一遍"讲。</li>
-<li><strong>关键机制都有图和动画</strong>：结构和数据流画静态图（三块注意力、知识隔离的梯度路线、统一动作空间），数字之间的关系画图表（τ 的抽样分布、Wilson 区间、量化显存），要拖参数才看得出规律的做成可交互动画（chunk 长度、异步阈值、组内优势）。</li>
-<li><strong>对照原文</strong>：讲到论文的地方标本地文本行号（如 OFT 表 II L319–L360）；开源模型的细节对照 LeRobot、openpi、openvla-oft 的源码行号；编的数会写明"编的"。</li>
-<li><strong>保留真实的学习过程</strong>：练习与作答记录里是学习时的原话、对错和点评。</li>
-<li><strong>术语不设门槛</strong>：缩写第一次出现就给英文全称并逐词解释，全书缩写见 <a href="../lessons/appendix-glossary.html">缩写与术语表</a>，符号读法见 <a href="../lessons/appendix-symbols.html">符号表</a>。</li>
-<li><strong>每章都有代码对照</strong>：<code>solutions/chapter-code/</code> 一章一个 Python + NumPy 模块，配测试核对讲义里的数字和一本 notebook；只算讲过的例子，不提前给练习答案。</li>
-<li><strong>每章收尾有口诀</strong>：全部口诀汇总在本页末尾。</li>
-</ul>
-<h2 id="_3">示例动画</h2>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><img alt="π0 推理" src="../animations/08-pi0-inference.gif" /><br><strong>第 8 章 · π0 推理</strong>：大脑算一次存 K/V，小脑推 10 步<br><a href="../lessons/08-pi0.html">讲义</a> · <a href="../animations/08-pi0-inference.html">▶ 交互</a></td>
-<td><img alt="知识隔离" src="../animations/09b-knowledge-insulation.gif" /><br><strong>第 9 章 · 知识隔离</strong>：小脑只读不改，大脑另有老师<br><a href="../lessons/09-knowledge-insulation.html">讲义</a> · <a href="../animations/09b-knowledge-insulation.html">▶ 交互</a></td>
-</tr>
-<tr>
-<td><img alt="RTC" src="../animations/13-rtc.gif" /><br><strong>第 13 章 · RTC</strong>：同步会停、直接换会跳、RTC 平滑<br><a href="../lessons/13-rtc.html">讲义</a> · <a href="../animations/13-rtc.html">▶ 交互</a></td>
-<td><img alt="并行解码" src="../animations/15-oft.gif" /><br><strong>第 15 章 · 并行解码</strong>：逐词念 vs 一次填满，吞吐 4.2 → 108.8 Hz<br><a href="../lessons/15-oft.html">讲义</a> · <a href="../animations/15-oft.html">▶ 交互</a></td>
-</tr>
-<tr>
-<td><img alt="组内优势" src="../animations/17-online-rl.gif" /><br><strong>第 17 章 · GRPO</strong>：一组轨迹谁加分谁减分，全同组白跑<br><a href="../lessons/17-online-rl.html">讲义</a> · <a href="../animations/17-online-rl.html">▶ 交互</a></td>
-<td><img alt="异步推理" src="../animations/18-fast-inference.gif" /><br><strong>第 18 章 · 异步推理</strong>：队列剩到 g 就开始想<br><a href="../lessons/18-fast-inference.html">讲义</a> · <a href="../animations/18-fast-inference.html">▶ 交互</a></td>
-</tr>
-</tbody>
-</table>
-<p>全部动画和本地打开方法见 <a href="../animations/index.html">animations/README.md</a>。</p>
-<h2 id="_4">其他入口</h2>
-<ul>
-<li>复习卡片：<a href="../review.html">../review.md</a>（编号 V 开头；说"复习"时按间隔挑到期的卡片）。</li>
-<li>缩写与术语表：<a href="../lessons/appendix-glossary.html">appendix-glossary.md</a>；符号读法：<a href="../lessons/appendix-symbols.html">appendix-symbols.md</a>。</li>
-<li>代码对照：<code>solutions/chapter-code/</code>（每章模块、测试和 notebook）。</li>
-<li>学习计划与里程碑：../study-plan.md（阶段 A–H、V-M0–V-M8）。</li>
-<li>面试资料：../interview/。</li>
-<li>前置：<a href="https://wikieden.github.io/transformer-visual/lessons/index.html">《从零读懂 Transformer》</a>；隐动作 / 世界模型接 <a href="https://wikieden.github.io/world-models-wam/lessons/index.html">《世界模型与 WAM 流派》</a>；RL 基础接 <a href="https://wikieden.github.io/rl-from-scratch/lessons/index.html">《从零学强化学习》</a>。</li>
-</ul>
-<h2 id="_5">全流程总览</h2>
-<pre><code>  看一眼 + 听一句 ──▶ 策略 π ──▶ 一串动作                        （第 1 章）
-        │
-  怎么学：照示范抄（BC）→ 一次出一段（chunk）→ 别求平均（多峰）  （第 2–4 章）
-        │
-  大脑：VLM，图片切块和文字排队                                  （第 5 章）
-        │
-  动作怎么出：念词（256 格）→ 先压缩再念（FAST）→ 动作专家 flow   （第 6–8 章）
-        │                                      └─ 一次填满 + L1（OFT，第 15 章）
-  别冲掉常识：知识隔离、π0.5 的数据配方                          （第 9 章）
-        │
-  系统：慢想快做的分层；边想边做的 RTC；异步、跳层、量化          （第 10、13、18 章）
-        │
-  数据从哪来：跨本体统一动作表 · 视频里的隐动作 · 潜空间世界模型  （第 16、11、20 章）
-        │
-  模仿之后再变强：Recap（离线优势）· SimpleVLA-RL（在线 GRPO）     （第 12、17 章）
-        │
-  全景与选型：主流模型 · 评测可信吗 · 2026 开源模型怎么选          （第 14、19、21 章）
-</code></pre>
-<table>
-<thead>
-<tr>
-<th>步</th>
-<th>做什么</th>
-<th>为什么</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1–4</td>
-<td>策略、行为克隆、分块、多峰</td>
-<td>所有 VLA 都站在这四个老问题上</td>
-</tr>
-<tr>
-<td>5–8</td>
-<td>VLM 骨干，动作当词 → 动作专家</td>
-<td>"VL"和"A"怎么接起来、怎么够快</td>
-</tr>
-<tr>
-<td>9–13</td>
-<td>知识隔离、分层、隐动作、Recap、RTC</td>
-<td>π0 之后的每一个关键改进</td>
-</tr>
-<tr>
-<td>14</td>
-<td>全景</td>
-<td>用三个问题把前面串起来</td>
-</tr>
-<tr>
-<td>15–21</td>
-<td>OFT、跨本体、在线 RL、加速、评测、潜空间世界模型、2026 开源模型</td>
-<td>真要微调、部署、比较模型时会遇到的事</td>
-</tr>
-</tbody>
-</table>
-<h2 id="_6">目录</h2>
+<h2 id="_1">目录</h2>
 <table>
 <thead>
 <tr>
 <th>章</th>
 <th>主题</th>
-<th>一句话精要</th>
-<th>动画</th>
 <th>卡片</th>
+<th>动画</th>
 <th>状态</th>
 </tr>
 </thead>
@@ -196,308 +94,105 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <tr>
 <td><a href="../lessons/01-what-is-a-policy.html">1</a></td>
 <td>机器人策略是什么：看一眼、听一句、吐一串数</td>
-<td>VLA 的输入是图 + 指令，输出是一个 7 维动作向量，一秒重复很多次</td>
-<td><a href="../animations/01-policy-loop.html">▶</a></td>
 <td>V01–V02</td>
+<td><a href="../animations/01-policy-loop.html">▶</a></td>
 <td>完成</td>
 </tr>
 <tr>
 <td><a href="../lessons/02-behavior-cloning.html">2</a></td>
 <td>行为克隆：照着人类示范抄作业</td>
-<td>训练就是看图答题；只见过人走的路，一走偏就越错越远</td>
-<td><a href="../animations/02-compounding-error.html">▶</a></td>
 <td>V03–V04、V17</td>
+<td><a href="../animations/02-compounding-error.html">▶</a></td>
 <td>完成</td>
 </tr>
 <tr>
 <td><a href="../lessons/03-action-chunking.html">3</a></td>
 <td>动作分块：看一眼，规划一整段</td>
-<td>一次出 k 步，决定次数降到 1/k；想 50 步只走 5 步</td>
-<td><a href="../animations/03-receding-horizon.html">▶</a></td>
 <td>V05–V07</td>
+<td><a href="../animations/03-receding-horizon.html">▶</a></td>
 <td>完成</td>
 </tr>
 <tr>
 <td><a href="../lessons/04-multimodality.html">4</a></td>
 <td>多峰：两种都对的做法，平均起来是错的</td>
-<td>L2 求平均会撞墙；生成模型抽一个，抽定了别变心</td>
-<td><a href="../animations/04-multimodality.html">▶</a></td>
 <td>V08–V09</td>
+<td><a href="../animations/04-multimodality.html">▶</a></td>
 <td>完成</td>
 </tr>
 <tr>
 <td><a href="../lessons/05-vlm.html">5</a></td>
 <td>VLM：图片切块和文字一起排队</td>
-<td>224 的图切成 256 个 token；PaliGemma = SigLIP + 线性投影 + Gemma</td>
-<td><a href="../animations/05-vlm-tokens.html">▶</a></td>
 <td>V10–V11</td>
+<td><a href="../animations/05-vlm-tokens.html">▶</a></td>
 <td>完成</td>
 </tr>
 <tr>
 <td><a href="../lessons/06-action-tokens.html">6</a></td>
 <td>动作当词：每个数切成 256 格</td>
-<td>每维切 256 格当词念；50 × 7 = 350 个词，念 8.3 秒</td>
-<td><a href="../animations/06-binning-autoregressive.html">▶</a></td>
 <td>V12–V13</td>
+<td><a href="../animations/06-binning-autoregressive.html">▶</a></td>
 <td>完成</td>
 </tr>
 <tr>
 <td><a href="../lessons/07-fast.html">7</a></td>
 <td>FAST：先压缩再变词</td>
-<td>相邻 token 太像，模型学会抄上一个；DCT + BPE 先说形状再补细节</td>
-<td><a href="../animations/07-fast-dct.html">▶</a></td>
 <td>V14–V15</td>
+<td><a href="../animations/07-fast-dct.html">▶</a></td>
 <td>完成</td>
 </tr>
 <tr>
 <td><a href="../lessons/08-pi0.html">8</a></td>
 <td>π0：大脑 + 小脑，动作专家</td>
-<td>VLM 前缀算一次存 K/V，300M 动作专家 flow matching 推 10 步，73 ms</td>
+<td>V16、V18、V20–V24</td>
 <td><a href="../animations/08-pi0-inference.html">▶</a> <a href="../animations/08b-pi0-block-mask.html">▶</a> <a href="../animations/08c-tau-sampling.html">▶</a> <a href="../animations/08d-cross-attention.html">▶</a></td>
-<td>V16、V18–V24</td>
 <td>完成</td>
 </tr>
 <tr>
 <td><a href="../lessons/09-knowledge-insulation.html">9</a></td>
 <td>知识隔离与 π0.5：别让小脑冲掉大脑的常识</td>
-<td>小脑读 K/V 但梯度不回传；大脑另学 FAST 词和图文；π0.5 五路数据两段训练</td>
-<td><a href="../animations/09-gradient-interference.html">▶</a> <a href="../animations/09b-knowledge-insulation.html">▶</a> <a href="../animations/09c-pi05-recipe.html">▶</a></td>
 <td>V25</td>
+<td><a href="../animations/09-gradient-interference.html">▶</a> <a href="../animations/09b-knowledge-insulation.html">▶</a> <a href="../animations/09c-pi05-recipe.html">▶</a></td>
 <td>已写，练习待作答</td>
 </tr>
 <tr>
 <td><a href="../lessons/10-hierarchy.html">10</a></td>
 <td>慢想快做：高层 1 秒想一次，低层每秒 50 个动作</td>
-<td>高层写子任务、低层出动作；文字好懂，向量信息多</td>
+<td>—</td>
 <td><a href="../animations/10-two-clocks.html">▶</a></td>
-<td>V27–V28</td>
 <td>已写，练习待作答</td>
 </tr>
 <tr>
 <td><a href="../lessons/11-latent-actions.html">11</a></td>
 <td>没有动作标签：隐动作与世界模型</td>
-<td>从两帧里猜一个小码当"动作词"，再用少量机器人数据学词 → 关节</td>
+<td>—</td>
 <td><a href="../animations/11-latent-action.html">▶</a></td>
-<td>V29–V30</td>
 <td>已写，练习待作答</td>
 </tr>
 <tr>
 <td><a href="../lessons/12-rl-recap.html">12</a></td>
 <td>RL 后训练 Recap：告诉模型"这段做得比平时好"</td>
-<td>价值函数估还要多久，优势贴 positive / negative，上场只说 positive</td>
+<td>—</td>
 <td><a href="../animations/12-recap-advantage.html">▶</a></td>
-<td>V31–V32</td>
 <td>已写，练习待作答</td>
 </tr>
 <tr>
 <td><a href="../lessons/13-rtc.html">13</a></td>
 <td>实时执行 RTC：边想下一段，边把这一段走完</td>
-<td>走掉的 d 步冻住，剩下的按软遮罩照着补，不用重训</td>
+<td>—</td>
 <td><a href="../animations/13-rtc.html">▶</a></td>
-<td>V33–V34</td>
 <td>已写，练习待作答</td>
 </tr>
 <tr>
 <td><a href="../lessons/14-vla-landscape.html">14</a></td>
 <td>主流 VLA 模型全景：架构、关键改进、优劣势</td>
-<td>三个问题看懂任何 VLA；五条主线、四类动作头</td>
+<td>—</td>
 <td><a href="../animations/14-vla-landscape.html">▶</a></td>
-<td>V35–V36</td>
-<td>已写，练习待作答</td>
-</tr>
-<tr>
-<td><a href="../lessons/15-oft.html">15</a></td>
-<td>OpenVLA-OFT：一次吐完所有动作，直接回归连续值</td>
-<td>并行解码 + chunk 快 26 倍；L1 取中位数；FiLM 按指令调色</td>
-<td><a href="../animations/15-oft.html">▶</a></td>
-<td>V37–V38</td>
-<td>已写，练习待作答</td>
-</tr>
-<tr>
-<td><a href="../lessons/16-cross-embodiment.html">16</a></td>
-<td>跨本体：不同的机器人，怎么排进同一张动作表</td>
-<td>RDT 128 格按物理意义填；X-VLA 每个域 32 个软提示</td>
-<td><a href="../animations/16-cross-embodiment.html">▶</a></td>
-<td>V39–V40</td>
-<td>已写，练习待作答</td>
-</tr>
-<tr>
-<td><a href="../lessons/17-online-rl.html">17</a></td>
-<td>在线 RL：SimpleVLA-RL，只看成没成也能练</td>
-<td>GRPO 组内比较算优势；全同组白跑；pushcut</td>
-<td><a href="../animations/17-online-rl.html">▶</a></td>
-<td>V41–V42</td>
-<td>已写，练习待作答</td>
-</tr>
-<tr>
-<td><a href="../lessons/18-fast-inference.html">18</a></td>
-<td>跑得快：异步推理、少看几眼、压小权重</td>
-<td>g ≥ (E[ℓ]/Δt)/n；计算量 ∝ token × 层；int8 慢反而掉点</td>
-<td><a href="../animations/18-fast-inference.html">▶</a></td>
-<td>V43–V44</td>
-<td>已写，练习待作答</td>
-</tr>
-<tr>
-<td><a href="../lessons/19-evaluation.html">19</a></td>
-<td>评测：97.1% 和 96.4%，到底谁更强</td>
-<td>Wilson 区间、两比例检验；分数饱和看难子项和扰动</td>
-<td><a href="../animations/19-evaluation.html">▶</a></td>
-<td>V45–V46</td>
-<td>已写，练习待作答</td>
-</tr>
-<tr>
-<td><a href="../lessons/20-latent-world-model.html">20</a></td>
-<td>潜空间世界模型：VLA-JEPA</td>
-<td>在潜空间里预测未来，未来帧只当答案；推理不用世界模型</td>
-<td><a href="../animations/20-latent-world-model.html">▶</a></td>
-<td>V47–V48</td>
-<td>已写，练习待作答</td>
-</tr>
-<tr>
-<td><a href="../lessons/21-open-models-2026.html">21</a></td>
-<td>2026 开源 VLA：读一份 config，选一个能微调的模型</td>
-<td>五个字段读 config；20 / 26 / 55 / 128 格；全参 16 字节、LoRA 2 字节</td>
-<td><a href="../animations/21-open-models-2026.html">▶</a></td>
-<td>V49–V50</td>
 <td>已写，练习待作答</td>
 </tr>
 </tbody>
 </table>
-<h2 id="_7">后续大纲</h2>
-<p>正文 21 章已写完。后面按学习进度补：</p>
-<ul>
-<li>第 9–21 章的练习作答、点评，以及按答错的地方补卡片；</li>
-<li>动手里程碑 V-M0–V-M8（见 study-plan）做完后，把结果表接回对应章节（V-M1 → 第 3 章、V-M2 → 第 6–7 章、V-M3 → 第 8 章、V-M7 → 第 13 章）。</li>
-</ul>
-<h2 id="_8">口诀汇总</h2>
-<p><strong>第 1 章 · 机器人策略是什么</strong></p>
-<blockquote>
-<p>看一眼，听一句，吐一串数；一秒吐很多次，吐完世界就变了。</p>
-</blockquote>
-<p><strong>第 2 章 · 行为克隆</strong></p>
-<blockquote>
-<p>人做一遍记一遍，看图答题对答案；<br />
-只学人走的路，一走偏就是没见过的路，越猜越偏。</p>
-</blockquote>
-<p><strong>第 3 章 · 动作分块</strong></p>
-<blockquote>
-<p>写字看一眼写一整字，机器人看一眼走一整段；决定少了，错得也少。<br />
-想得远，走得短：想 50 步、走 5 步，再看一眼。</p>
-</blockquote>
-<p><strong>第 4 章 · 多峰</strong></p>
-<blockquote>
-<p>左绕对，右绕也对，平均一下撞上去；<br />
-不求平均抽一个，抽到哪条走哪条；<br />
-抽定一边别变心，一段之内、画面提醒、接着旧计划。</p>
-</blockquote>
-<p><strong>第 5 章 · VLM</strong></p>
-<blockquote>
-<p>图片切成拼图块，一块一个 token，和文字排一队；<br />
-眼睛 SigLIP，视神经一层线性，大脑 Gemma；前缀互相看，回答往前看。</p>
-</blockquote>
-<p><strong>第 6 章 · 动作当词</strong></p>
-<blockquote>
-<p>尺子切 256 格，小数变编号，编号当词说出来；<br />
-一个字一个字地念，念得太慢。</p>
-</blockquote>
-<p><strong>第 7 章 · FAST</strong></p>
-<blockquote>
-<p>相邻太像，抄上一个就高分，什么都没学会；<br />
-先说形状再补细节，DCT 压一压，BPE 并一并，字少还有料。</p>
-</blockquote>
-<p><strong>第 8 章 · π0</strong></p>
-<blockquote>
-<p>大脑看图读指令，小脑出动作；同一会议室开会，各用各的权重。<br />
-大脑算一次存起来，小脑问路走十步；雾里起点随机，走进哪座山都行。<br />
-三排座位：同排互相听，后排听前排；前排听不见后排，所以前排算一次就够。</p>
-</blockquote>
-<p><strong>第 9 章 · 知识隔离与 π0.5</strong></p>
-<blockquote>
-<p>实习生干砸，老员工挨批改坏习惯；冻住老员工，又学不会新活。<br />
-知识隔离：小脑只读不改，大脑另有老师（FAST 词 + 图文数据）。<br />
-π0.5：九成多是别处经验，先念词后接小脑，先写子任务再出动作。</p>
-</blockquote>
-<p><strong>第 10 章 · 慢想快做</strong></p>
-<blockquote>
-<p>心里想路口，手上调方向：想得慢，做得快。<br />
-纸条好懂信息少，灌想法信息多看不懂。<br />
-先有动作再编话，倒推出高层的教材。</p>
-</blockquote>
-<p><strong>第 11 章 · 没有动作标签</strong></p>
-<blockquote>
-<p>视频多，动作缺：缺的那一栏自己猜。<br />
-两帧之间起个名，码本小，只记要紧的变化。<br />
-先学动作词，再学词到关节。<br />
-要么记代号，要么想画面。</p>
-</blockquote>
-<p><strong>第 12 章 · RL 后训练 Recap</strong></p>
-<blockquote>
-<p>看老师只能学到老师那样，自己练才能更好。<br />
-价值是导航的"还要多久"，优势是"比预计快了多少"。<br />
-好段贴正，差段贴负，上场只说"正"。<br />
-练、评、学，转几圈。</p>
-</blockquote>
-<p><strong>第 13 章 · 实时执行 RTC</strong></p>
-<blockquote>
-<p>说着这句想下句：停了冷场，硬接跑题。<br />
-走掉的冻住，剩下的照着补。<br />
-近的听旧计划，远的听新画面。<br />
-不重训，加引导，慢模型也能流畅。</p>
-</blockquote>
-<p><strong>第 14 章 · 主流 VLA 模型全景</strong></p>
-<blockquote>
-<p>看车看三样：发动机、变速箱、跑过的路。<br />
-念词有常识但慢，回归最快但不分峰，flow 多峰又顺，视频吃得最多。<br />
-没有全赢的模型，只有对得上的选择。</p>
-</blockquote>
-<p><strong>第 15 章 · OpenVLA-OFT</strong></p>
-<blockquote>
-<p>念号码一位一位，填空格一次填满，再一次填八步；<br />
-平方取平均站山谷，绝对值取中位站多数那座峰；<br />
-戴眼镜按指令调色，一开始眼镜是透明的。</p>
-</blockquote>
-<p><strong>第 16 章 · 跨本体</strong></p>
-<blockquote>
-<p>插座各国不一样，万能插座每孔标名；<br />
-报税表每栏一义，没有的就空着不算分；<br />
-翻译员是同一个，纸条说明是哪国人。</p>
-</blockquote>
-<p><strong>第 17 章 · 在线 RL</strong></p>
-<blockquote>
-<p>看录像学不会骑车，自己骑、只问到头没；<br />
-同题八人做，比平均好加分，差的减分；<br />
-全对全错没得比，扔掉再采；放宽上界、升温多试；<br />
-只看结果会抄近道，规矩要写进奖励。</p>
-</blockquote>
-<p><strong>第 18 章 · 跑得快</strong></p>
-<blockquote>
-<p>菜还剩三成就下新单，往返多久就留够几步；<br />
-读得长、读得遍数多就慢，少看几眼少算几层；<br />
-压成电子版省地方，翻页太慢反而误事。</p>
-</blockquote>
-<p><strong>第 19 章 · 评测</strong></p>
-<blockquote>
-<p>电脑题考千次分数稳，上真路考几次误差大；<br />
-十投七中，真实在四成到九成之间；<br />
-差距跟标准误比，比之前看是不是同一张卷子；<br />
-都考满分就换难卷、比速度。</p>
-</blockquote>
-<p><strong>第 20 章 · 潜空间世界模型</strong></p>
-<blockquote>
-<p>看视频学做菜，别学镜头怎么晃；<br />
-先翻译成"菜什么样"再比，像素抖动就不算数；<br />
-答案纸只给老师看，学生只看现在；<br />
-推理时陪练下场；人手视频不教新招，教你换个地方也稳。</p>
-</blockquote>
-<p><strong>第 21 章 · 2026 开源 VLA</strong></p>
-<blockquote>
-<p>看车先看行驶证：大脑、动作头、几步、几格、推几步；<br />
-收纳盒格子越细，越能装手和腰，接入就写清放哪格；<br />
-专科门诊挂四个号，医院大，看一个人用不了多少医生；<br />
-全参十六字节，LoRA 两字节，先量门框再搬家。</p>
-</blockquote>
 </main></div>
-<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a></footer>
+<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a><br>联系与合作：<a href="mailto:wikieden@gmail.com">wikieden@gmail.com</a>（讲义勘误与建议、课程 / 企业内训、内容合作与转载授权）· 赞助请发邮件联系</footer>
 <script>(function(){var d=document.documentElement,K=["s","m","l","xl"];
 function save(k,v){try{v?localStorage.setItem(k,v):localStorage.removeItem(k)}catch(e){}}
 var s=document.getElementById("ab-theme");if(s){s.value=d.dataset.theme||"";s.onchange=function(){if(s.value)d.dataset.theme=s.value;else delete d.dataset.theme;save("ab-theme",s.value)}}

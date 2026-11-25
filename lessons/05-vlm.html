@@ -68,15 +68,11 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <a href="https://wikieden.github.io/ai-books/">← 全部讲义书</a>
 <span class="prefs" title="字号与主题"><button type="button" data-fs-step="-1" aria-label="字号变小">A−</button><button type="button" data-fs-step="1" aria-label="字号变大">A+</button><select id="ab-theme" aria-label="主题色"><option value="">跟随系统</option><option value="light">浅色</option><option value="dark">深色</option><option value="sepia">米黄护眼</option><option value="green">豆沙绿护眼</option><option value="navy">夜蓝</option></select></span>
 </div></header>
-<div class="layout"><nav class="side" aria-label="章节"><div class="h">VLA 从零到 π0</div><a href="index.html">讲义目录</a><a href="01-what-is-a-policy.html"><span class="n">1</span>机器人策略是什么</a><a href="02-behavior-cloning.html"><span class="n">2</span>行为克隆：照着人类示范抄作业</a><a href="03-action-chunking.html"><span class="n">3</span>动作分块（action chunking）：看一眼，规划一整段</a><a href="04-multimodality.html"><span class="n">4</span>多峰（multimodality）：同一个情况，两种都对的做法</a><a href="05-vlm.html" class="cur"><span class="n">5</span>VLM：图片切块和文字一起排队进 Transformer</a><a href="06-action-tokens.html"><span class="n">6</span>动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="07-fast.html"><span class="n">7</span>FAST：先压缩，再变词</a><a href="08-pi0.html"><span class="n">8</span>π0：大脑 + 小脑，动作专家（action expert）</a><a href="09-knowledge-insulation.html"><span class="n">9</span>知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="10-hierarchy.html"><span class="n">10</span>慢想快做：分层系统</a><a href="11-latent-actions.html"><span class="n">11</span>没有动作标签：隐动作与世界模型</a><a href="12-rl-recap.html"><span class="n">12</span>RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="13-rtc.html"><span class="n">13</span>实时执行：RTC，边想下一段，边把这一段走完</a><a href="14-vla-landscape.html"><span class="n">14</span>主流 VLA 模型全景：架构、关键改进、优劣势</a><a href="15-oft.html"><span class="n">15</span>OpenVLA-OFT：一次吐完所有动作，直接回归连续值</a><a href="16-cross-embodiment.html"><span class="n">16</span>跨本体：不同的机器人，怎么排进同一张动作表</a><a href="17-online-rl.html"><span class="n">17</span>在线 RL：SimpleVLA-RL，只看成没成，也能把 17% 练到 92%</a><a href="18-fast-inference.html"><span class="n">18</span>跑得快：异步推理、少看几眼、压小权重</a><a href="19-evaluation.html"><span class="n">19</span>评测：97.1% 和 96.4%，到底谁更强</a><a href="20-latent-world-model.html"><span class="n">20</span>潜空间世界模型：VLA-JEPA，看视频学&quot;世界怎么变&quot;，但别偷看答案</a><a href="21-open-models-2026.html"><span class="n">21</span>2026 开源 VLA：读一份 config，选一个能微调的模型</a><a href="appendix-glossary.html">附录 · 缩写与术语表</a><a href="appendix-symbols.html">附录 · 公式符号怎么读</a></nav><main>
-<h1 id="5-vlm-transformer">第 5 章 · VLM：图片切块和文字一起排队进 Transformer</h1><div class="run"><a class="btn" href="../animations/05-vlm-tokens.html">▶ 打开本章可交互动画</a><a class="btn" href="https://colab.research.google.com/github/wikieden/vla-from-scratch/blob/main/code/notebooks/ch05_vlm.ipynb" target="_blank" rel="noopener">在 Colab 运行本章代码</a><a class="btn" href="../code/notebooks/ch05_vlm.ipynb" download>下载 notebook</a><details><summary>本地运行</summary><pre><code>git clone https://github.com/wikieden/vla-from-scratch
-cd vla-from-scratch/code/notebooks
-pip install jupyterlab torch numpy
-jupyter lab ch05_vlm.ipynb</code></pre><p>也可以下载后直接用 VS Code 打开 .ipynb 运行。需要 GPU 的章节在 Colab 里选「代码执行程序 → 更改运行时类型 → GPU」。</p></details></div>
+<div class="layout"><nav class="side" aria-label="章节"><div class="h">VLA 从零到 π0</div><a href="index.html">讲义目录</a><a href="01-what-is-a-policy.html"><span class="n">1</span>机器人策略是什么</a><a href="02-behavior-cloning.html"><span class="n">2</span>行为克隆：照着人类示范抄作业</a><a href="03-action-chunking.html"><span class="n">3</span>动作分块（action chunking）：看一眼，规划一整段</a><a href="04-multimodality.html"><span class="n">4</span>多峰（multimodality）：同一个情况，两种都对的做法</a><a href="05-vlm.html" class="cur"><span class="n">5</span>VLM：图片切块和文字一起排队进 Transformer</a><a href="06-action-tokens.html"><span class="n">6</span>动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="07-fast.html"><span class="n">7</span>FAST：先压缩，再变词</a><a href="08-pi0.html"><span class="n">8</span>π0：大脑 + 小脑，动作专家（action expert）</a><a href="09-knowledge-insulation.html"><span class="n">9</span>知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="10-hierarchy.html"><span class="n">10</span>慢想快做：分层系统</a><a href="11-latent-actions.html"><span class="n">11</span>没有动作标签：隐动作与世界模型</a><a href="12-rl-recap.html"><span class="n">12</span>RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="13-rtc.html"><span class="n">13</span>实时执行：RTC，边想下一段，边把这一段走完</a><a href="14-vla-landscape.html"><span class="n">14</span>主流 VLA 模型全景：架构、关键改进、优劣势</a><a href="appendix-glossary.html">附录 · 缩写与术语表</a><a href="appendix-symbols.html">附录 · 公式符号怎么读</a></nav><main>
+<h1 id="5-vlm-transformer">第 5 章 · VLM：图片切块和文字一起排队进 Transformer</h1><div class="run"><a class="btn" href="../animations/05-vlm-tokens.html">▶ 打开本章可交互动画</a></div>
 <blockquote>
 <p>本章回答：VLA 里的"VL"（看 + 听）是怎么实现的？一张图怎么变成 Transformer 能吃的东西？<br />
 讲解日期：2026-11-04 · 上一章：<a href="../lessons/04-multimodality.html">第 4 章 多峰</a> · 下一章：<a href="../lessons/06-action-tokens.html">第 6 章 动作当词</a><br />
-对应原文：<code>materials/text/papers/paligemma-2407.07726.txt</code> L18、L87–L95、L166–L172（prefix-LM）、L189、L231–L233（256 个图像 token）；<code>pi0-2410.24164.txt</code> L864–L871<br />
 本章缩写：VLM = Vision-Language Model（视觉 / 语言 / 模型）；ViT = Vision Transformer（视觉 Transformer）；SigLIP = Sigmoid Loss for Language-Image Pre-training（sigmoid 损失 / 图文 / 预训练）；So400m = Shape-optimized 400M（形状优化 / 4 亿参数）；LM = Language Model（语言模型），prefix-LM = 前缀语言模型。全表见 <a href="../lessons/appendix-glossary.html">appendix-glossary.md</a></p>
 </blockquote>
 <h2 id="_1">讲解</h2>
@@ -100,8 +96,6 @@ jupyter lab ch05_vlm.ipynb</code></pre><p>也可以下载后直接用 VS Code �
 <li>看图部分用 SigLIP（一个 ViT），读字和思考部分用 Gemma 2B；</li>
 <li>224 px 分辨率下，一张图变成 <span class="arithmatex">\(N_\text{img}\)</span> = 256 个图像 token（<code>materials/text/papers/paligemma-2407.07726.txt</code> 第 231–233 行：<em>"resolution 224px (hence, N_img = 256 image tokens)"</em>）。</li>
 </ul>
-<p><img alt="224 的图切成 256 个图像 token" src="../figures/05-vlm-patches.png" /></p>
-<p><em>图 5-1 · 每块变一个向量，和指令 token 排成一队。</em></p>
 <h3 id="2-paligemma">第 2 步：PaliGemma 长什么样</h3>
 <p>PaliGemma 是 Google 开源的一个 <strong>3B（30 亿参数）VLM</strong>，π0、π0.5 都用它当骨干。它只有三个零件（<code>paligemma-2407.07726.txt</code> 第 18、87–95、189 行）：</p>
 <pre><code>相机图 224×224
@@ -143,15 +137,6 @@ jupyter lab ch05_vlm.ipynb</code></pre><p>也可以下载后直接用 VS Code �
 </table>
 <p>原文：<em>"we have full (unmasked) attention on the whole input, i.e. the image and prefix tokens. In this way, image tokens can also "lookahead" at the task at hand"</em>。</p>
 <p>π0 沿用了这个思路，并把动作也加成一段：动作段内部前后都能看，但前面的段看不到后面的段（<code>pi0-2410.24164.txt</code> 第 864–871 行，附录的 block-wise 掩码）。第 8 章细讲。</p>
-<p><img alt="PaliGemma 的三个零件" src="../figures/05-vlm-paligemma.png" /></p>
-<p><em>图 5-2 · 眼睛 SigLIP、视神经一层线性投影、大脑 Gemma-2B。</em></p>
-<p><strong>场景代码</strong>：LeRobot 的 π0 就用 PaliGemma 当大脑，配置里写着它的分词器和 Gemma 尺寸（<code>materials/code/lerobot/repo/src/lerobot/policies/pi0/configuration_pi0.py</code> L33、L107）：</p>
-<pre><code class="language-python">from lerobot.policies.pi0.configuration_pi0 import PI0Config
-
-cfg = PI0Config()
-cfg.paligemma_variant     # &quot;gemma_2b&quot;：大脑用 Gemma-2B
-cfg.text_tokenizer_name   # &quot;google/paligemma-3b-pt-224&quot;：224 px，一张图 256 个图像 token
-</code></pre>
 <h3 id="tokenprefix-lm">动画演示：图片切块成 token，prefix-LM 遮挡</h3>
 <p><img alt="图片切块成 token，prefix-LM 遮挡" src="../animations/05-vlm-tokens.gif" /></p>
 <p>可交互版：<a href="../animations/05-vlm-tokens.html">animations/05-vlm-tokens.html</a>（用浏览器打开，可播放、单步、换随机数重来）。</p>
@@ -178,109 +163,9 @@ cfg.text_tokenizer_name   # &quot;google/paligemma-3b-pt-224&quot;：224 px，�
 眼睛 SigLIP，视神经一层线性，大脑 Gemma；前缀互相看，回答往前看。</p>
 </blockquote>
 <h2 id="_4">本章复习卡片</h2>
-<p>V10 图片怎么变 token、V11 PaliGemma 的三个零件和 prefix-LM（见 <a href="../review.html">review.md</a>）</p>
-<h2 id="_5">附录 · 延伸阅读</h2>
-<blockquote>
-<p>留给以后深入学习用，不影响本章主线。★ 是建议先读的。</p>
-</blockquote>
-<h3 id="_6">推荐阅读</h3>
-<table>
-<thead>
-<tr>
-<th>读什么</th>
-<th>读哪里</th>
-<th>读它为了什么</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>★ PaliGemma（Beyer 等，2024）</td>
-<td><code>paligemma-2407.07726.txt</code> L87–L95、L166–L172、L231–L233</td>
-<td>三个零件、prefix-LM、256 个 token</td>
-</tr>
-<tr>
-<td>ViT</td>
-<td><code>transformer-deep-dive</code> 的 <code>07-vision</code> 材料</td>
-<td>切块成 token 的原始做法</td>
-</tr>
-<tr>
-<td><a href="https://wikieden.github.io/transformer-visual/lessons/17-causal-mask.html">《从零读懂 Transformer》第 17 章 因果 mask</a></td>
-<td>谁能看见谁</td>
-<td>prefix-LM 是在因果 mask 上开一个口子</td>
-</tr>
-<tr>
-<td><a href="../lessons/08-pi0.html">第 8 章 π0</a></td>
-<td>三块注意力</td>
-<td>prefix-LM 再细分一层</td>
-</tr>
-</tbody>
-</table>
-<h3 id="_7">数学原理</h3>
-<ul>
-<li><strong>切块数</strong>：<span class="arithmatex">\((H/p) \times (W/p)\)</span>，H、W 是图的边长，p 是块边长。</li>
-<li><strong>注意力遮挡</strong>：一个 0/1 矩阵，第 i 行第 j 列为 1 表示 token i 能看见 token j。</li>
-</ul>
-<h3 id="_8">公式清单</h3>
-<table>
-<thead>
-<tr>
-<th>公式</th>
-<th>意思</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><span class="arithmatex">\(N_{\text{img}} = (224/14)^2 = 256\)</span></td>
-<td>一张图的图像 token 数</td>
-</tr>
-<tr>
-<td>前缀全看、后缀因果</td>
-<td>prefix-LM 的遮挡规则</td>
-</tr>
-</tbody>
-</table>
-<h3 id="_9">代码对照：把本章的数字用代码算一遍</h3>
-<blockquote>
-<p>纯 Python + NumPy，不需要 GPU。代码在仓库本地 <code>vla-deep-dive/solutions/chapter-code/ch05_vlm.py</code>，配套测试 <code>tests/test_ch05.py</code>：</p>
-<p><code>bash  
-cd vla-deep-dive/solutions/chapter-code  
-uv run python ch05_vlm.py  
-uv run pytest tests/test_ch05.py</code></p>
-</blockquote>
-<p><strong>讲义 ↔ 代码</strong>：</p>
-<table>
-<thead>
-<tr>
-<th>讲义</th>
-<th>写法</th>
-<th>跑出来</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>第 1 步</td>
-<td><code>num_patches(224, 14)</code></td>
-<td>256；3 个相机 768</td>
-</tr>
-<tr>
-<td>第 2 步</td>
-<td><code>prefix_lm_mask(7, 3)</code></td>
-<td>前 7 行前 7 列全 1；后 3 行下三角</td>
-</tr>
-</tbody>
-</table>
-<p><strong>代码里才看得到的 2 件事</strong>：</p>
-<ol>
-<li><code>prefix_lm_mask</code> 先建一个下三角（纯因果），再把左上角前缀块整块改成 1，这一步就是 prefix-LM 比纯因果多出来的那片。</li>
-<li>这里的 7 个前缀只是玩具（4 个图像 + 3 个指令）；真实 PaliGemma 是 256 + 指令长度。</li>
-</ol>
-<p><strong>自己改一改</strong>（不影响练习答案）：</p>
-<ul>
-<li>把 <code>num_patches</code> 的分辨率改成 448，看图像 token 变成多少。</li>
-<li>把 <code>prefix_lm_mask</code> 的前缀长度改成 0，看它是不是退化成纯因果。</li>
-</ul><nav class="pager"><a href="04-multimodality.html">← 第 4 章 · 多峰（multimodality）：同一个情况，两种都对的做法</a><a href="06-action-tokens.html">第 6 章 · 动作当词：把每个数切成 256 格（RT-2 / OpenVLA） →</a></nav>
+<p>V10 图片怎么变 token、V11 PaliGemma 的三个零件和 prefix-LM（见 <a href="../review.html">review.md</a>）</p><nav class="pager"><a href="04-multimodality.html">← 第 4 章 · 多峰（multimodality）：同一个情况，两种都对的做法</a><a href="06-action-tokens.html">第 6 章 · 动作当词：把每个数切成 256 格（RT-2 / OpenVLA） →</a></nav>
 </main></div>
-<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a></footer>
+<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a><br>联系与合作：<a href="mailto:wikieden@gmail.com">wikieden@gmail.com</a>（讲义勘误与建议、课程 / 企业内训、内容合作与转载授权）· 赞助请发邮件联系</footer>
 <script>(function(){var d=document.documentElement,K=["s","m","l","xl"];
 function save(k,v){try{v?localStorage.setItem(k,v):localStorage.removeItem(k)}catch(e){}}
 var s=document.getElementById("ab-theme");if(s){s.value=d.dataset.theme||"";s.onchange=function(){if(s.value)d.dataset.theme=s.value;else delete d.dataset.theme;save("ab-theme",s.value)}}

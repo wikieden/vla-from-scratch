@@ -195,48 +195,6 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <td><a href="14-vla-landscape.gif">14-vla-landscape.gif</a></td>
 <td><a href="14-vla-landscape.html">html</a></td>
 </tr>
-<tr>
-<td>15</td>
-<td>逐词念 vs 并行解码：前向次数、延迟、吞吐</td>
-<td><a href="15-oft.gif">15-oft.gif</a></td>
-<td><a href="15-oft.html">html</a></td>
-</tr>
-<tr>
-<td>16</td>
-<td>不同机器人填进 128 格统一动作空间</td>
-<td><a href="16-cross-embodiment.gif">16-cross-embodiment.gif</a></td>
-<td><a href="16-cross-embodiment.html">html</a></td>
-</tr>
-<tr>
-<td>17</td>
-<td>一组轨迹的组内优势，全同组白跑</td>
-<td><a href="17-online-rl.gif">17-online-rl.gif</a></td>
-<td><a href="17-online-rl.html">html</a></td>
-</tr>
-<tr>
-<td>18</td>
-<td>异步推理：动作队列与阈值 g</td>
-<td><a href="18-fast-inference.gif">18-fast-inference.gif</a></td>
-<td><a href="18-fast-inference.html">html</a></td>
-</tr>
-<tr>
-<td>19</td>
-<td>回合数、Wilson 区间与两比例检验</td>
-<td><a href="19-evaluation.gif">19-evaluation.gif</a></td>
-<td><a href="19-evaluation.html">html</a></td>
-</tr>
-<tr>
-<td>20</td>
-<td>像素损失 vs 潜空间损失、信息泄露</td>
-<td><a href="20-latent-world-model.gif">20-latent-world-model.gif</a></td>
-<td><a href="20-latent-world-model.html">html</a></td>
-</tr>
-<tr>
-<td>21</td>
-<td>模型规模、微调方式与显存</td>
-<td><a href="21-open-models-2026.gif">21-open-models-2026.gif</a></td>
-<td><a href="21-open-models-2026.html">html</a></td>
-</tr>
 </tbody>
 </table>
 <h2 id="_2">新增或修改一个动画</h2>
@@ -247,10 +205,10 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <p><code>bash
    node ../../../tools/anim-capture/capture.mjs 08-pi0-inference.html 08-pi0-inference.gif 500</code></p>
 <ol start="3">
-<li>在对应讲义的"讲解"末尾写 <code>### 动画演示</code>：一行 <code>`、交互版链接、"怎么看"要点，然后跑</code>python3 tools/gallery/build.py` 更新画廊。</li>
+<li>在对应讲义的"讲解"末尾写 <code>### 动画演示</code>：一行 <code>`、交互版链接、"怎么看"要点，然后跑</code>tools/notes-sync/sync.sh vla-deep-dive "VLA"`。</li>
 </ol>
 </main>
-<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a></footer>
+<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a><br>联系与合作：<a href="mailto:wikieden@gmail.com">wikieden@gmail.com</a>（讲义勘误与建议、课程 / 企业内训、内容合作与转载授权）· 赞助请发邮件联系</footer>
 <script>(function(){var d=document.documentElement,K=["s","m","l","xl"];
 function save(k,v){try{v?localStorage.setItem(k,v):localStorage.removeItem(k)}catch(e){}}
 var s=document.getElementById("ab-theme");if(s){s.value=d.dataset.theme||"";s.onchange=function(){if(s.value)d.dataset.theme=s.value;else delete d.dataset.theme;save("ab-theme",s.value)}}

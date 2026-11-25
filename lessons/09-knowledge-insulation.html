@@ -68,11 +68,8 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-
 <a href="https://wikieden.github.io/ai-books/">← 全部讲义书</a>
 <span class="prefs" title="字号与主题"><button type="button" data-fs-step="-1" aria-label="字号变小">A−</button><button type="button" data-fs-step="1" aria-label="字号变大">A+</button><select id="ab-theme" aria-label="主题色"><option value="">跟随系统</option><option value="light">浅色</option><option value="dark">深色</option><option value="sepia">米黄护眼</option><option value="green">豆沙绿护眼</option><option value="navy">夜蓝</option></select></span>
 </div></header>
-<div class="layout"><nav class="side" aria-label="章节"><div class="h">VLA 从零到 π0</div><a href="index.html">讲义目录</a><a href="01-what-is-a-policy.html"><span class="n">1</span>机器人策略是什么</a><a href="02-behavior-cloning.html"><span class="n">2</span>行为克隆：照着人类示范抄作业</a><a href="03-action-chunking.html"><span class="n">3</span>动作分块（action chunking）：看一眼，规划一整段</a><a href="04-multimodality.html"><span class="n">4</span>多峰（multimodality）：同一个情况，两种都对的做法</a><a href="05-vlm.html"><span class="n">5</span>VLM：图片切块和文字一起排队进 Transformer</a><a href="06-action-tokens.html"><span class="n">6</span>动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="07-fast.html"><span class="n">7</span>FAST：先压缩，再变词</a><a href="08-pi0.html"><span class="n">8</span>π0：大脑 + 小脑，动作专家（action expert）</a><a href="09-knowledge-insulation.html" class="cur"><span class="n">9</span>知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="10-hierarchy.html"><span class="n">10</span>慢想快做：分层系统</a><a href="11-latent-actions.html"><span class="n">11</span>没有动作标签：隐动作与世界模型</a><a href="12-rl-recap.html"><span class="n">12</span>RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="13-rtc.html"><span class="n">13</span>实时执行：RTC，边想下一段，边把这一段走完</a><a href="14-vla-landscape.html"><span class="n">14</span>主流 VLA 模型全景：架构、关键改进、优劣势</a><a href="15-oft.html"><span class="n">15</span>OpenVLA-OFT：一次吐完所有动作，直接回归连续值</a><a href="16-cross-embodiment.html"><span class="n">16</span>跨本体：不同的机器人，怎么排进同一张动作表</a><a href="17-online-rl.html"><span class="n">17</span>在线 RL：SimpleVLA-RL，只看成没成，也能把 17% 练到 92%</a><a href="18-fast-inference.html"><span class="n">18</span>跑得快：异步推理、少看几眼、压小权重</a><a href="19-evaluation.html"><span class="n">19</span>评测：97.1% 和 96.4%，到底谁更强</a><a href="20-latent-world-model.html"><span class="n">20</span>潜空间世界模型：VLA-JEPA，看视频学&quot;世界怎么变&quot;，但别偷看答案</a><a href="21-open-models-2026.html"><span class="n">21</span>2026 开源 VLA：读一份 config，选一个能微调的模型</a><a href="appendix-glossary.html">附录 · 缩写与术语表</a><a href="appendix-symbols.html">附录 · 公式符号怎么读</a></nav><main>
-<h1 id="9-05">第 9 章 · 知识隔离与 π0.5：别让小脑把大脑的常识冲掉</h1><div class="run"><a class="btn" href="../animations/09-gradient-interference.html">▶ 打开本章可交互动画</a><a class="btn" href="https://colab.research.google.com/github/wikieden/vla-from-scratch/blob/main/code/notebooks/ch09_knowledge_insulation.ipynb" target="_blank" rel="noopener">在 Colab 运行本章代码</a><a class="btn" href="../code/notebooks/ch09_knowledge_insulation.ipynb" download>下载 notebook</a><details><summary>本地运行</summary><pre><code>git clone https://github.com/wikieden/vla-from-scratch
-cd vla-from-scratch/code/notebooks
-pip install jupyterlab torch numpy
-jupyter lab ch09_knowledge_insulation.ipynb</code></pre><p>也可以下载后直接用 VS Code 打开 .ipynb 运行。需要 GPU 的章节在 Colab 里选「代码执行程序 → 更改运行时类型 → GPU」。</p></details></div>
+<div class="layout"><nav class="side" aria-label="章节"><div class="h">VLA 从零到 π0</div><a href="index.html">讲义目录</a><a href="01-what-is-a-policy.html"><span class="n">1</span>机器人策略是什么</a><a href="02-behavior-cloning.html"><span class="n">2</span>行为克隆：照着人类示范抄作业</a><a href="03-action-chunking.html"><span class="n">3</span>动作分块（action chunking）：看一眼，规划一整段</a><a href="04-multimodality.html"><span class="n">4</span>多峰（multimodality）：同一个情况，两种都对的做法</a><a href="05-vlm.html"><span class="n">5</span>VLM：图片切块和文字一起排队进 Transformer</a><a href="06-action-tokens.html"><span class="n">6</span>动作当词：把每个数切成 256 格（RT-2 / OpenVLA）</a><a href="07-fast.html"><span class="n">7</span>FAST：先压缩，再变词</a><a href="08-pi0.html"><span class="n">8</span>π0：大脑 + 小脑，动作专家（action expert）</a><a href="09-knowledge-insulation.html" class="cur"><span class="n">9</span>知识隔离与 π0.5：别让小脑把大脑的常识冲掉</a><a href="10-hierarchy.html"><span class="n">10</span>慢想快做：分层系统</a><a href="11-latent-actions.html"><span class="n">11</span>没有动作标签：隐动作与世界模型</a><a href="12-rl-recap.html"><span class="n">12</span>RL 后训练：Recap，告诉模型&quot;这段做得比平时好&quot;</a><a href="13-rtc.html"><span class="n">13</span>实时执行：RTC，边想下一段，边把这一段走完</a><a href="14-vla-landscape.html"><span class="n">14</span>主流 VLA 模型全景：架构、关键改进、优劣势</a><a href="appendix-glossary.html">附录 · 缩写与术语表</a><a href="appendix-symbols.html">附录 · 公式符号怎么读</a></nav><main>
+<h1 id="9-05">第 9 章 · 知识隔离与 π0.5：别让小脑把大脑的常识冲掉</h1><div class="run"><a class="btn" href="../animations/09-gradient-interference.html">▶ 打开本章可交互动画</a></div>
 <blockquote>
 <p>本章回答：π0 一起训练大脑和小脑，会出什么问题？知识隔离（knowledge insulation）怎么解决？π0.5 的训练配方是什么？<br />
 讲解日期：2026-11-09 起 · 上一章：<a href="../lessons/08-pi0.html">第 8 章 π0</a> · 下一章：第 10 章 慢想快做：分层系统（待讲）<br />
@@ -185,16 +182,6 @@ jupyter lab ch09_knowledge_insulation.ipynb</code></pre><p>也可以下载后直
 - 每周还继续做老本行（图文数据），手艺不生疏；
 - 实习生可以随时翻老员工的笔记（读 K、V），但实习生干砸了<strong>只批实习生</strong>（stop-gradient）。</p>
 <p><strong>公式</strong>：总损失 = 念词的损失（语言 + FAST 动作词）+ α × flow matching 损失（式 4，第 315–318 行）。因为两部分改的是不同的权重，论文直接取 α = 1（第 373–374 行）。</p>
-<p><img alt="小脑只读不改" src="../figures/09-knowledge-insulation-gradient.png" /></p>
-<p><em>图 9-1 · 前向时读 K、V；反向时误差撞到 sg 就停，大脑另有两个老师。</em></p>
-<p><strong>场景代码</strong>：LeRobot 的 π0.5 实现里，知识隔离就是两行 <code>.detach()</code>（<code>materials/code/lerobot/repo/src/lerobot/policies/pi05/modeling_pi05.py</code> L275–L283）：</p>
-<pre><code class="language-python">if knowledge_insulation:
-    # 只在动作 token 读 K/V 的那条路上切断梯度（pi0.5 knowledge insulation）
-    prefix_len = inputs_embeds[0].shape[1]
-    key_for_action = torch.cat([key_states[:, :, :prefix_len].detach(), key_states[:, :, prefix_len:]], dim=2)
-    value_for_action = torch.cat([value_states[:, :, :prefix_len].detach(), value_states[:, :, prefix_len:]], dim=2)
-</code></pre>
-<p><code>.detach()</code> 就是公式里的 sg：前向值不变，反向梯度到这里为 0。</p>
 <h3 id="_3">动画演示：知识隔离</h3>
 <p><img alt="知识隔离：小脑只读不改，大脑另有老师" src="../animations/09b-knowledge-insulation.gif" /></p>
 <p>可交互版：<a href="../animations/09b-knowledge-insulation.html">animations/09b-knowledge-insulation.html</a>（可播放、单步、重来）。下方曲线是示意。</p>
@@ -285,8 +272,6 @@ jupyter lab ch09_knowledge_insulation.ipynb</code></pre><p>也可以下载后直
 <p><strong>数字例子</strong>（流程，不是论文的数）：总指令"收拾厨房" → 子任务"拿起盘子" → 小脑 10 步出 50 步动作 → 走完一段 → 再看画面 → 子任务换成"把盘子放进水槽"……</p>
 <p><strong>效果</strong>（第 600–630、692–699 行）：训练用的家庭从 3 个加到 104 个，在<strong>完全没去过的新家</strong>里，表现接近直接在测试家里训练过的模型；去掉网络数据后，对没见过类别的物体明显变差（第 8 章插问 3）。</p>
 <p><strong>一句话</strong>：π0.5 = 大量"别处的经验"（97.6%）+ 先 FAST 后小脑的两段训练 + 先写子任务再出动作。</p>
-<p><img alt="π0.5 的五路数据、两段训练" src="../figures/09-knowledge-insulation-recipe.png" /></p>
-<p><em>图 9-2 · 预训练只念 FAST 词，后训练加上小脑。</em></p>
 <h3 id="305">动画演示 3：π0.5 的配方</h3>
 <p><img alt="π0.5：五路数据、两段训练、先想后做" src="../animations/09c-pi05-recipe.gif" /></p>
 <p>可交互版：<a href="../animations/09c-pi05-recipe.html">animations/09c-pi05-recipe.html</a>（可播放、单步、重来）。条形长度是示意，只有 97.6%、280k、80k 来自原文。</p>
@@ -400,53 +385,10 @@ jupyter lab ch09_knowledge_insulation.ipynb</code></pre><p>也可以下载后直
 </tr>
 </tbody>
 </table>
-<h3 id="_11">代码对照：把本章的数字用代码算一遍</h3>
-<blockquote>
-<p>纯 Python + NumPy，不需要 GPU。代码在仓库本地 <code>vla-deep-dive/solutions/chapter-code/ch09_knowledge_insulation.py</code>，配套测试 <code>tests/test_ch09.py</code>：</p>
-<p><code>bash  
-cd vla-deep-dive/solutions/chapter-code  
-uv run python ch09_knowledge_insulation.py  
-uv run pytest tests/test_ch09.py</code></p>
-</blockquote>
-<p><strong>讲义 ↔ 代码</strong>：</p>
-<table>
-<thead>
-<tr>
-<th>讲义</th>
-<th>写法</th>
-<th>跑出来</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>第 1 步</td>
-<td><code>grads(..., stop_gradient=False)</code></td>
-<td>随机小脑 w_a = 0.3：大脑收到梯度 −1.08</td>
-</tr>
-<tr>
-<td>第 2 步</td>
-<td><code>grads(..., stop_gradient=True)</code></td>
-<td>大脑梯度 0，小脑梯度不变（−3.60）</td>
-</tr>
-<tr>
-<td>第 3 步</td>
-<td><code>PI05</code>、<code>KI_SPEEDUP</code></td>
-<td>280k + 80k 步；目标场景 2.4%；π0 多 7.5 倍步数</td>
-</tr>
-</tbody>
-</table>
-<p><strong>代码里才看得到的 2 件事</strong>：</p>
-<ol>
-<li><code>grads</code> 是手算的链式法则：大脑的梯度 = 误差 × w_a × x。小脑越"乱"（误差越大），流进大脑的梯度越大，这就是第 1 步说的训练刚开始伤害最大。</li>
-<li>加 sg 以后小脑自己的梯度一点没变：stop-gradient 只切断往大脑那一支，不影响小脑学习。</li>
-</ol>
-<p><strong>自己改一改</strong>（不影响练习答案）：</p>
-<ul>
-<li>把 w_a 改成接近"学好了"的值（让误差接近 0），看流进大脑的梯度还有多大。</li>
-<li>改 <code>PI05</code> 的比例，算一算目标场景占 10% 时其余数据占多少。</li>
-</ul><nav class="pager"><a href="08-pi0.html">← 第 8 章 · π0：大脑 + 小脑，动作专家（action expert）</a><a href="10-hierarchy.html">第 10 章 · 慢想快做：分层系统 →</a></nav>
+<h3 id="_11">代码对照</h3>
+<p>本章无代码对照：讲的是训练配方和梯度流向，后续在 V-M3（flow 头）里用小模型演示 stop-gradient。</p><nav class="pager"><a href="08-pi0.html">← 第 8 章 · π0：大脑 + 小脑，动作专家（action expert）</a><a href="10-hierarchy.html">第 10 章 · 慢想快做：分层系统 →</a></nav>
 </main></div>
-<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a></footer>
+<footer>来自个人学习仓库的对话讲义，含练习作答记录。源码：<a href="https://github.com/wikieden/vla-from-scratch">github.com/wikieden/vla-from-scratch</a>。更多讲义书：<a href="https://wikieden.github.io/ai-books/">Physical AI 0-1-♾️（合集）</a><br>联系与合作：<a href="mailto:wikieden@gmail.com">wikieden@gmail.com</a>（讲义勘误与建议、课程 / 企业内训、内容合作与转载授权）· 赞助请发邮件联系</footer>
 <script>(function(){var d=document.documentElement,K=["s","m","l","xl"];
 function save(k,v){try{v?localStorage.setItem(k,v):localStorage.removeItem(k)}catch(e){}}
 var s=document.getElementById("ab-theme");if(s){s.value=d.dataset.theme||"";s.onchange=function(){if(s.value)d.dataset.theme=s.value;else delete d.dataset.theme;save("ab-theme",s.value)}}
